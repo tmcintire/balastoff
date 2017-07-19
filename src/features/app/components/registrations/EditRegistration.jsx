@@ -61,8 +61,12 @@ export class EditRegistration extends React.Component {
 
           <hr />
           <div className="flex-row flex-justify-space-around">
-            <Comps registration={registration} />
+            <Comps
+              id={this.props.params.id}
+              registration={registration}
+            />
             <Level
+              id={this.props.params.id}
               level={registration.Level}
               hasLevelCheck={registration.HasLevelCheck}
             />

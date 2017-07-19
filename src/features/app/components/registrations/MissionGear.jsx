@@ -18,8 +18,9 @@ export class MissionGear extends React.Component {
           <tr>
             <td>{registration.TShirts}</td>
             <td>{registration.Size}</td>
-            <td>
+            <td className="text-center">
               <input
+                className="no-outline"
                 checked={registration.Shirt1}
                 type="checkbox"
                 onChange={e => this.updateMerchCheckbox(e, 'Shirt1')}
@@ -35,8 +36,9 @@ export class MissionGear extends React.Component {
           <tr>
             <td>{registration.AdditionalTShirts}</td>
             <td>{registration.Size2}</td>
-            <td>
+            <td className="text-center">
               <input
+                className="no-outline"
                 checked={registration.Shirt2}
                 type="checkbox"
                 onChange={e => this.updateMerchCheckbox(e, 'Shirt2')}
@@ -52,8 +54,9 @@ export class MissionGear extends React.Component {
           <tr>
             <td>{registration['Limited Edition Patch']}</td>
             <td>N/A</td>
-            <td>
+            <td className="text-center">
               <input
+                className="no-outline"
                 checked={registration.Patch}
                 type="checkbox"
                 onChange={e => this.updateMerchCheckbox(e, 'Patch')}
