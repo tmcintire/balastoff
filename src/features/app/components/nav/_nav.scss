@@ -1,0 +1,98 @@
+$navbackground: rgba(42, 66, 112, 1);
+$hoverlink: rgba(69, 91, 138, 1);
+
+.navbar {
+  background: $navbackground;
+  color: white;
+
+  .navbar-brand {
+    color: white;
+    font-size: 2em;
+    list-style: none;
+  }
+  .navbar-brand:hover {
+    cursor: default;
+    color: white;
+  }
+
+  .nav-divider {
+    padding: 0;
+    margin: 0;
+    height: 50px;
+    width: 1px;
+  }
+
+  .navbar-nav {
+    background: $navbackground;
+    color: white;
+
+    li.open a {
+      background: $navbackground;
+    }
+
+    .dropdown-toggle {
+      color: white;
+    }
+
+    .dropdown-toggle:hover {
+      background: $hoverlink!important;
+      color: white!important;
+    }
+
+    .dropdown-toggle:focus {
+      background: $hoverlink!important;
+      color: white!important;
+    }
+
+    .dropdown-toggle {
+      background: $navbackground;
+      color: white!important;
+    }
+
+    .dropdown-menu {
+      color: white;
+      a {
+        color: white;
+      }
+
+      li {
+        a {
+          color: white!important;
+        }
+      }
+
+      background: $navbackground;
+    }
+
+    .link {
+      color: white;
+    }
+
+
+
+    .link:hover {
+      background-color: $hoverlink;
+      color: white;
+    }
+  }
+}
+
+.loggedout {
+  display: none;
+}
+
+.loggedin {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .nav-divider {
+    width: 100%!important;
+    height: 1px!important;
+  }
+
+  .navbar {
+    font-size: 0.7em;
+    font-weight: normal;
+  }
+}

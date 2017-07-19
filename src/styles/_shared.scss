@@ -1,0 +1,19 @@
+body {
+  font-family: 'Quattrocento Sans', sans-serif;
+  font-size: 2em;
+  font-weight: normal;
+  margin-top: 60px;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-justify-space-between {
+  justify-content: space-between;
+}
