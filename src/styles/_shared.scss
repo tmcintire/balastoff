@@ -17,3 +17,13 @@ body {
 .flex-justify-space-between {
   justify-content: space-between;
 }
+
+.flex-justify-space-around {
+  justify-content: space-around;
+}
+
+.no-outline {
+  &:focus {
+    outline: none!important;
+  }
+}

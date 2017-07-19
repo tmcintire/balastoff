@@ -47,6 +47,9 @@ axios({
       } else {
         object[data[1]].HasLevelCheck = 'No';
       }
+
+      // check for gear
+      object[data[1]].HasGear = (data[40] || data[42] || data[44]) ? 'Yes' : 'No';
     });
   });
   regRef.set(object);

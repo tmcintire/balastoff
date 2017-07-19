@@ -4,3 +4,7 @@ export { Nav } from './nav/Nav';
 export { AdminContainer } from './admin/AdminContainer';
 export { EditParticipantContainer } from './admin/EditParticipantContainer';
 export { EditRegistrationContainer } from './registrations/EditRegistrationContainer';
+export { Comps } from './registrations/Comps';
+export { Level } from './registrations/Level';
+export { MissionGear } from './registrations/MissionGear';
+export { CompRegistrationsContainer } from './comps/CompRegistrationsContainer';

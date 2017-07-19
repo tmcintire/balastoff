@@ -28,43 +28,6 @@ export class Nav extends React.Component {
       backgroundColor: '#455B8A',
       color: 'white',
     };
-
-    const adminNav = () => (
-      <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul className="nav navbar-nav">
-          <li>
-            <IndexLink onClick={this.closeMenu} to="/" className="link" activeClassName="active" activeStyle={activeStyles}>Overview</IndexLink>
-          </li>
-          <li className="nav-divider"> | </li>
-          <li>
-            <Link onClick={this.closeMenu} to="/events" className="link" activeClassName="active" activeStyle={activeStyles}>Events</Link>
-          </li>
-        </ul>
-      </div>
-    );
-
-    const userNav = () => (
-      <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul className="nav navbar-nav">
-          <li>
-            <Link onClick={this.closeMenu} to="/schedule" className="link" activeClassName="active" activeStyle={activeStyles}>Schedule</Link>
-          </li>
-          <li>
-            <Link onClick={this.closeMenu} to="/volunteers" className="link" activeClassName="active" activeStyle={activeStyles}>Volunteers</Link>
-          </li>
-        </ul>
-
-      </div>
-    );
-
-    const navigation = () => {
-      if (this.props.user.role === 'admin') {
-        return adminNav();
-      } else if (this.props.user.role === 'user') {
-        return userNav();
-      }
-      return noUserNav();
-    };
     return (
       <nav className="navbar navbar-default navbar-fixed-top">
         <div className="container-fluid">
@@ -75,9 +38,24 @@ export class Nav extends React.Component {
               <span className="icon-bar" />
               <span className="icon-bar" />
             </button>
-            <li className="navbar-brand nav-title" href="#">Balastoff! Check-In</li>
+            <li className="navbar-brand nav-title" href="#">
+              <span className="balast">BALAST</span>
+              <span className="off">OFF! </span>
+              <span>Check-In</span>
+            </li>
           </div>
-          {userNav()}
+          <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul className="nav navbar-nav">
+              <li>
+                <Link onClick={this.closeMenu} to="/" className="link" activeClassName="active" activeStyle={activeStyles}>Home</Link>
+              </li>
+            </ul>
+            <ul className="nav navbar-nav">
+              <li>
+                <Link onClick={this.closeMenu} to="/comps" className="link" activeClassName="active" activeStyle={activeStyles}>Comps</Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     );

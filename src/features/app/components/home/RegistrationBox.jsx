@@ -41,16 +41,18 @@ export class RegistrationBox extends React.Component {
         <td>{registration.HasLevelCheck}</td>
         <td style={style}>${registration['Amount Owed']}</td>
         <td>{hasMerchandise}</td>
-        <td>
+        <td className="text-center">
           <input
+            className="no-outline"
             ref={(ref) => { this.paidCheckbox = ref; }}
             checked={registration.HasPaid}
             type="checkbox"
             onChange={() => this.changePaidCheckBox(registration.BookingID)}
           />
         </td>
-        <td>
+        <td className="checkin-background text-center">
           <input
+            className="no-outline"
             ref={(ref) => { this.checkedInCheckbox = ref; }}
             checked={registration.CheckedIn}
             type="checkbox"

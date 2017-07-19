@@ -1,6 +1,15 @@
 $navbackground: rgba(42, 66, 112, 1);
 $hoverlink: rgba(69, 91, 138, 1);
 
+.nav-title {
+  .balast {
+    color: white;
+  }
+  .off {
+    color: #8e7155;
+  }
+}
+
 .navbar {
   background: $navbackground;
   color: white;

@@ -1,3 +1,19 @@
 .custom-table {
   width: 50%;
 }
+
+.checkin-background {
+  background: lightgray;
+}
+
+input[type='checkbox'] {
+    -webkit-appearance:none;
+    width:30px;
+    height:30px;
+    background:white;
+    border-radius:5px;
+    border:2px solid #555;
+}
+input[type='checkbox']:checked {
+    background: #8e7155;
+}

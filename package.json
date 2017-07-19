@@ -6,6 +6,7 @@
   "scripts": {
     "test": "karma start",
     "start": "NODE_ENV=production node server.js",
+    "development": "NODE_ENV=development",
     "dev": "webpack-dev-server --config configs/webpack.dev.js --colors --port 8080 --displayErrorDetails --hot --inline",
     "build": "webpack --config configs/webpack.prod.js"
   },

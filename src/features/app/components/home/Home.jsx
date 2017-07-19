@@ -1,7 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-import * as helpers from '../../../data/helpers';
-
 import { RegistrationBox } from './RegistrationBox';
 
 export class Home extends React.Component {
@@ -67,8 +65,23 @@ export class Home extends React.Component {
     });
   }
 
+  toggleGear(e) {
+    const checked = e.target.checked;
+    const { registrations } = this.props;
+    let filteredRegistrations = [];
+
+    if (checked) {
+      filteredRegistrations = registrations.filter(reg => reg.HasGear === 'Yes');
+    } else {
+      filteredRegistrations = registrations;
+    }
+    this.setState({
+      filteredRegistrations,
+    });
+  }
+
   render() {
-    const { registrations, loading } = this.props;
+    const { loading } = this.props;
     const renderRegistrations = () => {
       if (loading === false && this.state.filteredRegistrations !== undefined) {
         return this.state.filteredRegistrations.map((registration, index) =>
@@ -81,14 +94,21 @@ export class Home extends React.Component {
     };
     return (
       <div className="container">
-        <h1>Registrations</h1>
-        <div>
-          <label>Show only unpaid</label>
-          <input type="checkbox" onChange={e => this.toggleUnpaid(e)} />
-          <label>Show not checked in</label>
-          <input type="checkbox" onChange={e => this.toggleNotChecked(e)} />
+        <div className="flex-row options-container">
+          <div className="flex-row option">
+            <span>Show only unpaid</span>
+            <input className="no-outline" type="checkbox" onChange={e => this.toggleUnpaid(e)} />
+          </div>
+          <div className="flex-row option">
+            <span>Show not checked in</span>
+            <input className="no-outline" type="checkbox" onChange={e => this.toggleNotChecked(e)} />
+          </div>
+          <div className="flex-row option">
+            <span>Show only gear</span>
+            <input className="no-outline" type="checkbox" onChange={e => this.toggleGear(e)} />
+          </div>
         </div>
-        <input type="text" onChange={this.handleValueChange} />
+        <input className="search" type="text" onChange={this.handleValueChange} />
         <table className="table">
           <thead>
             <th>View</th>
@@ -98,8 +118,8 @@ export class Home extends React.Component {
             <th>Level Check</th>
             <th>Amount Owed</th>
             <th>Gear</th>
-            <th>Fully Paid</th>
-            <th>Checked In</th>
+            <th className="text-center">Fully Paid</th>
+            <th className="checkin-background text-center">Checked In</th>
           </thead>
           <tbody>
             {renderRegistrations()}
@@ -109,3 +129,8 @@ export class Home extends React.Component {
     );
   }
 }
+
+Home.propTypes = {
+  registrations: React.PropTypes.array,
+  loading: React.PropTypes.boolean,
+};
