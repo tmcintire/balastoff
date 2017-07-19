@@ -14,6 +14,8 @@ export class EditRegistration extends React.Component {
     super();
     this.state = {
       registration: {},
+      loading: true,
+      showSaved: false,
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -22,6 +24,7 @@ export class EditRegistration extends React.Component {
         reg.BookingID === nextProps.params.id)[0];
       this.setState({
         registration,
+        loading: false,
       });
     }
   }
@@ -45,16 +48,29 @@ export class EditRegistration extends React.Component {
   backToRegistrations = () => {
     window.location('/');
   }
+
+  saved = () => {
+    this.setState({
+      showSaved: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        showSaved: false,
+      });
+    }, 2000);
+  }
   render() {
     const {registration} = this.state;
+    const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
     const renderRegistration = () => {
-      if (this.props.loading) {
+      if (this.state.loading) {
         return (
           <Loading />
         );
       }
       return (
         <div>
+          {renderSaved()}
           <Link to={'/'}><button className="btn btn-primary custom-buttons">Back to Registrations</button></Link>
           <h1 className="text-center">View Registration</h1>
           <h3 className="text-center">{registration['First Name']} {registration['Last Name']}</h3>
@@ -66,6 +82,7 @@ export class EditRegistration extends React.Component {
               registration={registration}
             />
             <Level
+              saved={this.saved}
               id={this.props.params.id}
               level={registration.Level}
               hasLevelCheck={registration.HasLevelCheck}

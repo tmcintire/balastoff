@@ -8,6 +8,7 @@ export class Level extends React.Component {
     };
 
     api.updateRegistration(this.props.id, object);
+    this.props.saved();
   }
   render() {
     const { level, hasLevelCheck } = this.props;
@@ -17,7 +18,7 @@ export class Level extends React.Component {
         <h3><strong>Track Information</strong></h3>
         <div className="info-container">
           <span className="full-width">Level: </span>
-          <select className="form-control" id="type" defaultValue={level} onChange={e => this.handleValueChange(e, 'Level')}>
+          <select className="form-control" id="type" value={level} onChange={e => this.handleValueChange(e, 'Level')}>
             <option value="Beginner">Beginner</option>
             <option value="Mercury">Mercury</option>
             <option value="Gemini">Gemini</option>
@@ -28,7 +29,7 @@ export class Level extends React.Component {
         </div>
         <div className="info-container">
           <span className="full-width">Level Check: </span>
-          <select className="form-control" id="type" defaultValue={hasLevelCheck} onChange={e => this.handleValueChange(e, 'HasLevelCheck')}>
+          <select className="form-control" id="type" value={hasLevelCheck} onChange={e => this.handleValueChange(e, 'HasLevelCheck')}>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>

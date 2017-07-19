@@ -25,3 +25,26 @@ input[type='checkbox']:checked {
   width: 340px;
   margin-bottom: 10px;
 }
+
+.saved-message {
+  position: fixed;
+  right: 25px;
+  top: 65px;
+  background: green;
+  animation: pulse 2s infinite;
+  padding: 15px;
+  border-radius: 5px;
+  color: white;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1.0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}

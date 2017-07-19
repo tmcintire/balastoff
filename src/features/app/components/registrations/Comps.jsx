@@ -18,21 +18,21 @@ export class Comps extends React.Component {
         <h3><strong>Comps</strong></h3>
         <div className="info-container">
           <span className="full-width">AdNov Comp: </span>
-          <select className="form-control" id="type" defaultValue={registration.AdNov} onChange={e => this.handleValueChange(e, 'AdNov')}>
+          <select className="form-control" id="type" value={registration.AdNov} onChange={e => this.handleValueChange(e, 'AdNov')}>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
         </div>
         <div className="info-container">
           <span className="full-width">Amateur Couples: </span>
-          <select className="form-control" id="type" defaultValue={registration['Amateur Couples']} onChange={e => this.handleValueChange(e, 'Amateur Couples')}>
+          <select className="form-control" id="type" value={registration['Amateur Couples']} onChange={e => this.handleValueChange(e, 'Amateur Couples')}>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
         </div>
         <div className="info-container">
           <span className="full-width">Three State Open: </span>
-          <select className="form-control" id="type" defaultValue={registration.Open} onChange={e => this.handleValueChange(e, 'Open')}>
+          <select className="form-control" id="type" value={registration.Open} onChange={e => this.handleValueChange(e, 'Open')}>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
