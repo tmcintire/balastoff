@@ -7,7 +7,7 @@ export class MissionGear extends React.Component {
     const object = {
       [type]: e.target.checked,
     };
-    api.updateRegistration(this.props.params.id, object);
+    api.updateRegistration(this.props.id, object);
   }
 
   render() {

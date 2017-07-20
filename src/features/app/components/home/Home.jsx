@@ -109,7 +109,7 @@ export class Home extends React.Component {
           </div>
         </div>
         <input className="search" type="text" onChange={this.handleValueChange} />
-        <table className="table">
+        <table className="table registrations-table">
           <thead>
             <th>View</th>
             <th>Last Name</th>

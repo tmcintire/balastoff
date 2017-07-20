@@ -14,3 +14,7 @@
 .search {
   margin: 10px 0 10px 0;
 }
+
+.registrations-table {
+  tr:nth-child(even) {background: #E1E1E1}
+}

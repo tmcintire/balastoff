@@ -22,6 +22,10 @@ body {
   justify-content: space-around;
 }
 
+.flex-justify-content-center {
+  justify-content: center;
+}
+
 .no-outline {
   &:focus {
     outline: none!important;

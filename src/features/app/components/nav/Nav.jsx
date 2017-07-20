@@ -25,7 +25,7 @@ export class Nav extends React.Component {
 
   render() {
     const activeStyles = {
-      backgroundColor: '#455B8A',
+      backgroundColor: 'rgba(64, 93, 108, 1)',
       color: 'white',
     };
     return (

@@ -45,6 +45,15 @@ export class EditRegistration extends React.Component {
     api.updateRegistration(this.props.params.id, object);
   }
 
+  toggleCheckedIn = (e) => {
+    const object = {
+      CheckedIn: e.target.checked,
+    };
+
+    this.saved();
+    api.updateRegistration(this.props.params.id, object);
+  }
+
   backToRegistrations = () => {
     window.location('/');
   }
@@ -71,13 +80,17 @@ export class EditRegistration extends React.Component {
       return (
         <div>
           {renderSaved()}
-          <Link to={'/'}><button className="btn btn-primary custom-buttons">Back to Registrations</button></Link>
-          <h1 className="text-center">View Registration</h1>
-          <h3 className="text-center">{registration['First Name']} {registration['Last Name']}</h3>
+          <Link className="back" to={'/'}><i className="fa fa-arrow-left" aria-hidden="true" />Back to Registrations</Link>
+          <h1 className="text-center">{registration['First Name']} {registration['Last Name']}</h1>
+          <div className="flex-row option flex-justify-content-center">
+            <span>Check In!</span>
+            <input className="no-outline" type="checkbox" onChange={e => this.toggleCheckedIn(e)} />
+          </div>
 
           <hr />
           <div className="flex-row flex-justify-space-around">
             <Comps
+              saved={this.saved}
               id={this.props.params.id}
               registration={registration}
             />
@@ -91,7 +104,11 @@ export class EditRegistration extends React.Component {
 
           <hr />
           <div className="flex-row flex-justify-space-around">
-            <MissionGear registration={registration} />
+            <MissionGear
+              saved={this.saved}
+              id={this.props.params.id}
+              registration={registration}
+            />
           </div>
 
         </div>
