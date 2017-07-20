@@ -84,7 +84,7 @@ export class EditRegistration extends React.Component {
           <h1 className="text-center">{registration['First Name']} {registration['Last Name']}</h1>
           <div className="flex-row option flex-justify-content-center">
             <span>Check In!</span>
-            <input className="no-outline" type="checkbox" onChange={e => this.toggleCheckedIn(e)} />
+            <input className="no-outline" type="checkbox" checked={registration.CheckedIn} onChange={e => this.toggleCheckedIn(e)} />
           </div>
 
           <hr />

@@ -8,6 +8,7 @@ export class Comps extends React.Component {
     };
 
     api.updateRegistration(this.props.id, object);
+    this.props.saved();
   }
 
   render() {
