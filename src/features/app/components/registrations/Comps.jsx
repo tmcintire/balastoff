@@ -60,6 +60,7 @@ export class Comps extends React.Component {
           <div hidden={registration.AdNov !== 'Yes'} className="partner-input flex-row flex-justify-space-between">
             <label>Role: </label>
             <select className="form-control ad-nov-role" id="type" defaultValue={registration.AdNovLeadFollow} onChange={e => this.handleValueChange(e, 'AdNov', 'AdNovLeadFollow')}>
+              <option value="" />
               <option value="Lead">Lead</option>
               <option value="Follow">Follow</option>
             </select>

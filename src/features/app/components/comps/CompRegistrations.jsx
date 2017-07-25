@@ -16,9 +16,50 @@ export class CompRegistrations extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.registrations) {
-      const open = nextProps.registrations.filter(reg => reg.Open === 'Yes');
-      const amateur = nextProps.registrations.filter(reg => reg['Amateur Couples'] === 'Yes');
-      const adNov = nextProps.registrations.filter(reg => reg.AdNov === 'Yes');
+      const openRegs = nextProps.registrations.filter(reg => reg.Open === 'Yes');
+      const open = [];
+      _.forEach(openRegs, (r) => {
+        const name = r['First Name'] + ' ' + r['Last Name'];
+        const partner = r.Partner;
+
+        const exists = _.some(open, o => {
+          if (name === o.name || partner === o.partner) {
+            return true;
+          }
+          if (name === o.partner || partner === o.name) {
+            return true;
+          }
+        });
+
+        if (!exists) {
+          open.push({ name, partner });
+        }
+      });
+      const amateurRegistrations = nextProps.registrations.filter(reg => reg['Amateur Couples'] === 'Yes');
+      const amateur = [];
+      _.forEach(amateurRegistrations, (a) => {
+        const name = a['First Name'] + ' ' + a['Last Name'];
+        const partner = a['Amateur Partner'];
+
+        const exists = _.some(amateur, am => {
+          if (name === am.name || partner === am.partner) {
+            return true;
+          }
+          if (name === am.partner || partner === am.name) {
+            return true;
+          }
+        });
+
+        if (!exists) {
+          amateur.push({ name, partner });
+        }
+      });
+      const adNov = (nextProps.registrations.filter(reg => reg.AdNov === 'Yes')).map(r => {
+        return {
+          name: r['First Name'] + ' ' + r['Last Name'],
+          role: r.AdNovLeadFollow,
+        }
+      });
 
       this.setState({
         open,
@@ -37,7 +78,7 @@ export class CompRegistrations extends React.Component {
       if (!this.state.loading) {
         return this.state.open.map(o => (
           <div>
-            <p>{o['First Name']} {o['Last Name']} <strong>&</strong> {o.Partner}</p>
+            <p>{o.name} <strong>&</strong> {o.partner}</p>
           </div>
         ));
       }
@@ -46,7 +87,7 @@ export class CompRegistrations extends React.Component {
       if (!this.state.loading) {
         return this.state.amateur.map(o => (
           <div>
-            <p>{o['First Name']} {o['Last Name']} <strong>&</strong> {o['Amateur Partner']}</p>
+            <p>{o.name} <strong>&</strong> {o.partner}</p>
           </div>
         ));
       }
@@ -55,7 +96,7 @@ export class CompRegistrations extends React.Component {
       if (!this.state.loading) {
         return this.state.adNov.map(o => (
           <div>
-            <p>{o['First Name']} {o['Last Name']} -- {o.AdNovLeadFollow || ''}</p>
+            <p>{o.name} -- {o.role || ''}</p>
           </div>
         ));
       }
