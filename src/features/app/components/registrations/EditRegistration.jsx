@@ -22,8 +22,18 @@ export class EditRegistration extends React.Component {
     if (nextProps.registrations) {
       const registration = nextProps.registrations.filter(reg =>
         reg.BookingID === nextProps.params.id)[0];
+      let partner = '';
+      let comps = [];
+      _.forEach(nextProps.partners, (p) => {
+        if (registration['First Name'] === p.partner.first && registration['Last Name'] === p.partner.last) {
+          partner = `${p.first} ${p.last}`;
+          comps.push(p.comp);
+        }
+      });
       this.setState({
         registration,
+        partner,
+        comps,
         loading: false,
       });
     }
@@ -69,7 +79,7 @@ export class EditRegistration extends React.Component {
     }, 2000);
   }
   render() {
-    const {registration} = this.state;
+    const { registration, partner, comps } = this.state;
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
     const renderRegistration = () => {
       if (this.state.loading) {
@@ -88,8 +98,10 @@ export class EditRegistration extends React.Component {
           </div>
 
           <hr />
-          <div className="flex-row flex-justify-space-around">
+          <div className="flex-row flex-wrap flex-justify-space-between">
             <Comps
+              comps={comps}
+              partner={partner}
               saved={this.saved}
               id={this.props.params.id}
               registration={registration}

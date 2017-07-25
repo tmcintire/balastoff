@@ -20,9 +20,21 @@ input[type='checkbox']:checked {
     background: #8e7155;
 }
 
+.comp-container {
+  width: 350px;
+}
+
+.level-container {
+  width: 260px;
+}
+
+.ad-nov-role {
+  width: 50%;
+  display: inline-block;
+}
+
 .info-container {
   display: flex;
-  width: 340px;
   margin-bottom: 10px;
 }
 

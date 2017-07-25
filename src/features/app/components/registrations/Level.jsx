@@ -14,7 +14,7 @@ export class Level extends React.Component {
     const { level, hasLevelCheck } = this.props;
 
     const renderComps = () => (
-      <div>
+      <div className="level-container">
         <h3><strong>Track Information</strong></h3>
         <div className="info-container">
           <span className="full-width">Level: </span>

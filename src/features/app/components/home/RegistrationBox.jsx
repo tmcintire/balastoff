@@ -29,19 +29,17 @@ export class RegistrationBox extends React.Component {
     const hasMerchandise =
       (registration.TShirts || registration.AdditionalTShirts || registration['Limited Edition Patch']) ? 'Yes' : 'No';
     return (
-      <tr>
-        <td>
-          <Link to={`editregistration/${registration.BookingID}`}>
-            <i className="fa fa-pencil-square-o" aria-hidden="true" />
-          </Link>
-        </td>
-        <td>{registration['Last Name']}</td>
-        <td>{registration['First Name']}</td>
-        <td>{registration.Level}</td>
-        <td>{registration.HasLevelCheck}</td>
-        <td style={style}>${registration['Amount Owed']}</td>
-        <td>{hasMerchandise}</td>
-        <td className="text-center">
+      <div>
+        <span className="col-xs-1"><Link to={`editregistration/${registration.BookingID}`}>
+          <i className="fa fa-pencil-square-o" aria-hidden="true" />
+        </Link></span>
+        <span className="col-xs-2">{registration['Last Name']}</span>
+        <span className="col-xs-2">{registration['First Name']}</span>
+        <span className="col-xs-1">{registration.Level}</span>
+        <span className="col-xs-1">{registration.HasLevelCheck}</span>
+        <span className="col-xs-1" style={style}>${registration['Amount Owed']}</span>
+        <span className="col-xs-1">{hasMerchandise}</span>
+        <span className="col-xs-1 text-center">
           <input
             className="no-outline"
             ref={(ref) => { this.paidCheckbox = ref; }}
@@ -49,8 +47,8 @@ export class RegistrationBox extends React.Component {
             type="checkbox"
             onChange={() => this.changePaidCheckBox(registration.BookingID)}
           />
-        </td>
-        <td className="checkin-background text-center">
+        </span>
+        <span className="col-xs-2 checkin-background text-center">
           <input
             className="no-outline"
             ref={(ref) => { this.checkedInCheckbox = ref; }}
@@ -58,8 +56,8 @@ export class RegistrationBox extends React.Component {
             type="checkbox"
             onChange={() => this.changeCheckBox(registration.BookingID)}
           />
-        </td>
-      </tr>
+        </span>
+      </div>
     );
   }
 }

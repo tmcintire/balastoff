@@ -108,23 +108,24 @@ export class Home extends React.Component {
             <input className="no-outline" type="checkbox" onChange={e => this.toggleGear(e)} />
           </div>
         </div>
-        <input className="search" type="text" onChange={this.handleValueChange} />
-        <table className="table registrations-table">
-          <thead>
-            <th>View</th>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>Track</th>
-            <th>Level Check</th>
-            <th>Amount Owed</th>
-            <th>Gear</th>
-            <th className="text-center">Fully Paid</th>
-            <th className="checkin-background text-center">Checked In</th>
-          </thead>
-          <tbody>
+        <label htmlFor="search">Search Registrations</label>
+        <input className="search" id="search" type="text" onChange={this.handleValueChange} />
+        <div className="registrations-wrapper flex-col">
+          <div className="registrations-header">
+            <span className="col-xs-1">View</span>
+            <span className="col-xs-2">Last Name</span>
+            <span className="col-xs-2">First Name</span>
+            <span className="col-xs-1">Track</span>
+            <span className="col-xs-1">Level Check</span>
+            <span className="col-xs-1">Amount Owed</span>
+            <span className="col-xs-1">Gear</span>
+            <span className="col-xs-1">Fully Paid</span>
+            <span className="col-xs-2">Checked In</span>
+          </div>
+          <div className="registrations-body flex-col">
             {renderRegistrations()}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     );
   }

@@ -55,7 +55,7 @@ export class CompRegistrations extends React.Component {
       if (!this.state.loading) {
         return this.state.adNov.map(o => (
           <div>
-            <p>{o['First Name']} {o['Last Name']}</p>
+            <p>{o['First Name']} {o['Last Name']} -- {o.AdNovLeadFollow || ''}</p>
           </div>
         ));
       }
@@ -69,7 +69,7 @@ export class CompRegistrations extends React.Component {
       return (
         <div>
           <h1 className="text-center">Comp Registrations</h1>
-          <div className="flex-row flex-justify-space-between">
+          <div className="flex-row flex-wrap flex-justify-space-between">
             <div>
               <h3 className="text-center">Open</h3>
               <hr />

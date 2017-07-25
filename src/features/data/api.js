@@ -52,6 +52,38 @@ axios({
       object[data[1]].HasGear = (data[40] || data[42] || data[44]) ? 'Yes' : 'No';
     });
   });
+
+  // Setup partners
+  _.forEach(object, (r) => {
+    if (r) {
+      let registrationToUpdate = [];
+      let first;
+      let last;
+      if (r.Open === 'Yes' && r.Partner !== '') {
+        first = r.Partner.split(' ')[0].toLowerCase();
+        last = r.Partner.split(' ')[1].toLowerCase();
+        registrationToUpdate = _.find(object, reg =>
+          reg['First Name'].toLowerCase() === first && reg['Last Name'].toLowerCase() === last);
+
+        if (!_.isEmpty(registrationToUpdate)) {
+          registrationToUpdate.Open = 'Yes';
+          registrationToUpdate.Partner = `${r['First Name']} ${r['Last Name']}`;
+        }
+      }
+      if (r['Amateur Couples'] === 'Yes' && r['Amateur Partner'] !== '') {
+        first = r['Amateur Partner'].split(' ')[0].toLowerCase();
+        last = r['Amateur Partner'].split(' ')[1].toLowerCase();
+        registrationToUpdate = _.find(object, reg =>
+          reg['First Name'].toLowerCase() === first && reg['Last Name'].toLowerCase() === last);
+
+        if (!_.isEmpty(registrationToUpdate)) {
+          registrationToUpdate['Amateur Couples'] = 'Yes';
+          registrationToUpdate['Amateur Partner'] = `${r['First Name']} ${r['Last Name']}`;
+        }
+      }
+    }
+  });
+
   regRef.set(object);
 }).catch((error) => {
   console.log(error);
@@ -65,6 +97,42 @@ export function fetchRegistrations() {
     const sortedRegistrations = helpers.sortRegistrations(registrations);
     store.dispatch(actions.registrationsReceived(sortedRegistrations));
   });
+}
+
+function getPartners(registrations) {
+  const updatedRegistrations = [];
+  _.forEach(registrations, (r) => {
+    if (r) {
+      const first = r.Partner.split(' ')[0];
+      const last = r.Partner.split(' ')[1];
+
+      if (r.Open && r.Partner) {
+        const registrationToUpdate = registrations.filter((reg) => {
+          return reg['First Name'] === first && reg['Last Name'] === last;
+        });
+
+        registrationToUpdate.Open = 'Yes';
+        registrationToUpdate.Partner = `${r['First Name']} ${r['Last Name']}`;
+      }
+      if (r['Amateur Couples'] && r['Amateur Partner']) {
+        const registrationToUpdate = registrations.filter((reg) => {
+          return reg['First Name'] === first && reg['Last Name'] === last;
+        });
+
+        const update = {
+          'Amateur Couples': 'Yes',
+          'Amateur Partner': `${r['First Name']} ${r['Last Name']}`,
+        };
+
+        if (registrationToUpdate.length !== 0) {
+          updateRegistration(registrationToUpdate[0].BookingID, update);
+        }
+      }
+
+      updatedRegistrations.push(registratioToUpdate);
+    }
+  });
+  store.dispatch(actions.partnersReceived(partners));
 }
 
 export function fetchTracks() {

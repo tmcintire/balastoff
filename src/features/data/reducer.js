@@ -13,6 +13,21 @@ export const registrations = (state = [], action) => {
         registrations: action.registrations,
         loading: false,
       };
+    case 'UPDATED_AMATEUR_COMP':
+      return {
+        ...state,
+        registrations: state.registrations.map(registration =>
+          registration.BookingID === action.bookingID ? { ...registration,
+            'Amateur Couples': action.amateur,
+            'Amateur Parter': action.partner,
+          } : registration),
+      }
+    case 'RECEIVED_PARTNERS':
+      return {
+        ...state,
+        partners: action.partners,
+        loading: false,
+      };
     case 'CHECKBOX_UPDATED':
       return {
         ...state,
