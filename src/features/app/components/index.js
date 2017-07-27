@@ -8,3 +8,4 @@ export { Comps } from './registrations/Comps';
 export { Level } from './registrations/Level';
 export { MissionGear } from './registrations/MissionGear';
 export { CompRegistrationsContainer } from './comps/CompRegistrationsContainer';
+export { AddParticipantContainer } from './admin/AddParticipantContainer';

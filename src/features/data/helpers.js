@@ -1,13 +1,21 @@
 import _ from 'lodash';
 
-export function sortRegistrations(registrations) {
+export function sortRegistrations(registrations, filter) {
   return registrations.sort((a, b) => {
-    const nameA = a['Last Name'].toLowerCase();
-    const nameB = b['Last Name'].toLowerCase();
-    if (nameA < nameB) {
+    let A;
+    let B;
+    if (filter === 'BookingID') {
+      A = parseInt(a[filter], 10);
+      B = parseInt(b[filter], 10);
+    } else {
+      A = a[filter].toLowerCase();
+      B = b[filter].toLowerCase();
+    }
+
+    if (A < B) {
       return -1;
     }
-    if (nameA > nameB) {
+    if (A > B) {
       return 1;
     }
 

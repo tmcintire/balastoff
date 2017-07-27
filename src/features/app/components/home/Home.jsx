@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { RegistrationBox } from './RegistrationBox';
+import * as helpers from '../../../data/helpers';
 
 export class Home extends React.Component {
   constructor(props) {
@@ -8,6 +9,7 @@ export class Home extends React.Component {
 
     this.state = {
       filteredRegistrations: props.registrations,
+      filter: '',
     };
   }
 
@@ -19,17 +21,32 @@ export class Home extends React.Component {
     }
   }
 
+  filterRegistrations = (e, filter) => {
+    if (filter !== this.state.filter) {
+      const sortedRegistrations = helpers.sortRegistrations(this.state.filteredRegistrations, filter);
+
+      this.setState({
+        filteredRegistrations: sortedRegistrations,
+        filter,
+      });
+    }
+  }
+
   handleValueChange = (e) => {
     e.preventDefault();
     const target = e.target.value;
     const { registrations } = this.props;
 
-    const filteredRegistrations = registrations.filter(reg => (
-      _.includes(reg['First Name'].toLowerCase(), target.toLowerCase()) ||
-      _.includes(reg['Last Name'].toLowerCase(), target.toLowerCase()) ||
-      _.includes(reg.Level.toLowerCase(), target.toLowerCase()) ||
-      _.isEqual(reg.BookingID, target)
-    ));
+    const filteredRegistrations = registrations.filter(reg => {
+      if (reg) {
+        return (
+          _.includes(reg['First Name'].toLowerCase(), target.toLowerCase()) ||
+          _.includes(reg['Last Name'].toLowerCase(), target.toLowerCase()) ||
+          _.includes(reg.Level.toLowerCase(), target.toLowerCase()) ||
+          _.isEqual(reg.BookingID, target)
+        );
+      }
+    });
 
     this.setState({
       filteredRegistrations,
@@ -85,11 +102,13 @@ export class Home extends React.Component {
     const { loading } = this.props;
     const renderRegistrations = () => {
       if (loading === false && this.state.filteredRegistrations !== undefined) {
-        return this.state.filteredRegistrations.map((registration, index) =>
-          (
-            <RegistrationBox key={index} registration={registration} />
-          )
-        );
+        return this.state.filteredRegistrations.map((registration, index) => {
+          if (registration) {
+            return (
+              <RegistrationBox key={index} registration={registration} />
+            );
+          }
+        });
       }
       return true;
     };
@@ -113,11 +132,11 @@ export class Home extends React.Component {
         <input className="search" id="search" type="text" onChange={this.handleValueChange} />
         <div className="registrations-wrapper flex-col">
           <div className="registrations-header">
-            <span className="col-xs-1">ID</span>
-            <span className="col-xs-2">Last Name</span>
-            <span className="col-xs-2">First Name</span>
-            <span className="col-xs-2">Track</span>
-            <span className="col-xs-1">Level Check</span>
+            <span className="col-xs-1" onClick={e => this.filterRegistrations(e, 'BookingID')}>ID</span>
+            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'Last Name')}>Last Name</span>
+            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'First Name')}>First Name</span>
+            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'Level')}>Track</span>
+            <span className="col-xs-1" onClick={e => this.filterRegistrations(e, 'HasLevelCheck')}>Level Check</span>
             <span className="col-xs-1">Amount Owed</span>
             <span className="col-xs-1">Gear</span>
             <span className="col-xs-1">Fully Paid</span>
