@@ -30,12 +30,14 @@ export class RegistrationBox extends React.Component {
       (registration.TShirts || registration.AdditionalTShirts || registration['Limited Edition Patch']) ? 'Yes' : 'No';
     return (
       <div>
-        <span className="col-xs-1"><Link to={`editregistration/${registration.BookingID}`}>
-          <i className="fa fa-pencil-square-o" aria-hidden="true" />
-        </Link></span>
+        <span className="col-xs-1">
+          <Link to={`editregistration/${registration.BookingID}`}>
+            {registration.BookingID}
+          </Link>
+        </span>
         <span className="col-xs-2">{registration['Last Name']}</span>
         <span className="col-xs-2">{registration['First Name']}</span>
-        <span className="col-xs-1">{registration.Level}</span>
+        <span className="col-xs-2">{registration.Level}</span>
         <span className="col-xs-1">{registration.HasLevelCheck}</span>
         <span className="col-xs-1" style={style}>${registration['Amount Owed']}</span>
         <span className="col-xs-1">{hasMerchandise}</span>
@@ -48,7 +50,7 @@ export class RegistrationBox extends React.Component {
             onChange={() => this.changePaidCheckBox(registration.BookingID)}
           />
         </span>
-        <span className="col-xs-2 checkin-background text-center">
+        <span className="col-xs-1 checkin-background text-center">
           <input
             className="no-outline"
             ref={(ref) => { this.checkedInCheckbox = ref; }}

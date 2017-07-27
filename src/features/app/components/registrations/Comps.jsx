@@ -19,15 +19,23 @@ export class Comps extends React.Component {
     this.props.saved();
   }
 
+  timer = () => null;
+
+  startTimer(object) {
+    this.timer = setTimeout(() => {
+      this.props.saved();
+      api.updateRegistration(this.props.id, object);
+    }, 1000);
+  }
+
   handlePartnerChange = (e, partnerType) => {
     const object = {
       [partnerType]: e.target.value,
     };
-    api.updateRegistration(this.props.id, object);
 
-    setTimeout(() => {
-      this.props.saved();
-    }, 2000);
+    clearTimeout(this.timer);
+    this.startTimer(object);
+
   }
 
   render() {
@@ -38,7 +46,7 @@ export class Comps extends React.Component {
         return (
           <div className="partner-input flex-row flex-justify-space-between">
             <label>Partner: </label>
-            <input className="form-control ad-nov-role" type="text" defaultValue={registration['Amateur Partner']} onChange={e => this.handlePartnerChange(e, 'Amatuer Couples')} />
+            <input className="form-control ad-nov-role" type="text" defaultValue={registration['Amateur Partner']} onChange={e => this.handlePartnerChange(e, 'Amateur Partner')} />
           </div>
         );
       }
@@ -48,7 +56,7 @@ export class Comps extends React.Component {
         return (
           <div className="partner-input flex-row flex-justify-space-between">
             <label>Partner: </label>
-            <input className="form-control ad-nov-role" type="text" defaultValue={registration.Partner} onChange={e => this.handlePartnerChange(e, 'Open')} />
+            <input className="form-control ad-nov-role" type="text" defaultValue={registration.Partner} onChange={e => this.handlePartnerChange(e, 'Partner')} />
           </div>
         );
       }
@@ -57,7 +65,7 @@ export class Comps extends React.Component {
     const adNovRoleSelect = () => {
       if (registration.AdNov === 'Yes') {
         return (
-          <div hidden={registration.AdNov !== 'Yes'} className="partner-input flex-row flex-justify-space-between">
+          <div className="partner-input flex-row flex-justify-space-between">
             <label>Role: </label>
             <select className="form-control ad-nov-role" id="type" defaultValue={registration.AdNovLeadFollow} onChange={e => this.handleValueChange(e, 'AdNov', 'AdNovLeadFollow')}>
               <option value="" />

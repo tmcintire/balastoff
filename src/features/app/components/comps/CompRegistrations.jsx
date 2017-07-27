@@ -23,10 +23,10 @@ export class CompRegistrations extends React.Component {
         const partner = r.Partner;
 
         const exists = _.some(open, o => {
-          if (name === o.name || partner === o.partner) {
+          if (name === o.name && partner === o.partner) {
             return true;
           }
-          if (name === o.partner || partner === o.name) {
+          if (name === o.partner && partner === o.name) {
             return true;
           }
         });
@@ -35,6 +35,7 @@ export class CompRegistrations extends React.Component {
           open.push({ name, partner });
         }
       });
+
       const amateurRegistrations = nextProps.registrations.filter(reg => reg['Amateur Couples'] === 'Yes');
       const amateur = [];
       _.forEach(amateurRegistrations, (a) => {
@@ -42,10 +43,10 @@ export class CompRegistrations extends React.Component {
         const partner = a['Amateur Partner'];
 
         const exists = _.some(amateur, am => {
-          if (name === am.name || partner === am.partner) {
+          if (name === am.name && partner === am.partner) {
             return true;
           }
-          if (name === am.partner || partner === am.name) {
+          if (name === am.partner && partner === am.name) {
             return true;
           }
         });

@@ -18,7 +18,15 @@
 .registrations-wrapper {
 
   .registrations-header {
-
+    display: flex;
+    align-items: flex-end;
+    
+    span:last-child {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
   }
 
   .registrations-body {

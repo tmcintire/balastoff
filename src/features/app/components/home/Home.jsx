@@ -27,7 +27,8 @@ export class Home extends React.Component {
     const filteredRegistrations = registrations.filter(reg => (
       _.includes(reg['First Name'].toLowerCase(), target.toLowerCase()) ||
       _.includes(reg['Last Name'].toLowerCase(), target.toLowerCase()) ||
-      _.includes(reg.Level.toLowerCase(), target.toLowerCase())
+      _.includes(reg.Level.toLowerCase(), target.toLowerCase()) ||
+      _.isEqual(reg.BookingID, target)
     ));
 
     this.setState({
@@ -112,15 +113,15 @@ export class Home extends React.Component {
         <input className="search" id="search" type="text" onChange={this.handleValueChange} />
         <div className="registrations-wrapper flex-col">
           <div className="registrations-header">
-            <span className="col-xs-1">View</span>
+            <span className="col-xs-1">ID</span>
             <span className="col-xs-2">Last Name</span>
             <span className="col-xs-2">First Name</span>
-            <span className="col-xs-1">Track</span>
+            <span className="col-xs-2">Track</span>
             <span className="col-xs-1">Level Check</span>
             <span className="col-xs-1">Amount Owed</span>
             <span className="col-xs-1">Gear</span>
             <span className="col-xs-1">Fully Paid</span>
-            <span className="col-xs-2">Checked In</span>
+            <span className="col-xs-1">Checked In</span>
           </div>
           <div className="registrations-body flex-col">
             {renderRegistrations()}

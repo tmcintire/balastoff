@@ -60,8 +60,8 @@ axios({
       let first;
       let last;
       if (r.Open === 'Yes' && r.Partner !== '') {
-        first = r.Partner.split(' ')[0].toLowerCase();
-        last = r.Partner.split(' ')[1].toLowerCase();
+        first = r.Partner.split(' ')[0].toLowerCase() || 'TBD';
+        last = r.Partner.split(' ')[1].toLowerCase() || 'TBD';
         registrationToUpdate = _.find(object, reg =>
           reg['First Name'].toLowerCase() === first && reg['Last Name'].toLowerCase() === last);
 
@@ -71,10 +71,17 @@ axios({
         }
       }
       if (r['Amateur Couples'] === 'Yes' && r['Amateur Partner'] !== '') {
-        first = r['Amateur Partner'].split(' ')[0].toLowerCase();
-        last = r['Amateur Partner'].split(' ')[1].toLowerCase();
-        registrationToUpdate = _.find(object, reg =>
-          reg['First Name'].toLowerCase() === first && reg['Last Name'].toLowerCase() === last);
+        first = r['Amateur Partner'].split(' ')[0];
+        last = r['Amateur Partner'].split(' ')[1];
+        registrationToUpdate = _.find(object, (reg) => {
+          if (!first) {
+            first = 'TBD';
+          }
+          if (!last) {
+            last = 'TBD';
+          }
+          return reg['First Name'].toLowerCase() === first.toLowerCase() && reg['Last Name'].toLowerCase() === last.toLowerCase();
+        });
 
         if (!_.isEmpty(registrationToUpdate)) {
           registrationToUpdate['Amateur Couples'] = 'Yes';
