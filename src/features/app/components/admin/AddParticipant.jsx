@@ -34,6 +34,7 @@ export class AddParticipant extends React.Component {
       HasLevelCheck: levelCheck,
       'Amount Owed': '0.00',
       CheckedIn: false,
+      Paid: this.Paid.value,
     };
 
     api.addRegistration(id, object);
@@ -50,7 +51,7 @@ export class AddParticipant extends React.Component {
               <div className="form-group">
                 <form>
                   <label htmlFor="type">BookingID</label>
-                  <input className="form-control" type="text" defaultValue={id} ref={(ref) => { this.BookingID = ref; }} />
+                  <input disabled className="form-control" type="text" defaultValue={id} ref={(ref) => { this.BookingID = ref; }} />
                   <label htmlFor="type">First</label>
                   <input className="form-control" type="text" ref={(ref) => { this['First Name'] = ref; }} />
                   <label htmlFor="type">Last</label>
@@ -65,8 +66,11 @@ export class AddParticipant extends React.Component {
                     <option value="Space-X">Space-X</option>
                   </select>
 
-                  <label htmlFor="type">Paid</label>
+                  <label htmlFor="type">Fully Paid</label>
                   <input className="form-control" type="checkbox" ref={(ref) => { this.HasPaid = ref; }} />
+
+                  <label htmlFor="type">Amount Paid</label>
+                  <input className="form-control" type="text" ref={(ref) => { this.Paid = ref; }} />
 
                   <button onClick={e => this.handleCancel(e)} className="btn btn-danger custom-buttons">Cancel</button>
                   <button onClick={e => this.addParticipant(e, id)} className="btn btn-success custom-buttons">Add</button>
