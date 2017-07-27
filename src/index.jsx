@@ -17,7 +17,8 @@ const {
   EditParticipantContainer,
   EditRegistrationContainer,
   CompRegistrationsContainer,
-  AddParticipantContainer } = app.components;
+  AddParticipantContainer,
+  LevelCheckContainer } = app.components;
 
 /* Define routes for administrators */
 const adminUserRoutes = () => (
@@ -26,6 +27,7 @@ const adminUserRoutes = () => (
     <Route path="/admin" component={AdminContainer} />
     <Route path="/admin/editparticipant/:id" component={EditParticipantContainer} />
     <Route path="/admin/addparticipant" component={AddParticipantContainer} />
+    <Route path="/admin/levelcheck" component={LevelCheckContainer} />
     <Route path="/editregistration/:id" component={EditRegistrationContainer} />
     <Route path="/comps" component={CompRegistrationsContainer} />
   </Route>
