@@ -5,14 +5,6 @@ import * as api from '../../../data/api';
 const Loading = require('react-loading-animation');
 
 export class EditParticipant extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      track: '',
-    };
-  }
-
   handleValueChange = (e) => {
     e.preventDefault();
     this.setState({
@@ -20,14 +12,16 @@ export class EditParticipant extends React.Component {
     });
   }
 
-  handleUpdate = (e, id, level) => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
-    api.updateTrack(id, level);
-  }
+    const object = {
+      Level: this.Level.value,
+      HasLevelCheck: this.HasLevelCheck.value,
+    }
 
-  componentWillReceiveProps(nextProps) {
-
+    api.updateRegistration(this.props.params.id, object);
+    window.location = ('#/admin');
   }
 
   render() {
@@ -53,7 +47,7 @@ export class EditParticipant extends React.Component {
               <div className="form-group">
                 <form>
                   <label htmlFor="type">Track</label>
-                  <select className="form-control" id="type" defaultValue={participant.Level} onChange={this.handleValueChange}>
+                  <select className="form-control" id="type" defaultValue={participant.Level} ref={(ref) => { this.Level = ref; }}>
                     <option value="Beginner">Beginner</option>
                     <option value="Mercury">Mercury</option>
                     <option value="Gemini">Gemini</option>
@@ -61,9 +55,14 @@ export class EditParticipant extends React.Component {
                     <option value="Skylab">Skylab</option>
                     <option value="Space-X">Space-X</option>
                   </select>
+                  <label htmlFor="type">Has Level Check</label>
+                  <select className="form-control" defaultValue={participant.HasLevelCheck} ref={(ref) => { this.HasLevelCheck = ref; }} >
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
 
-                  <button onClick={e => this.handleCancel(e)} className="btn btn-danger custom-buttons">Cancel</button>
-                  <button onClick={e => this.handleUpdate(e, this.props.params.id, participant.level)} className="btn btn-success custom-buttons">Update</button>
+                  <button className="btn btn-danger custom-buttons"><Link to="/admin">Cancel</Link></button>
+                  <button onClick={e => this.handleSubmit(e)} className="btn btn-success custom-buttons">Update</button>
                   <br />
                 </form>
               </div>

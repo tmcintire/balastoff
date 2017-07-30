@@ -11,6 +11,10 @@ export class Participant extends React.Component {
         <td>{registration.BookingID}</td>
         <td>{registration['First Name']}</td>
         <td>{registration['Last Name']}</td>
+        <td>{registration.Level}</td>
+        <td>{registration.HasPaid}</td>
+        <td>{registration.HasLevelCheck}</td>
+        <td>{registration.LevelChecked}</td>
       </tr>
     );
   }

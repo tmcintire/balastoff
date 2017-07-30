@@ -10,7 +10,8 @@ export class LevelCheckBox extends React.Component {
     const object = {
       LevelCheckTrack: e.target.value,
       Level: e.target.value,
-    }
+      LevelChecked: true,
+    };
     api.updateRegistration(this.props.registration.BookingID, object);
   }
   render() {
