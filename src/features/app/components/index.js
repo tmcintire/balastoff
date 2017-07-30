@@ -11,3 +11,4 @@ export { CompRegistrationsContainer } from './comps/CompRegistrationsContainer';
 export { AddParticipantContainer } from './admin/AddParticipantContainer';
 export { LevelCheckContainer } from './admin/LevelCheckContainer';
 export { LevelCheckUpdatesContainer } from './admin/LevelCheckUpdatesContainer';
+export { LevelCheckDashboardContainer } from './admin/LevelCheckDashboardContainer';

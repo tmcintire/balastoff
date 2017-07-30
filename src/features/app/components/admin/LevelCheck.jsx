@@ -84,14 +84,7 @@ export class LevelCheck extends React.Component {
       filter,
     });
   }
-
-  removeFilter = () => {
-    this.setState({
-      filteredLeads: this.props.registrations.filter(r => r.LeadFollow === 'Lead'),
-      filteredFollows: this.props.registrations.filter(r => r.LeadFollow === 'Follow'),
-    });
-  }
-
+  
   handleValueChange = (e) => {
     e.preventDefault();
     const target = e.target.value;
@@ -159,7 +152,6 @@ export class LevelCheck extends React.Component {
           <Link to="/admin/levelcheckupdates">View Completed Level Checks</Link>
         </div>
         <div className="level-check-filters">
-          <span onClick={() => this.removeFilter()}>All</span>
           <span onClick={() => this.changeFilter('Gemini')}>Gemini</span>
           <span onClick={() => this.changeFilter('Apollo')}>Apollo/Skylab</span>
         </div>
