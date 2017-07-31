@@ -37,6 +37,7 @@ if (development === true) {
         object[data[1]].Patch = false;
         object[data[1]].LevelChecked = false;
         object[data[1]].BadgeUpdated = false;
+        object[data[1]].MissedLevelCheck = false;
 
         // Handle Paid entries
         if (data[5] === '0.00') {

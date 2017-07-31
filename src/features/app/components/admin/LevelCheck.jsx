@@ -12,7 +12,7 @@ export class LevelCheck extends React.Component {
     this.state = {
       filteredLeads: {},
       filteredFollows: {},
-      filter: '',
+      filter: 'Gemini',
       loading: true,
     };
   }
@@ -22,11 +22,15 @@ export class LevelCheck extends React.Component {
       const filteredLeads = this.props.registrations.filter(r =>
         r.HasLevelCheck === 'Yes' &&
         r.LeadFollow === 'Lead' &&
-        r.LevelChecked === false);
+        r.LevelChecked === false  &&
+        r.MissedLevelCheck === false &&
+        r.Level === this.state.filter);
       const filteredFollows = this.props.registrations.filter(r =>
         r.HasLevelCheck === 'Yes' &&
         r.LeadFollow === 'Follow' &&
-        r.LevelChecked === false);
+        r.LevelChecked === false  &&
+        r.MissedLevelCheck === false &&
+        r.Level === this.state.filter);
       this.setState({
         filteredLeads,
         filteredFollows,
@@ -40,11 +44,15 @@ export class LevelCheck extends React.Component {
       const filteredLeads = nextProps.registrations.filter(r =>
         r.HasLevelCheck === 'Yes' &&
         r.LeadFollow === 'Lead' &&
-        r.LevelChecked === false);
+        r.LevelChecked === false &&
+        r.MissedLevelCheck === false &&
+        r.Level === this.state.filter);
       const filteredFollows = nextProps.registrations.filter(r =>
         r.HasLevelCheck === 'Yes' &&
         r.LeadFollow === 'Follow' &&
-        r.LevelChecked === false);
+        r.LevelChecked === false &&
+        r.MissedLevelCheck === false &&
+        r.Level === this.state.filter);
       this.setState({
         filteredLeads,
         filteredFollows,
@@ -65,7 +73,8 @@ export class LevelCheck extends React.Component {
         (r.Level === tracks[0] || r.Level === tracks[1]) &&
         r.LeadFollow === 'Lead' &&
         r.HasLevelCheck === 'Yes' &&
-        r.LevelChecked === false
+        r.LevelChecked === false &&
+        r.MissedLevelCheck === false
       );
     });
 
@@ -74,7 +83,8 @@ export class LevelCheck extends React.Component {
         (r.Level === tracks[0] || r.Level === tracks[1]) &&
         r.LeadFollow === 'Follow' &&
         r.HasLevelCheck === 'Yes' &&
-        r.LevelChecked === false
+        r.LevelChecked === false &&
+        r.MissedLevelCheck === false
       );
     });
 
@@ -84,7 +94,7 @@ export class LevelCheck extends React.Component {
       filter,
     });
   }
-  
+
   handleValueChange = (e) => {
     e.preventDefault();
     const target = e.target.value;

@@ -22,9 +22,15 @@ export class LevelCheckUpdates extends React.Component {
   componentWillMount() {
     if (this.props.registrations) {
       const updatedRegistrations = this.props.registrations.filter(r =>
-        r.LevelChecked === true && r.BadgeUpdated === true && r.Level === this.state.filter);
+        r.LevelChecked === true &&
+        r.BadgeUpdated === true &&
+        r.Level === this.state.filter &&
+        r.MissedLevelCheck === false);
       const pendingRegistrations = this.props.registrations.filter(r =>
-        r.LevelChecked === true && r.BadgeUpdated === false && r.Level === this.state.filter);
+        r.LevelChecked === true &&
+        r.BadgeUpdated === false &&
+        r.Level === this.state.filter &&
+        r.MissedLevelCheck === false);
 
       this.setState({
         updatedRegistrations,
@@ -39,10 +45,12 @@ export class LevelCheckUpdates extends React.Component {
       const updatedRegistrations = nextProps.registrations.filter(r =>
         r.LevelChecked === true &&
         r.BadgeUpdated === true &&
+        r.MissedLevelCheck === false &&
         (r.Level === this.state.filter[0] || r.Level === this.state.filter[1]));
       const pendingRegistrations = nextProps.registrations.filter(r =>
         r.LevelChecked === true &&
         r.BadgeUpdated === false &&
+        r.MissedLevelCheck === false &&
         (r.Level === this.state.filter[0] || r.Level === this.state.filter[1]));
 
       this.setState({
@@ -64,7 +72,8 @@ export class LevelCheckUpdates extends React.Component {
       (r.Level === newFilter[0] || r.Level === newFilter[1]) &&
       r.HasLevelCheck === 'Yes' &&
       r.LevelChecked === true &&
-      r.BadgeUpdated === true
+      r.BadgeUpdated === true &&
+      r.MissedLevelCheck === false
     );
 
     const pendingRegistrations = this.props.registrations.filter(r => {
@@ -72,7 +81,8 @@ export class LevelCheckUpdates extends React.Component {
         (r.Level === newFilter[0] || r.Level === newFilter[1]) &&
         r.HasLevelCheck === 'Yes' &&
         r.LevelChecked === true &&
-        r.BadgeUpdated === false
+        r.BadgeUpdated === false &&
+        r.MissedLevelCheck === false
       );
     });
 

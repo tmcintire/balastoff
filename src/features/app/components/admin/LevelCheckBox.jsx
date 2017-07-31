@@ -21,9 +21,18 @@ export class LevelCheckBox extends React.Component {
     if (confirm === true) {
       api.updateRegistration(this.props.registration.BookingID, {
         LevelChecked: true,
+        MissedLevelCheck: false,
       });
-    } else if (confirm === false) {
-      this.AcceptLevel.checked = false;
+    }
+  }
+
+  missedLevelCheck = () => {
+    const confirm = window.confirm(`Mark number ${this.props.registration.BookingID} as "Missed Level Check"?`);
+
+    if (confirm === true) {
+      api.updateRegistration(this.props.registration.BookingID, {
+        MissedLevelCheck: true,
+      });
     }
   }
 
@@ -44,6 +53,7 @@ export class LevelCheckBox extends React.Component {
         </select>
 
         <i className="fa fa-check accept-level" aria-hidden="true" onClick={() => this.acceptLevel()} />
+        <i className="fa fa-times no-level-check" aria-hidden="true" onClick={() => this.missedLevelCheck()} />
       </div>
     );
   }
