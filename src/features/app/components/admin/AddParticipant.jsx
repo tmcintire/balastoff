@@ -16,10 +16,17 @@ export class AddParticipant extends React.Component {
     e.preventDefault();
     const level = this.Level.value;
     let levelCheck = '';
+    let amount = '0';
     if (level === 'Gemini' || level === 'Apollo' || level === 'Skylab') {
       levelCheck = 'Yes';
+      amount = '189.00';
+    } else if (level === 'Dance Pass') {
+      amount = '100.00';
+    } else if (level === 'Staff') {
+      amount = '0';
     } else {
       levelCheck = 'No';
+      amount = '0';
     }
 
     const object = {
@@ -32,9 +39,9 @@ export class AddParticipant extends React.Component {
       'Amateur Couples': 'No',
       AdNov: 'No',
       HasLevelCheck: levelCheck,
-      'Amount Owed': '0.00',
+      'Amount Owed': this.HasPaid.checked ? '0.00' : amount,
+      'Original Amount Owed': amount,
       CheckedIn: false,
-      Paid: this.Paid.value,
     };
 
     api.addRegistration(id, object).then(() => {
@@ -76,7 +83,8 @@ export class AddParticipant extends React.Component {
                   <input className="form-control" type="text" ref={(ref) => { this['Last Name'] = ref; }} />
                   <label htmlFor="type">Level</label>
                   <select className="form-control" ref={(ref) => { this.Level = ref; }} >
-                    <option value="Staff">Staff</option>
+                    <option value="Dance Pass">Dance Pass - $100</option>
+                    <option value="Staff">Staff - $0</option>
                     <option value="Beginner">Beginner</option>
                     <option value="Mercury">Mercury</option>
                     <option value="Gemini">Gemini</option>
@@ -87,9 +95,6 @@ export class AddParticipant extends React.Component {
 
                   <label htmlFor="type">Fully Paid</label>
                   <input className="form-control" type="checkbox" ref={(ref) => { this.HasPaid = ref; }} />
-
-                  <label htmlFor="type">Amount Paid</label>
-                  <input className="form-control" type="text" ref={(ref) => { this.Paid = ref; }} />
 
                   <button onClick={e => this.handleCancel(e)} className="btn btn-danger custom-buttons">Cancel</button>
                   <button onClick={e => this.addParticipant(e, id)} className="btn btn-success custom-buttons">Add</button>

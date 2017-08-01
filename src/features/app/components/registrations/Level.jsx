@@ -19,6 +19,7 @@ export class Level extends React.Component {
         <div className="info-container">
           <span className="full-width">Level: </span>
           <select className="form-control" id="type" value={level} onChange={e => this.handleValueChange(e, 'Level')}>
+            <option value="Dance Pass">Dance Pass</option>
             <option value="Staff">Staff</option>
             <option value="Beginner">Beginner</option>
             <option value="Mercury">Mercury</option>

@@ -11,14 +11,16 @@ export class Home extends React.Component {
     this.state = {
       filteredRegistrations: props.registrations,
       filter: '',
+      filterText: '',
       totalCollected: 0,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.registrations) {
+    const registrations = this.state.filterText !== '' ? this.state.filteredRegistrations : nextProps.registrations;
+    if (registrations) {
       this.setState({
-        filteredRegistrations: nextProps.registrations,
+        filteredRegistrations: registrations,
       });
     }
     if (nextProps.totalCollected !== undefined) {
@@ -56,6 +58,7 @@ export class Home extends React.Component {
 
     this.setState({
       filteredRegistrations,
+      filterText: target,
     });
   }
 
