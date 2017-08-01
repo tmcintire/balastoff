@@ -24,12 +24,12 @@ export class LevelCheckUpdates extends React.Component {
       const updatedRegistrations = this.props.registrations.filter(r =>
         r.LevelChecked === true &&
         r.BadgeUpdated === true &&
-        r.Level === this.state.filter &&
+        r.OriginalLevel === this.state.filter &&
         r.MissedLevelCheck === false);
       const pendingRegistrations = this.props.registrations.filter(r =>
         r.LevelChecked === true &&
         r.BadgeUpdated === false &&
-        r.Level === this.state.filter &&
+        r.OriginalLevel === this.state.filter &&
         r.MissedLevelCheck === false);
 
       this.setState({
@@ -46,12 +46,12 @@ export class LevelCheckUpdates extends React.Component {
         r.LevelChecked === true &&
         r.BadgeUpdated === true &&
         r.MissedLevelCheck === false &&
-        (r.Level === this.state.filter[0] || r.Level === this.state.filter[1]));
+        (r.OriginalLevel === this.state.filter[0] || r.OriginalLevel === this.state.filter[1]));
       const pendingRegistrations = nextProps.registrations.filter(r =>
         r.LevelChecked === true &&
         r.BadgeUpdated === false &&
         r.MissedLevelCheck === false &&
-        (r.Level === this.state.filter[0] || r.Level === this.state.filter[1]));
+        (r.OriginalLevel === this.state.filter[0] || r.OriginalLevel === this.state.filter[1]));
 
       this.setState({
         updatedRegistrations,
@@ -69,7 +69,7 @@ export class LevelCheckUpdates extends React.Component {
       newFilter = ['Apollo', 'Skylab'];
     }
     const updatedRegistrations = this.props.registrations.filter(r =>
-      (r.Level === newFilter[0] || r.Level === newFilter[1]) &&
+      (r.OriginalLevel === newFilter[0] || r.OriginalLevel === newFilter[1]) &&
       r.HasLevelCheck === 'Yes' &&
       r.LevelChecked === true &&
       r.BadgeUpdated === true &&
@@ -78,7 +78,7 @@ export class LevelCheckUpdates extends React.Component {
 
     const pendingRegistrations = this.props.registrations.filter(r => {
       return (
-        (r.Level === newFilter[0] || r.Level === newFilter[1]) &&
+        (r.OriginalLevel === newFilter[0] || r.OriginalLevel === newFilter[1]) &&
         r.HasLevelCheck === 'Yes' &&
         r.LevelChecked === true &&
         r.BadgeUpdated === false &&

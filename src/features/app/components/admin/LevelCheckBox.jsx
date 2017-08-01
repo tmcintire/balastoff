@@ -1,27 +1,37 @@
 import React from 'react';
-import { Link } from 'react-router';
 import * as api from '../../../data/api';
 
-const Loading = require('react-loading-animation');
-
 export class LevelCheckBox extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      level: props.registration.OriginalLevel,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.registration) {
+      this.setState({
+        level: nextProps.registration.OriginalLevel,
+      });
+    }
+  }
 
   handleChange(e) {
-    const object = {
-      LevelCheckTrack: e.target.value,
-      Level: e.target.value,
-      LevelChecked: true,
-    };
-    api.updateRegistration(this.props.registration.BookingID, object);
+    this.setState({
+      level: e.target.value,
+    });
   }
 
   acceptLevel = () => {
-    const confirm = window.confirm(`Accept ${this.props.registration.Level} for number ${this.props.registration.BookingID}`);
+    const confirm = window.confirm(`Accept ${this.state.level} for number ${this.props.registration.BookingID}`);
 
     if (confirm === true) {
       api.updateRegistration(this.props.registration.BookingID, {
         LevelChecked: true,
         MissedLevelCheck: false,
+        Level: this.state.level,
       });
     }
   }
@@ -42,7 +52,7 @@ export class LevelCheckBox extends React.Component {
         <span>{this.props.registration.BookingID}</span>
         <select
           className="level-check-dropdown form-control"
-          value={this.props.registration.Level}
+          value={this.state.level}
           onChange={e => this.handleChange(e)}
         >
           <option value="Beginner">Beginner</option>

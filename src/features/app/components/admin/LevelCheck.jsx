@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import _ from 'lodash';
 import * as api from '../../../data/api';
 import { LevelCheckBox } from './LevelCheckBox';
 
@@ -12,7 +13,10 @@ export class LevelCheck extends React.Component {
     this.state = {
       filteredLeads: {},
       filteredFollows: {},
-      filter: 'Gemini',
+      geminiFilter: ['Gemini'],
+      apolloSkylabFilter: ['Apollo', 'Skylab'],
+      mercuryFilter: ['Mercury'],
+      currentFilter: ['Gemini'],
       loading: true,
     };
   }
@@ -22,15 +26,15 @@ export class LevelCheck extends React.Component {
       const filteredLeads = this.props.registrations.filter(r =>
         r.HasLevelCheck === 'Yes' &&
         r.LeadFollow === 'Lead' &&
-        r.LevelChecked === false  &&
+        r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
-        r.Level === this.state.filter);
+        _.includes(this.state.currentFilter, r.OriginalLevel));
       const filteredFollows = this.props.registrations.filter(r =>
         r.HasLevelCheck === 'Yes' &&
         r.LeadFollow === 'Follow' &&
-        r.LevelChecked === false  &&
+        r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
-        r.Level === this.state.filter);
+        _.includes(this.state.currentFilter, r.OriginalLevel));
       this.setState({
         filteredLeads,
         filteredFollows,
@@ -46,13 +50,13 @@ export class LevelCheck extends React.Component {
         r.LeadFollow === 'Lead' &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
-        r.Level === this.state.filter);
+        _.includes(this.state.currentFilter, r.OriginalLevel));
       const filteredFollows = nextProps.registrations.filter(r =>
         r.HasLevelCheck === 'Yes' &&
         r.LeadFollow === 'Follow' &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
-        r.Level === this.state.filter);
+        _.includes(this.state.currentFilter, r.OriginalLevel));
       this.setState({
         filteredLeads,
         filteredFollows,
@@ -62,15 +66,9 @@ export class LevelCheck extends React.Component {
   }
 
   changeFilter = (filter) => {
-    let tracks = [];
-    if (filter === 'Gemini') {
-      tracks = ['Gemini'];
-    } else {
-      tracks = ['Apollo', 'Skylab'];
-    }
     const filteredLeads = this.props.registrations.filter(r => {
       return (
-        (r.Level === tracks[0] || r.Level === tracks[1]) &&
+        _.includes(filter, r.OriginalLevel) &&
         r.LeadFollow === 'Lead' &&
         r.HasLevelCheck === 'Yes' &&
         r.LevelChecked === false &&
@@ -80,7 +78,7 @@ export class LevelCheck extends React.Component {
 
     const filteredFollows = this.props.registrations.filter(r => {
       return (
-        (r.Level === tracks[0] || r.Level === tracks[1]) &&
+        _.includes(filter, r.OriginalLevel) &&
         r.LeadFollow === 'Follow' &&
         r.HasLevelCheck === 'Yes' &&
         r.LevelChecked === false &&
@@ -91,7 +89,7 @@ export class LevelCheck extends React.Component {
     this.setState({
       filteredLeads,
       filteredFollows,
-      filter,
+      currentFilter: filter,
     });
   }
 
@@ -162,8 +160,8 @@ export class LevelCheck extends React.Component {
           <Link to="/admin/levelcheckupdates">View Completed Level Checks</Link>
         </div>
         <div className="level-check-filters">
-          <span onClick={() => this.changeFilter('Gemini')}>Gemini</span>
-          <span onClick={() => this.changeFilter('Apollo')}>Apollo/Skylab</span>
+          <span onClick={() => this.changeFilter(this.state.geminiFilter)}>Gemini</span>
+          <span onClick={() => this.changeFilter(this.state.apolloSkylabFilter)}>Apollo/Skylab</span>
         </div>
         <hr />
         <div className="level-check-container flex-row flex-justify-space-between">
