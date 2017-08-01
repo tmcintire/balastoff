@@ -106,7 +106,7 @@ export class LevelCheckUpdates extends React.Component {
       this.state.updatedRegistrations.map((registration, index) => {
         if (registration) {
           return (
-            <LevelCheckInfo key={index} registration={registration} />
+            <LevelCheckInfo updated key={index} registration={registration} />
           );
         }
       });
@@ -115,7 +115,7 @@ export class LevelCheckUpdates extends React.Component {
       this.state.pendingRegistrations.map((registration, index) => {
         if (registration) {
           return (
-            <LevelCheckInfo key={index} registration={registration} />
+            <LevelCheckInfo updated={false} key={index} registration={registration} />
           );
         }
       });
@@ -124,11 +124,11 @@ export class LevelCheckUpdates extends React.Component {
       if (this.state.loading === false) {
         return (
           <div>
-            <h1 className="text-center">Pending Badge Updates</h1>
+            <h3 className="text-center">Pending Badge Updates</h3>
             <hr />
             {renderPendingRegistrations()}
 
-            <h1 className="text-center">Updated Badges</h1>
+            <h3 className="text-center">Updated Badges</h3>
             <hr />
             {renderUpdatedRegistrations()}
           </div>

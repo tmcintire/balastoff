@@ -63,3 +63,26 @@
     cursor: pointer;
   }
 }
+
+.mission-gear-issues {
+  .issues-table-header {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  .issues-table {
+    height: 500px;
+    overflow-y: scroll;
+
+    div:nth-child(even) {
+      background: lightgray;
+    }
+  }
+}
+
+.resolved-class {
+  text-decoration: line-through;
+}
+
+.updated-badges {
+  text-decoration: line-through;
+}

@@ -8,6 +8,7 @@ function* initialize() {
   // yield call(helpers.getUser);
   yield call(api.fetchRegistrations, 1);
   yield call(api.fetchTracks, 1);
+  yield call(api.getTotalCollected, 1);
 }
 
 export default function* saga() {

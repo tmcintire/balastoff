@@ -64,3 +64,12 @@ export function updatePaidCheckBox(bookingID, checked) {
     });
   };
 }
+
+export function totalCollectedReceived(totalCollected) {
+  return function (dispatch) {
+    dispatch({
+      type: 'TOTAL_COLLECTED_RECEIVED',
+      totalCollected,
+    });
+  };
+}

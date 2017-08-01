@@ -40,7 +40,8 @@ export class LevelCheckBox extends React.Component {
     return (
       <div className="container level-check-form flex-row">
         <span>{this.props.registration.BookingID}</span>
-        <select className="level-check-dropdown form-control"
+        <select
+          className="level-check-dropdown form-control"
           value={this.props.registration.Level}
           onChange={e => this.handleChange(e)}
         >

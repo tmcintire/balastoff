@@ -20,7 +20,7 @@
   .registrations-header {
     display: flex;
     align-items: flex-end;
-    
+
     span:last-child {
       display: flex;
       justify-content: center;
@@ -39,4 +39,8 @@
       background: #E1E1E1
     }
   }
+}
+
+.collected-text {
+  color: green;
 }

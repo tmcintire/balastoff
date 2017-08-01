@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { RegistrationBox } from './RegistrationBox';
 import * as helpers from '../../../data/helpers';
+import * as api from '../../../data/api';
 
 export class Home extends React.Component {
   constructor(props) {
@@ -10,6 +11,7 @@ export class Home extends React.Component {
     this.state = {
       filteredRegistrations: props.registrations,
       filter: '',
+      totalCollected: 0,
     };
   }
 
@@ -19,12 +21,16 @@ export class Home extends React.Component {
         filteredRegistrations: nextProps.registrations,
       });
     }
+    if (nextProps.totalCollected !== undefined) {
+      this.setState({
+        totalCollected: nextProps.totalCollected,
+      });
+    }
   }
 
   filterRegistrations = (e, filter) => {
     if (filter !== this.state.filter) {
       const sortedRegistrations = helpers.sortRegistrations(this.state.filteredRegistrations, filter);
-
       this.setState({
         filteredRegistrations: sortedRegistrations,
         filter,
@@ -98,6 +104,11 @@ export class Home extends React.Component {
     });
   }
 
+  updateTotal = (amount) => {
+    const total = parseInt(amount, 10) + this.state.totalCollected;
+    api.updateTotalCollected(total);
+  }
+
   render() {
     const { loading } = this.props;
     const renderRegistrations = () => {
@@ -105,7 +116,7 @@ export class Home extends React.Component {
         return this.state.filteredRegistrations.map((registration, index) => {
           if (registration) {
             return (
-              <RegistrationBox key={index} registration={registration} />
+              <RegistrationBox key={index} updateTotal={this.updateTotal} registration={registration} />
             );
           }
         });
@@ -128,8 +139,16 @@ export class Home extends React.Component {
             <input className="no-outline" type="checkbox" onChange={e => this.toggleGear(e)} />
           </div>
         </div>
-        <label htmlFor="search">Search Registrations</label>
-        <input className="search" id="search" type="text" onChange={this.handleValueChange} />
+        <div className="flex-row flex-justify-space-between">
+          <div>
+            <label htmlFor="search">Search Registrations</label>
+            <input className="search" id="search" type="text" onChange={this.handleValueChange} />
+          </div>
+          <div className="flex-row">
+            Total Collected:
+            <span className="collected-text">${this.state.totalCollected}</span>
+          </div>
+        </div>
         <div className="registrations-wrapper flex-col">
           <div className="registrations-header">
             <span className="col-xs-1" onClick={e => this.filterRegistrations(e, 'BookingID')}>ID</span>

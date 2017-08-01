@@ -6,18 +6,47 @@ import * as api from '../../../data/api';
 import { Comps } from './Comps';
 import { MissionGear } from './MissionGear';
 import { Level } from './Level';
+import { Comments } from './Comments';
 
 const Loading = require('react-loading-animation');
 
 export class EditRegistration extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      registration: {},
-      loading: true,
-      showSaved: false,
-    };
+  constructor(props) {
+    super(props);
+    let loading = true;
+
+    if (props.registrations) {
+      const registration = props.registrations.filter(reg =>
+        reg.BookingID === props.params.id)[0];
+
+      let partner = '';
+      const comps = [];
+      _.forEach(props.partners, (p) => {
+        if (registration['First Name'] === p.partner.first && registration['Last Name'] === p.partner.last) {
+          partner = `${p.first} ${p.last}`;
+          comps.push(p.comp);
+        }
+      });
+      if (registration) {
+        loading = false;
+      }
+
+      this.state = {
+        registration,
+        comps,
+        loading,
+        showSaved: false,
+      };
+    } else {
+      this.state = {
+        registration: {},
+        loading: true,
+        showSaved: false,
+      };
+    }
+
   }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.registrations) {
       const registration = nextProps.registrations.filter(reg =>
@@ -115,8 +144,13 @@ export class EditRegistration extends React.Component {
           </div>
 
           <hr />
-          <div className="flex-row flex-justify-space-around">
+          <div className="flex-row flex-justify-space-between">
             <MissionGear
+              saved={this.saved}
+              id={this.props.params.id}
+              registration={registration}
+            />
+            <Comments
               saved={this.saved}
               id={this.props.params.id}
               registration={registration}

@@ -3,6 +3,13 @@ import { Link } from 'react-router';
 import * as api from '../../../data/api';
 
 export class RegistrationBox extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      oldAmount: props.registration['Amount Owed'],
+    };
+  }
   changeCheckBox(bookingID) {
     // update checkbox
     const object = {
@@ -12,8 +19,19 @@ export class RegistrationBox extends React.Component {
   }
 
   changePaidCheckBox(bookingID) {
+    let owed;
+    let amountToUpdate;
+    if (this.paidCheckbox.checked) {
+      owed = '0.00';
+      amountToUpdate = parseInt(this.props.registration['Original Amount Owed'], 10);
+    } else if (!this.paidCheckbox.checked) {
+      owed = this.props.registration['Original Amount Owed'];
+      amountToUpdate = -parseInt(this.props.registration['Original Amount Owed'], 10);
+    }
+    this.props.updateTotal(amountToUpdate);
     const object = {
       HasPaid: this.paidCheckbox.checked,
+      'Amount Owed': owed,
     };
     api.updateRegistration(bookingID, object);
   }

@@ -57,6 +57,7 @@ export class Admin extends React.Component {
           <Link to="/admin/levelcheck">Level Check</Link>
           <Link to="/admin/levelcheckupdates">Completed Level Checks</Link>
           <Link to="/admin/missedlevelcheck">Missed Level Checks</Link>
+          <Link to="/admin/missiongearissues">Mission Gear Issues</Link>
         </div>
         <label htmlFor="name">Search</label>
         <input type="text" onChange={this.handleValueChange} />

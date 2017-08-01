@@ -37,7 +37,25 @@ export class AddParticipant extends React.Component {
       Paid: this.Paid.value,
     };
 
-    api.addRegistration(id, object);
+    api.addRegistration(id, object).then(() => {
+      window.location = `#/editregistration/${id}`;
+    });
+    this.clearValues();
+  }
+
+  clearValues = () => {
+    this['First Name'].value = '';
+    this['Last Name'].value = '';
+    this.Level.value = '';
+    this.HasPaid.checked = false;
+    this.Paid.value = '0.00';
+    this.BookingID = this.BookingID + 1;
+  }
+
+  handleCancel = (e) => {
+    e.preventDefault();
+
+    window.location = '#/';
   }
   render() {
     const renderForm = () => {
@@ -46,7 +64,7 @@ export class AddParticipant extends React.Component {
         return (
           <div>
             <div className="form-container">
-              <Link to={'admin'}><button className="btn btn-primary custom-buttons">Back to Participants</button></Link>
+              <Link to={'/'}><button className="btn btn-primary custom-buttons">Back to Participants</button></Link>
               <h1 className="text-center">Add Participant</h1>
               <div className="form-group">
                 <form>
@@ -58,6 +76,7 @@ export class AddParticipant extends React.Component {
                   <input className="form-control" type="text" ref={(ref) => { this['Last Name'] = ref; }} />
                   <label htmlFor="type">Level</label>
                   <select className="form-control" ref={(ref) => { this.Level = ref; }} >
+                    <option value="Staff">Staff</option>
                     <option value="Beginner">Beginner</option>
                     <option value="Mercury">Mercury</option>
                     <option value="Gemini">Gemini</option>

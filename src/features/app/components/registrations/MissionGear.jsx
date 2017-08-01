@@ -3,11 +3,54 @@ import React from 'react';
 import * as api from '../../../data/api';
 
 export class MissionGear extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      showReportMissioneGearIssue: false,
+    };
+  }
   updateMerchCheckbox(e, type) {
     const object = {
       [type]: e.target.checked,
     };
     api.updateRegistration(this.props.id, object);
+  }
+
+  showMissionGearIssues = () => {
+    this.setState({
+      showReportMissioneGearIssue: !this.state.showReportMissioneGearIssue,
+    });
+  }
+
+  reportMissionGearIssue = (e) => {
+    e.preventDefault();
+    let object = {};
+    if (this.props.registration.MissionGearIssues) {
+      object = {
+        MissionGearIssues: [...this.props.registration.MissionGearIssues, {
+          Issue: this.state.issue,
+          Resolved: false,
+        }],
+      };
+    } else {
+      object = {
+        MissionGearIssues: [{
+          Issue: this.state.issue,
+          Resolved: false }],
+      };
+    }
+    api.updateRegistration(this.props.id, object);
+    this.setState({
+      issue: null,
+    });
+    this.issue.value = null;
+    this.props.saved();
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      issue: e.target.value,
+    });
   }
 
   render() {
@@ -67,6 +110,25 @@ export class MissionGear extends React.Component {
       }
     };
 
+    const renderReportMissionGearIssue = () => {
+      if (this.state.showReportMissioneGearIssue) {
+        return (
+          <div className="flex-col">
+            <textarea
+              ref={(ref) => { this.issue = ref; }}
+              onChange={e => this.handleChange(e)}
+            />
+            <button
+              disabled={!this.state.issue}
+              className="btn btn-primary"
+              onClick={e => this.reportMissionGearIssue(e)}
+            >
+            Submit</button>
+          </div>
+        );
+      }
+    };
+
     const renderMissionGear = () => {
       if (!registration.TShirts && !registration.AdditionalTShirts && !registration['Limited Edition Patch']) {
         return (
@@ -94,6 +156,8 @@ export class MissionGear extends React.Component {
       <div>
         <h3><strong>Mission Gear</strong></h3>
         {renderMissionGear()}
+        <span className="link" onClick={() => this.showMissionGearIssues()}>Report Mission Gear Issue</span>
+        {renderReportMissionGearIssue()}
       </div>
     );
   }

@@ -38,6 +38,23 @@ input[type='checkbox']:checked {
   margin-bottom: 10px;
 }
 
+.add-comments-container {
+
+}
+
+.display-comments-container {
+  margin-left: 10px;
+  width: 200px;
+}
+
+.link {
+  color: steelblue;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 .saved-message {
   position: fixed;
   right: 25px;

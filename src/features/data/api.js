@@ -11,7 +11,7 @@ let rawData;
 let lastBookingId = 0;
 
 const regRef = firebaseRef.child('registrations');
-const development = false;
+const development = true;
 
 if (development === true) {
   axios({
@@ -38,6 +38,9 @@ if (development === true) {
         object[data[1]].LevelChecked = false;
         object[data[1]].BadgeUpdated = false;
         object[data[1]].MissedLevelCheck = false;
+        object[data[1]].MissionGearIssues = [];
+        object[data[1]].Comments = [];
+        object[data[1]]['Original Amount Owed'] = data[5];
 
         // Handle Paid entries
         if (data[5] === '0.00') {
@@ -162,17 +165,39 @@ export function fetchTracks() {
   });
 }
 
+export function getTotalCollected() {
+  firebaseRef.child('totalCollected').on('value', (snapshot) => {
+    const totalCollected = snapshot.val();
+    if (totalCollected === null) {
+      firebaseRef.child('totalCollected').set(0).then(() => {
+        store.dispatch(actions.totalCollectedReceived(totalCollected));
+      });
+    } else {
+      store.dispatch(actions.totalCollectedReceived(totalCollected));
+    }
+  });
+}
+
 // Updates to registrations
 
 export function updateRegistration(bookingID, object) {
   return new Promise((resolve) => {
-    regRef.child(bookingID).update(object);
-    resolve();
+    regRef.child(bookingID).update(object).then(() => {
+      resolve();
+    });
   });
 }
 
 export function addRegistration(id, object) {
-  regRef.child(id).set(object);
+  return new Promise((resolve) => {
+    regRef.child(id).set(object).then(() => {
+      resolve();
+    });
+  });
+}
+
+export function updateTotalCollected(amount) {
+  firebaseRef.child('totalCollected').set(amount);
 }
 
 export const getLastBookingId = () => lastBookingId;

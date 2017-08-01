@@ -7,11 +7,16 @@ export class LevelCheckInfo extends React.Component {
       BadgeUpdated: this.badgeUpdatedCheckbox.checked,
     })
   }
+  checkUpdated = () => {
+    if (this.props.updated) {
+      return 'updated-badges';
+    }
+  }
 
   render() {
     const { registration } = this.props;
     return (
-      <div className="container level-check-info flex-row">
+      <div className={`container level-check-info ${this.checkUpdated()} flex-row`}>
         <span>{registration.BookingID}</span>
         <span>{registration['First Name']}</span>
         <span>{registration['Last Name']}</span>

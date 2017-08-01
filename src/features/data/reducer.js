@@ -63,8 +63,21 @@ export const tracks = (state = [], action) => {
   }
 };
 
+export const totalCollected = (state = [], action) => {
+  switch (action.type) {
+    case 'TOTAL_COLLECTED_RECEIVED':
+      return {
+        ...state,
+        totalCollected: action.totalCollected,
+      };
+    default:
+      return state;
+  }
+};
+
 
 export default combineReducers({
   registrations,
   tracks,
+  totalCollected,
 });
