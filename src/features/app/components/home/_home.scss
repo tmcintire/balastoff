@@ -41,7 +41,7 @@
     height: calc(100vh - 300px);
     overflow-y: auto;
 
-    div:nth-child(even) {
+    a:nth-child(even) {
       background: #E1E1E1
     }
   }
@@ -53,9 +53,4 @@
 
 .registration-box-link {
   color: black;
-
-  &:hover {
-    background: lightgray;
-    color: black;
-  }
 }
