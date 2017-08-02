@@ -27,6 +27,12 @@
       align-items: center;
       text-align: center;
     }
+
+    span {
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 
   .registrations-body {
@@ -43,4 +49,13 @@
 
 .collected-text {
   color: green;
+}
+
+.registration-box-link {
+  color: black;
+
+  &:hover {
+    background: lightgray;
+    color: black;
+  }
 }

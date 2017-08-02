@@ -11,31 +11,6 @@ export class RegistrationBox extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.registration) {
-
-    }
-  }
-
-  changeCheckBox = (e, bookingID) => {
-    // update checkbox
-    const object = {
-      CheckedIn: e.target.checked,
-    };
-    api.updateRegistration(bookingID, object);
-  }
-
-  changePaidCheckBox = (e, bookingID) => {
-    const data = {
-      bookingID,
-      checked: e.target.checked,
-      amountOwed: this.props.registration['Amount Owed'],
-      originalAmountOwed: this.props.registration['Original Amount Owed']
-    };
-    const checked = e.target.checked;
-    this.props.changePaidCheckBox(data);
-  }
-
   render() {
     const { registration } = this.props;
     let style = {};
@@ -47,12 +22,10 @@ export class RegistrationBox extends React.Component {
     const hasMerchandise =
       (registration.TShirts || registration.AdditionalTShirts || registration['Limited Edition Patch']) ? 'Yes' : 'No';
     return (
-      <div>
-        <Link to={`editregistration/${registration.BookingID}`}>
-          <span className="col-xs-1">
-            {registration.BookingID}
-          </span>
-        </Link>
+      <Link className="registration-box-link" to={`editregistration/${registration.BookingID}`}>
+        <span className="col-xs-1">
+          {registration.BookingID}
+        </span>
         <span className="col-xs-2">{registration['Last Name']}</span>
         <span className="col-xs-2">{registration['First Name']}</span>
         <span className="col-xs-2">{registration.Level}</span>
@@ -65,7 +38,6 @@ export class RegistrationBox extends React.Component {
             disabled
             checked={registration.HasPaid}
             type="checkbox"
-            onChange={e => this.changePaidCheckBox(e, registration.BookingID)}
           />
         </span>
         <span className="col-xs-1 checkin-background text-center">
@@ -74,10 +46,9 @@ export class RegistrationBox extends React.Component {
             className="no-outline"
             checked={registration.CheckedIn}
             type="checkbox"
-            onChange={e => this.changeCheckBox(e, registration.BookingID)}
           />
         </span>
-      </div>
+      </Link>
     );
   }
 }
