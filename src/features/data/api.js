@@ -13,6 +13,15 @@ let lastBookingId = 0;
 const regRef = firebaseRef.child('registrations');
 const development = false;
 
+const connectedRef = firebase.database().ref('.info/connected');
+connectedRef.on('value', (snap) => {
+  if (snap.val() === true) {
+    alert('You are connected again to the internet');
+  } else {
+    alert('You have lost your connection to the internet, please check your internet connection!');
+  }
+});
+
 if (development === true) {
   axios({
     method: 'get',
