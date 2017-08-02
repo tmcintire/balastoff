@@ -63,6 +63,24 @@ export const tracks = (state = [], action) => {
   }
 };
 
+export const prices = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_PRICES':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_PRICES':
+      return {
+        ...state,
+        tracks: action.prices,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
 export const totalCollected = (state = [], action) => {
   switch (action.type) {
     case 'TOTAL_COLLECTED_RECEIVED':
@@ -80,4 +98,5 @@ export default combineReducers({
   registrations,
   tracks,
   totalCollected,
+  prices,
 });

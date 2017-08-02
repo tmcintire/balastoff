@@ -35,6 +35,16 @@ export function tracksReceived(tracks) {
   };
 }
 
+export function pricesReceived(prices) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_PRICES' });
+    dispatch({
+      type: 'RECEIVED_PRICES',
+      prices,
+    });
+  };
+}
+
 export function updateAmateurComp(bookingID, amateur, amateurPartner) {
   return function (dispatch) { // eslint-disable-line
     dispatch({

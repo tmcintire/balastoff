@@ -59,6 +59,14 @@ export class AddParticipant extends React.Component {
     this.BookingID = this.BookingID + 1;
   }
 
+  createSelectItems() {
+    let items = [];
+    for (let i = 0; i <= this.props.prices; i++) {
+         items.push(<option key={i} value={i}>{i}</option>);
+    }
+    return items;
+}
+
   handleCancel = (e) => {
     e.preventDefault();
 
@@ -83,14 +91,7 @@ export class AddParticipant extends React.Component {
                   <input className="form-control" type="text" ref={(ref) => { this['Last Name'] = ref; }} />
                   <label htmlFor="type">Level</label>
                   <select className="form-control" ref={(ref) => { this.Level = ref; }} >
-                    <option value="Dance Pass">Dance Pass - $100</option>
-                    <option value="Staff">Staff - $0</option>
-                    <option value="Beginner">Beginner</option>
-                    <option value="Mercury">Mercury</option>
-                    <option value="Gemini">Gemini</option>
-                    <option value="Apollo">Apollo</option>
-                    <option value="Skylab">Skylab</option>
-                    <option value="Space-X">Space-X</option>
+                    {this.createSelectItems()}
                   </select>
 
                   <label htmlFor="type">Fully Paid</label>

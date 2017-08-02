@@ -166,6 +166,13 @@ export function fetchTracks() {
   });
 }
 
+export function fetchPrices() {
+  firebaseRef.child('prices').on('value', (snapshot) => {
+    const prices = snapshot.val();
+    store.dispatch(actions.pricesReceived(prices));
+  });
+}
+
 export function getTotalCollected() {
   firebaseRef.child('totalCollected').on('value', (snapshot) => {
     const totalCollected = snapshot.val();
