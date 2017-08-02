@@ -27,18 +27,9 @@ export class AddParticipant extends React.Component {
   addParticipant = (e, id) => {
     e.preventDefault();
     const level = this.Level.value;
-    let levelCheck = '';
-    let amount = '0';
+    let levelCheck = 'No';
     if (level === 'Gemini' || level === 'Apollo' || level === 'Skylab') {
       levelCheck = 'Yes';
-      amount = '189.00';
-    } else if (level === 'Dance Pass') {
-      amount = '100.00';
-    } else if (level === 'Staff') {
-      amount = '0';
-    } else {
-      levelCheck = 'No';
-      amount = '0';
     }
 
     const object = {
@@ -52,19 +43,19 @@ export class AddParticipant extends React.Component {
       AdNov: 'No',
       HasLevelCheck: levelCheck,
       'Amount Owed': this.HasPaid.checked ? '0.00' : this.state.price,
-      'Original Amount Owed': amount,
+      'Original Amount Owed': this.state.price,
       CheckedIn: false,
       WalkIn: true,
     };
 
-    api.addRegistration(id, object).then(() => {
-      if (this.HasPaid.checked) {
-        const newTotal = parseInt(this.state.price, 10) + parseInt(this.props.totalCollected, 10);
-        api.updateTotalCollected(newTotal);
-      }
-      window.location = `#/editregistration/${id}`;
-      this.clearValues();
-    });
+    if (this.HasPaid.checked) {
+      const newTotal = parseInt(this.state.price, 10) + parseInt(this.props.totalCollected, 10);
+      api.updateTotalCollected(newTotal);
+    }
+
+    api.addRegistration(id, object);
+    window.location = `#/editregistration/${id}`;
+    this.clearValues();
   }
 
   clearValues = () => {

@@ -36,9 +36,9 @@ export class Comments extends React.Component {
   render() {
     const renderComments = () => {
       if (this.props.registration.Comments) {
-        return this.props.registration.Comments.map((comment) => {
+        return this.props.registration.Comments.map((comment, index) => {
           return (
-            <li>{comment}</li>
+            <li key={index}>{comment}</li>
           );
         });
       }
