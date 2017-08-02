@@ -126,10 +126,10 @@ export class LevelCheck extends React.Component {
   render() {
     const renderLeads = () => {
       if (Object.keys(this.state.loading === false && this.state.filteredLeads).length > 0) {
-        return this.state.filteredLeads.map((registration, index) => {
+        return this.state.filteredLeads.map((registration) => {
           if (registration) {
             return (
-              <LevelCheckBox key={index} registration={registration} />
+              <LevelCheckBox key={registration.BookingID} registration={registration} />
             );
           }
         });
@@ -140,10 +140,10 @@ export class LevelCheck extends React.Component {
     };
     const renderFollows = () => {
       if (Object.keys(this.state.loading === false && this.state.filteredFollows).length > 0) {
-        return this.state.filteredFollows.map((registration, index) => {
+        return this.state.filteredFollows.map((registration) => {
           if (registration) {
             return (
-              <LevelCheckBox key={index} registration={registration} />
+              <LevelCheckBox key={registration.BookingID} registration={registration} />
             );
           }
         });

@@ -52,20 +52,10 @@ export class LevelCheckBox extends React.Component {
       highlighted: !this.state.highlighted,
     });
   }
-  renderStyle = () => {
-    if (this.state.highlighted) {
-      return {
-        background: 'rgba(132, 39, 39, 0.5)',
-      }
-    }
-    return {
-      background: 'none',
-    };
-  };
 
   render() {
     return (
-      <div style={this.renderStyle()} className="container level-check-form flex-row">
+      <div className={`container level-check-form flex-row ${this.state.highlighted ? 'highlighted' : ''}`}>
         <span onClick={() => this.highlight()}>{this.props.registration.BookingID}</span>
         <select
           className="level-check-dropdown form-control"
