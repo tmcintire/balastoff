@@ -1,15 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router';
+import _ from 'lodash';
 import * as api from '../../../data/api';
 
 const Loading = require('react-loading-animation');
 
 export class AddParticipant extends React.Component {
-  handleValueChange = (e) => {
-    e.preventDefault();
-    this.setState({
-      track: e.target.value,
-    });
+  constructor() {
+    super();
+
+    this.state = {
+      level: 'Beginner',
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.prices) {
+      const price = this.lookupPrice(this.state.level, nextProps.prices);
+
+      this.setState({
+        price,
+      });
+    }
   }
 
   addParticipant = (e, id) => {
@@ -39,15 +51,20 @@ export class AddParticipant extends React.Component {
       'Amateur Couples': 'No',
       AdNov: 'No',
       HasLevelCheck: levelCheck,
-      'Amount Owed': this.HasPaid.checked ? '0.00' : amount,
+      'Amount Owed': this.HasPaid.checked ? '0.00' : this.state.price,
       'Original Amount Owed': amount,
       CheckedIn: false,
+      WalkIn: true,
     };
 
     api.addRegistration(id, object).then(() => {
+      if (this.HasPaid.checked) {
+        const newTotal = parseInt(this.state.price, 10) + parseInt(this.props.totalCollected, 10);
+        api.updateTotalCollected(newTotal);
+      }
       window.location = `#/editregistration/${id}`;
+      this.clearValues();
     });
-    this.clearValues();
   }
 
   clearValues = () => {
@@ -59,13 +76,34 @@ export class AddParticipant extends React.Component {
     this.BookingID = this.BookingID + 1;
   }
 
+  lookupPrice = (level, prices) => {
+    return _.filter(prices, (p, index) => {
+      return index === level;
+    })[0].price;
+  }
+
+  handleLevelChange = (e) => {
+    const level = e.target.value;
+    const price = this.lookupPrice(level, this.props.prices);
+
+    this.setState({
+      price,
+    });
+  }
+
+  handlePriceChange = (e) => {
+    this.setState({
+      price: e.target.value,
+    });
+  }
+
   createSelectItems() {
     let items = [];
-    for (let i = 0; i <= this.props.prices; i++) {
-         items.push(<option key={i} value={i}>{i}</option>);
-    }
+    _.forIn(this.props.prices, (p, index) => {
+      items.push(<option key={index} value={index}>{p.label}</option>);
+    });
     return items;
-}
+  }
 
   handleCancel = (e) => {
     e.preventDefault();
@@ -90,9 +128,12 @@ export class AddParticipant extends React.Component {
                   <label htmlFor="type">Last</label>
                   <input className="form-control" type="text" ref={(ref) => { this['Last Name'] = ref; }} />
                   <label htmlFor="type">Level</label>
-                  <select className="form-control" ref={(ref) => { this.Level = ref; }} >
+                  <select className="form-control" onChange={e => this.handleLevelChange(e)} ref={(ref) => { this.Level = ref; }} >
                     {this.createSelectItems()}
                   </select>
+
+                  <label htmlFor="type">Price</label>
+                  <input className="form-control" type="text" onChange={e => this.handlePriceChange(e)} value={this.state.price} />
 
                   <label htmlFor="type">Fully Paid</label>
                   <input className="form-control" type="checkbox" ref={(ref) => { this.HasPaid = ref; }} />

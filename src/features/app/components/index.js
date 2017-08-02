@@ -1,5 +1,6 @@
 export { App } from './app/App';
 export { HomeContainer } from './home/HomeContainer';
+export { Instructions } from './instructions/Instructions';
 export { Nav } from './nav/Nav';
 export { AdminContainer } from './admin/AdminContainer';
 export { EditParticipantContainer } from './admin/EditParticipantContainer';

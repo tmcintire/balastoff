@@ -7,6 +7,7 @@ import { Comps } from './Comps';
 import { MissionGear } from './MissionGear';
 import { Level } from './Level';
 import { Comments } from './Comments';
+import { Payment } from './Payment';
 
 const Loading = require('react-loading-animation');
 
@@ -93,6 +94,20 @@ export class EditRegistration extends React.Component {
     api.updateRegistration(this.props.params.id, object);
   }
 
+  changePaidCheckBox = (e) => {
+    const tempOwed = this.state.registration['Original Amount Owed'];
+    const owed = e.target.checked ? '0.00' : tempOwed;
+    const amount = parseInt((e.target.checked ? tempOwed : -tempOwed), 10) + this.props.totalCollected;
+    const object = {
+      HasPaid: e.target.checked,
+      'Amount Owed': owed,
+    };
+    api.updateTotalCollected(amount);
+
+    this.saved();
+    api.updateRegistration(this.props.params.id, object);
+  }
+
   backToRegistrations = () => {
     window.location('/');
   }
@@ -128,6 +143,12 @@ export class EditRegistration extends React.Component {
 
           <hr />
           <div className="flex-row flex-wrap flex-justify-space-between">
+            <Level
+              saved={this.saved}
+              id={this.props.params.id}
+              level={registration.Level}
+              hasLevelCheck={registration.HasLevelCheck}
+            />
             <Comps
               comps={comps}
               partner={partner}
@@ -135,11 +156,11 @@ export class EditRegistration extends React.Component {
               id={this.props.params.id}
               registration={registration}
             />
-            <Level
+            <Payment
               saved={this.saved}
-              id={this.props.params.id}
-              level={registration.Level}
-              hasLevelCheck={registration.HasLevelCheck}
+              amountOwed={registration['Amount Owed']}
+              fullyPaid={registration.HasPaid}
+              togglePaid={this.changePaidCheckBox}
             />
           </div>
 
@@ -167,3 +188,12 @@ export class EditRegistration extends React.Component {
     );
   }
 }
+
+EditRegistration.propTypes = {
+  registration: React.PropTypes.array,
+  params: {
+    id: React.PropTypes.string,
+  },
+  totalCollected: React.PropTypes.number,
+  partners: React.PropTypes.array,
+};

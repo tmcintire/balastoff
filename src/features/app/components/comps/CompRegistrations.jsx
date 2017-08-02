@@ -77,8 +77,8 @@ export class CompRegistrations extends React.Component {
   render() {
     const renderOpen = () => {
       if (!this.state.loading) {
-        return this.state.open.map(o => (
-          <div>
+        return this.state.open.map((o, index) => (
+          <div key={index}>
             <p>{o.name} <strong>&</strong> {o.partner}</p>
           </div>
         ));
@@ -86,8 +86,8 @@ export class CompRegistrations extends React.Component {
     };
     const renderAmateur = () => {
       if (!this.state.loading) {
-        return this.state.amateur.map(o => (
-          <div>
+        return this.state.amateur.map((o, index) => (
+          <div key={index}>
             <p>{o.name} <strong>&</strong> {o.partner}</p>
           </div>
         ));
@@ -95,8 +95,8 @@ export class CompRegistrations extends React.Component {
     };
     const renderAdNov = () => {
       if (!this.state.loading) {
-        return this.state.adNov.map(o => (
-          <div>
+        return this.state.adNov.map((o, index) => (
+          <div key={index}>
             <p>{o.name} -- {o.role || ''}</p>
           </div>
         ));

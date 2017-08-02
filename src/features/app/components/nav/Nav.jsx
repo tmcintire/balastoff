@@ -60,6 +60,11 @@ export class Nav extends React.Component {
                 <Link onClick={this.closeMenu} to="/addparticipant" className="link" activeClassName="active" activeStyle={activeStyles}>Add</Link>
               </li>
             </ul>
+            <ul className="nav navbar-nav">
+              <li>
+                <Link onClick={this.closeMenu} to="/instructions" className="link" activeClassName="active" activeStyle={activeStyles}>Instructions</Link>
+              </li>
+            </ul>
           </div>
         </div>
       </nav>

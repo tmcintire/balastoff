@@ -79,7 +79,7 @@ export class Comps extends React.Component {
 
     const renderComps = () => (
       <div className="comp-container">
-        <h3><strong>Comps</strong></h3>
+        <h3><strong><u>Comps</u></strong></h3>
         <div className="info-container flex-col">
           <div className="comp-info flex-row">
             <span className="full-width">AdNov Comp: </span>

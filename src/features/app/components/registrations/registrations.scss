@@ -33,9 +33,18 @@ input[type='checkbox']:checked {
   display: inline-block;
 }
 
-.info-container {
+.info-container, .track-info-container {
   display: flex;
   margin-bottom: 10px;
+  flex-direction: column;
+}
+
+.track-info-container {
+  font-size: 1.5em;
+}
+
+.has-level-check {
+  color: red;
 }
 
 .add-comments-container {

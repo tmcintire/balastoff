@@ -10,30 +10,30 @@ export class RegistrationBox extends React.Component {
       oldAmount: props.registration['Amount Owed'],
     };
   }
-  changeCheckBox(bookingID) {
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.registration) {
+
+    }
+  }
+
+  changeCheckBox = (e, bookingID) => {
     // update checkbox
     const object = {
-      CheckedIn: this.checkedInCheckbox.checked,
+      CheckedIn: e.target.checked,
     };
     api.updateRegistration(bookingID, object);
   }
 
-  changePaidCheckBox(bookingID) {
-    let owed;
-    let amountToUpdate;
-    if (this.paidCheckbox.checked) {
-      owed = '0.00';
-      amountToUpdate = parseInt(this.props.registration['Original Amount Owed'], 10);
-    } else if (!this.paidCheckbox.checked) {
-      owed = this.props.registration['Original Amount Owed'];
-      amountToUpdate = -parseInt(this.props.registration['Original Amount Owed'], 10);
-    }
-    this.props.updateTotal(amountToUpdate);
-    const object = {
-      HasPaid: this.paidCheckbox.checked,
-      'Amount Owed': owed,
+  changePaidCheckBox = (e, bookingID) => {
+    const data = {
+      bookingID,
+      checked: e.target.checked,
+      amountOwed: this.props.registration['Amount Owed'],
+      originalAmountOwed: this.props.registration['Original Amount Owed']
     };
-    api.updateRegistration(bookingID, object);
+    const checked = e.target.checked;
+    this.props.changePaidCheckBox(data);
   }
 
   render() {
@@ -48,11 +48,11 @@ export class RegistrationBox extends React.Component {
       (registration.TShirts || registration.AdditionalTShirts || registration['Limited Edition Patch']) ? 'Yes' : 'No';
     return (
       <div>
-        <span className="col-xs-1">
-          <Link to={`editregistration/${registration.BookingID}`}>
+        <Link to={`editregistration/${registration.BookingID}`}>
+          <span className="col-xs-1">
             {registration.BookingID}
-          </Link>
-        </span>
+          </span>
+        </Link>
         <span className="col-xs-2">{registration['Last Name']}</span>
         <span className="col-xs-2">{registration['First Name']}</span>
         <span className="col-xs-2">{registration.Level}</span>
@@ -62,19 +62,19 @@ export class RegistrationBox extends React.Component {
         <span className="col-xs-1 text-center">
           <input
             className="no-outline"
-            ref={(ref) => { this.paidCheckbox = ref; }}
+            disabled
             checked={registration.HasPaid}
             type="checkbox"
-            onChange={() => this.changePaidCheckBox(registration.BookingID)}
+            onChange={e => this.changePaidCheckBox(e, registration.BookingID)}
           />
         </span>
         <span className="col-xs-1 checkin-background text-center">
           <input
+            disabled
             className="no-outline"
-            ref={(ref) => { this.checkedInCheckbox = ref; }}
             checked={registration.CheckedIn}
             type="checkbox"
-            onChange={() => this.changeCheckBox(registration.BookingID)}
+            onChange={e => this.changeCheckBox(e, registration.BookingID)}
           />
         </span>
       </div>

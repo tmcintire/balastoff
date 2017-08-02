@@ -73,7 +73,7 @@ export const prices = (state = [], action) => {
     case 'RECEIVED_PRICES':
       return {
         ...state,
-        tracks: action.prices,
+        prices: action.prices,
         loading: false,
       };
     default:

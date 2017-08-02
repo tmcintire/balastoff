@@ -42,6 +42,8 @@ if (development === true) {
         object[data[1]].Comments = [];
         object[data[1]]['Original Amount Owed'] = data[5];
         object[data[1]].OriginalLevel = data[16];
+        object[data[1]].WalkIn = false;
+
 
         // Handle Paid entries
         if (data[5] === '0.00') {

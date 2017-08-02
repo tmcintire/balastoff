@@ -112,6 +112,18 @@ export class Home extends React.Component {
     api.updateTotalCollected(total);
   }
 
+  changePaidCheckBox = (data) => {
+    const owed = data.checked ? '0.00' : data.originalAmountOwed;
+    const amountToUpdate = data.checked ?
+      parseInt(data.originalAmountOwed, 10) : -parseInt(data.originalAmountOwed, 10);
+    this.updateTotal(amountToUpdate);
+    const object = {
+      HasPaid: data.checked,
+      'Amount Owed': owed,
+    };
+    api.updateRegistration(data.bookingID, object);
+  }
+
   render() {
     const { loading } = this.props;
     const renderRegistrations = () => {
@@ -119,7 +131,12 @@ export class Home extends React.Component {
         return this.state.filteredRegistrations.map((registration, index) => {
           if (registration) {
             return (
-              <RegistrationBox key={index} updateTotal={this.updateTotal} registration={registration} />
+              <RegistrationBox
+                key={index}
+                updateTotal={this.updateTotal}
+                registration={registration}
+                changePaidCheckBox={this.changePaidCheckBox}
+              />
             );
           }
         });

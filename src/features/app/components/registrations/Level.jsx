@@ -15,27 +15,12 @@ export class Level extends React.Component {
 
     const renderComps = () => (
       <div className="level-container">
-        <h3><strong>Track Information</strong></h3>
-        <div className="info-container">
-          <span className="full-width">Level: </span>
-          <select className="form-control" id="type" value={level} onChange={e => this.handleValueChange(e, 'Level')}>
-            <option value="Dance Pass">Dance Pass</option>
-            <option value="Staff">Staff</option>
-            <option value="Beginner">Beginner</option>
-            <option value="Mercury">Mercury</option>
-            <option value="Gemini">Gemini</option>
-            <option value="Apollo">Apollo</option>
-            <option value="Skylab">Skylab</option>
-            <option value="Space-X">Space-X</option>
-          </select>
+        <h3><strong><u>Track Information</u></strong></h3>
+        <div className="track-info-container">
+          <span className="full-width"><strong>Level: </strong>{level} </span>
+          <span className={`${hasLevelCheck === 'Yes' ? 'has-level-check' : ''} full-width`}><strong>Level Check: </strong>{hasLevelCheck} </span>
         </div>
-        <div className="info-container">
-          <span className="full-width">Level Check: </span>
-          <select className="form-control" id="type" value={hasLevelCheck} onChange={e => this.handleValueChange(e, 'HasLevelCheck')}>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+
       </div>
     );
     return (
