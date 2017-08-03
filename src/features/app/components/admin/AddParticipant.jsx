@@ -11,6 +11,7 @@ export class AddParticipant extends React.Component {
 
     this.state = {
       level: 'Beginner',
+      displayMessage: false,
     };
   }
 
@@ -26,11 +27,26 @@ export class AddParticipant extends React.Component {
 
   addParticipant = (e, id) => {
     e.preventDefault();
+    if (!this.HasPaid.checked) {
+      this.setState({
+        displayMessage: true,
+      });
+      return;
+    }
     const level = this.Level.value;
     let levelCheck = 'No';
     if (level === 'Gemini' || level === 'Apollo' || level === 'Skylab') {
       levelCheck = 'Yes';
     }
+    const amount = this.HasPaid.checked ? '0.00' : this.state.price;
+    api.updateTotalCollected(parseInt(amount, 10));
+
+    const moneyLog = {
+      bookingId: this.BookingID.value,
+      amount: this.state.price,
+      reason: `Fully Paid - New registration - ${this.Level.value}`,
+    };
+    api.updateMoneyLog(moneyLog);
 
     const object = {
       'First Name': this['First Name'].value,
@@ -42,7 +58,7 @@ export class AddParticipant extends React.Component {
       'Amateur Couples': 'No',
       AdNov: 'No',
       HasLevelCheck: levelCheck,
-      'Amount Owed': this.HasPaid.checked ? '0.00' : this.state.price,
+      'Amount Owed': amount,
       'Original Amount Owed': this.state.price,
       CheckedIn: false,
       WalkIn: true,
@@ -102,6 +118,15 @@ export class AddParticipant extends React.Component {
     window.location = '#/';
   }
   render() {
+    const  { displayMessage } = this.state;
+    const renderDisplayMessage = () => {
+      if (this.state.displayMessage) {
+        return (
+          <h3 className="error-message">Participants must pay the full amount before entering</h3>
+        );
+      }
+    };
+
     const renderForm = () => {
       if (this.props.loading === false) {
         const id = parseInt(api.getLastBookingId(), 10) + 1;
@@ -129,8 +154,12 @@ export class AddParticipant extends React.Component {
                   <label htmlFor="type">Fully Paid</label>
                   <input className="form-control" type="checkbox" ref={(ref) => { this.HasPaid = ref; }} />
 
-                  <button onClick={e => this.handleCancel(e)} className="btn btn-danger custom-buttons">Cancel</button>
-                  <button onClick={e => this.addParticipant(e, id)} className="btn btn-success custom-buttons">Add</button>
+                  {renderDisplayMessage()}
+                  <div className="form-submit-buttons flex-row flex-justify-space-between">
+                    <button onClick={e => this.handleCancel(e)} className="btn btn-danger custom-buttons">Cancel</button>
+                    <button onClick={e => this.addParticipant(e, id)} className="btn btn-success custom-buttons">Add</button>
+                  </div>
+
                   <br />
                 </form>
               </div>

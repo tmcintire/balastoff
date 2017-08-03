@@ -23,7 +23,8 @@ const {
   LevelCheckDashboardContainer,
   MissedLevelCheckContainer,
   MissionGearIssuesContainer,
-  Instructions } = app.components;
+  Instructions,
+  MoneyLogContainer } = app.components;
 
 /* Define routes for administrators */
 const adminUserRoutes = () => (
@@ -34,6 +35,7 @@ const adminUserRoutes = () => (
     <Route path="/addparticipant" component={AddParticipantContainer} />
     <Route path="/admin/levelcheck" component={LevelCheckContainer} />
     <Route path="/admin/levelcheckupdates" component={LevelCheckUpdatesContainer} />
+    <Route path="/admin/moneylog" component={MoneyLogContainer} />
     <Route path="/admin/levelcheckdashboard" component={LevelCheckDashboardContainer} />
     <Route path="/admin/missedlevelcheck" component={MissedLevelCheckContainer} />
     <Route path="/editregistration/:id" component={EditRegistrationContainer} />

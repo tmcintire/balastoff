@@ -9,7 +9,15 @@ export class Comments extends React.Component {
       comment: null,
     };
   }
-  handleClick = () => {
+
+  onKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      this.handleSubmitComment();
+    }
+  }
+
+  handleSubmitComment = () => {
     let object = {};
     if (this.props.registration.Comments) {
       object = {
@@ -48,11 +56,11 @@ export class Comments extends React.Component {
     };
     return (
       <div>
-        <h3><strong>Comments</strong></h3>
+        <h3><strong>Add Comments</strong></h3>
         <div className="flex-row">
           <div className="add-comments-container flex-col">
-            <textarea className="comments" ref={(ref) => { this.comment = ref; }}  onChange={e => this.handleChange(e)} />
-            <button className="btn btn-primary" disabled={!this.state.comment} onClick={() => this.handleClick()}>Add Comment</button>
+            <textarea onKeyDown={e => this.onKeyDown(e)} className="comments" ref={(ref) => { this.comment = ref; }}  onChange={e => this.handleChange(e)} />
+            <button className="btn btn-primary" disabled={!this.state.comment} onClick={() => this.handleSubmitComment()}>Add Comment</button>
           </div>
           <div className="display-comments-container flex-col">
             {renderComments()}

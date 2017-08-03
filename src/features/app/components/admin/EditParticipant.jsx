@@ -48,6 +48,9 @@ export class EditParticipant extends React.Component {
                 <form>
                   <label htmlFor="type">Track</label>
                   <select className="form-control" id="type" defaultValue={participant.Level} ref={(ref) => { this.Level = ref; }}>
+                    <option value="DancePass">Dance Pass</option>
+                    <option value="Staff">Staff</option>
+                    <option value="Other">Other</option>
                     <option value="Beginner">Beginner</option>
                     <option value="Mercury">Mercury</option>
                     <option value="Gemini">Gemini</option>

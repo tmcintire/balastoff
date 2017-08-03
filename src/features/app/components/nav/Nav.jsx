@@ -24,6 +24,13 @@ export class Nav extends React.Component {
   }
 
   render() {
+    const renderDisconnectMessage = () => {
+      if (!this.props.connection) {
+        return (
+          <h4 className="disconnect-message">You have lost your internet connection, please reconnect to the internet!</h4>
+        );
+      }
+    };
     const activeStyles = {
       backgroundColor: 'rgba(64, 93, 108, 1)',
       color: 'white',
@@ -52,11 +59,6 @@ export class Nav extends React.Component {
             </ul>
             <ul className="nav navbar-nav">
               <li>
-                <Link onClick={this.closeMenu} to="/comps" className="link" activeClassName="active" activeStyle={activeStyles}>Comps</Link>
-              </li>
-            </ul>
-            <ul className="nav navbar-nav">
-              <li>
                 <Link onClick={this.closeMenu} to="/addparticipant" className="link" activeClassName="active" activeStyle={activeStyles}>Add</Link>
               </li>
             </ul>
@@ -67,6 +69,7 @@ export class Nav extends React.Component {
             </ul>
           </div>
         </div>
+        {renderDisconnectMessage()}
       </nav>
     );
   }

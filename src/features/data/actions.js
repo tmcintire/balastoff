@@ -45,6 +45,16 @@ export function pricesReceived(prices) {
   };
 }
 
+export function moneyLogReceived(log) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_MONEY_LOG' });
+    dispatch({
+      type: 'RECEIVED_MONEY_LOG',
+      log,
+    });
+  };
+}
+
 export function updateAmateurComp(bookingID, amateur, amateurPartner) {
   return function (dispatch) { // eslint-disable-line
     dispatch({
@@ -80,6 +90,15 @@ export function totalCollectedReceived(totalCollected) {
     dispatch({
       type: 'TOTAL_COLLECTED_RECEIVED',
       totalCollected,
+    });
+  };
+}
+
+export function setConnectionState(state) {
+  return function (dispatch) {
+    dispatch({
+      type: 'SETTING_CONNECTION_STATE',
+      state,
     });
   };
 }

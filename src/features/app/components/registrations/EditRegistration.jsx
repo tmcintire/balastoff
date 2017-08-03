@@ -8,6 +8,7 @@ import { MissionGear } from './MissionGear';
 import { Level } from './Level';
 import { Comments } from './Comments';
 import { Payment } from './Payment';
+import { EditMissionGearIssues } from './EditMissionGearIssues';
 
 const Loading = require('react-loading-animation');
 
@@ -92,24 +93,54 @@ export class EditRegistration extends React.Component {
 
     this.saved();
     api.updateRegistration(this.props.params.id, object);
+
+    window.location = '/#';
   }
 
   changePaidCheckBox = (e) => {
-    const tempOwed = this.state.registration['Original Amount Owed'];
-    const owed = e.target.checked ? '0.00' : tempOwed;
-    const amount = parseInt((e.target.checked ? tempOwed : -tempOwed), 10) + this.props.totalCollected;
-    const object = {
-      HasPaid: e.target.checked,
-      'Amount Owed': owed,
-    };
-    api.updateTotalCollected(amount);
+    const tempOwed = this.state.registration['Amount Owed'];
+    const confirm = window.confirm(`Confirm payment of $${tempOwed} for ${this.state.registration['First Name']} ${this.state.registration['Last Name']}`);
 
-    this.saved();
-    api.updateRegistration(this.props.params.id, object);
+    if (confirm === true) {
+      const checked = e.target.checked;
+      const owed = e.target.checked ? '0.00' : tempOwed;
+
+      const amount = parseInt(tempOwed, 10);
+      api.updateTotalCollected(amount);
+      const moneyLog = {
+        bookingId: this.state.registration.BookingID,
+        amount,
+        reason: 'Paid off amount due on registration form',
+      };
+      api.updateMoneyLog(moneyLog);
+
+      const object = {
+        HasPaid: checked,
+        'Amount Owed': owed,
+      };
+
+      this.saved();
+      api.updateRegistration(this.props.params.id, object);
+    }
   }
 
   backToRegistrations = () => {
     window.location('/');
+  }
+
+  toggleResolved = (e, id, index) => {
+    const issue = this.state.registration.MissionGearIssues[index];
+    const object = {
+      MissionGearIssues: {
+        [index]: {
+          Issue: issue.Issue,
+          Resolved: !issue.Resolved,
+        },
+      },
+    };
+
+    api.updateRegistration(id, object);
+    this.saved();
   }
 
   saved = () => {
@@ -165,11 +196,17 @@ export class EditRegistration extends React.Component {
           </div>
 
           <hr />
-          <div className="flex-row flex-justify-space-between">
+          <div className="flex-row flex-wrap flex-justify-space-between">
             <MissionGear
               saved={this.saved}
               id={this.props.params.id}
               registration={registration}
+            />
+            <EditMissionGearIssues
+              saved={this.saved}
+              id={this.props.params.id}
+              issues={registration.MissionGearIssues}
+              toggleResolved={this.toggleResolved}
             />
             <Comments
               saved={this.saved}

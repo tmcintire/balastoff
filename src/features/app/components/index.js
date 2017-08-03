@@ -3,6 +3,7 @@ export { HomeContainer } from './home/HomeContainer';
 export { Instructions } from './instructions/Instructions';
 export { Nav } from './nav/Nav';
 export { AdminContainer } from './admin/AdminContainer';
+export { MoneyLogContainer } from './admin/MoneyLogContainer';
 export { EditParticipantContainer } from './admin/EditParticipantContainer';
 export { EditRegistrationContainer } from './registrations/EditRegistrationContainer';
 export { Comps } from './registrations/Comps';

@@ -12,7 +12,6 @@ export class Home extends React.Component {
       filteredRegistrations: props.registrations,
       filter: '',
       filterText: '',
-      totalCollected: 0,
     };
   }
 
@@ -21,11 +20,6 @@ export class Home extends React.Component {
     if (registrations) {
       this.setState({
         filteredRegistrations: registrations,
-      });
-    }
-    if (nextProps.totalCollected !== undefined) {
-      this.setState({
-        totalCollected: nextProps.totalCollected,
       });
     }
   }
@@ -108,7 +102,7 @@ export class Home extends React.Component {
   }
 
   updateTotal = (amount) => {
-    const total = parseInt(amount, 10) + this.state.totalCollected;
+    const total = parseInt(amount, 10) + this.props.totalCollected;
     api.updateTotalCollected(total);
   }
 
@@ -166,7 +160,7 @@ export class Home extends React.Component {
           </div>
           <div className="flex-row">
             Total Collected:
-            <span className="collected-text">${this.state.totalCollected}</span>
+            <span className="collected-text">${this.props.totalCollected}</span>
           </div>
         </div>
         <div className="registrations-wrapper flex-col">

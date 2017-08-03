@@ -3,17 +3,41 @@ import * as api from '../../../data/api';
 import _ from 'lodash';
 
 export class Comps extends React.Component {
-  handleValueChange = (e, comp, role) => {
-    let object= {};
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hasPaid: props.registration.HasPaid,
+      originalAmountOwed: props.registration['Amount Owed'],
+    };
+  }
+
+  handleValueChange = (e, comp, role, amount) => {
+    let amountOwed = 0;
+    let object = {};
     if (role === 'AdNovLeadFollow') {
       object = {
         [role]: e.target.value,
       };
     } else {
+      const compDecision = e.target.value;
+      const owed = parseInt(this.props.registration['Amount Owed'], 10);
+      if (compDecision === 'Yes') {
+        amountOwed = owed + amount;
+      } else if (compDecision === 'No') {
+        amountOwed = owed - amount;
+      }
+
       object = {
         [comp]: e.target.value,
+        'Amount Owed': amountOwed,
+        HasPaid: !amountOwed > 0,
       };
     }
+
+    this.setState({
+      amountOwed,
+    });
 
     api.updateRegistration(this.props.id, object);
     this.props.saved();
@@ -80,10 +104,14 @@ export class Comps extends React.Component {
     const renderComps = () => (
       <div className="comp-container">
         <h3><strong><u>Comps</u></strong></h3>
-        <div className="info-container flex-col">
+        <div
+          className={`${registration.Level === 'Apollo' ||
+            registration.Level === 'Skylab' ||
+            registration.Level === 'SpaceX' ? 'hidden' : ''} info-container flex-col`}
+        >
           <div className="comp-info flex-row">
-            <span className="full-width">AdNov Comp: </span>
-            <select className="form-control" id="type" defaultValue={registration.AdNov} onChange={e => this.handleValueChange(e, 'AdNov')}>
+            <span className="full-width">AdNov Comp ($5): </span>
+            <select className="comp-select form-control" id="type" defaultValue={registration.AdNov} onChange={e => this.handleValueChange(e, 'AdNov', null, 5)}>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
@@ -92,8 +120,8 @@ export class Comps extends React.Component {
         </div>
         <div className="info-container flex-col">
           <div className="comp-info flex-row">
-            <span className="full-width">Amateur Couples: </span>
-            <select className="form-control" id="type" defaultValue={registration['Amateur Couples']} onChange={e => this.handleValueChange(e, 'Amateur Couples')}>
+            <span className="full-width">Amateur Couples ($20): </span>
+            <select className="comp-select form-control" id="type" defaultValue={registration['Amateur Couples']} onChange={e => this.handleValueChange(e, 'Amateur Couples', null, 20)}>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
@@ -102,8 +130,8 @@ export class Comps extends React.Component {
         </div>
         <div className="info-container flex-col">
           <div className="comp-info flex-row">
-            <span className="full-width">Three Stage Open: </span>
-            <select className="form-control" id="type" defaultValue={registration.Open} onChange={e => this.handleValueChange(e, 'Open')}>
+            <span className="full-width">Three Stage Open ($40): </span>
+            <select className="comp-select form-control" id="type" defaultValue={registration.Open} onChange={e => this.handleValueChange(e, 'Open', null, 40)}>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>

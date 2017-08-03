@@ -81,6 +81,24 @@ export const prices = (state = [], action) => {
   }
 };
 
+export const moneyLog = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_MONEY_LOG':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_MONEY_LOG':
+      return {
+        ...state,
+        moneyLog: action.log,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
 export const totalCollected = (state = [], action) => {
   switch (action.type) {
     case 'TOTAL_COLLECTED_RECEIVED':
@@ -93,10 +111,24 @@ export const totalCollected = (state = [], action) => {
   }
 };
 
+export const connectionState = (state = [], action) => {
+  switch (action.type) {
+    case 'SETTING_CONNECTION_STATE':
+      return {
+        ...state,
+        state: action.state,
+      };
+    default:
+      return state;
+  }
+};
+
 
 export default combineReducers({
   registrations,
   tracks,
   totalCollected,
   prices,
+  moneyLog,
+  connectionState,
 });

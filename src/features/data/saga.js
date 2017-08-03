@@ -10,6 +10,8 @@ function* initialize() {
   yield call(api.fetchTracks, 1);
   yield call(api.getTotalCollected, 1);
   yield call(api.fetchPrices, 1);
+  yield call(api.fetchMoneyLog, 1);
+  yield call(api.setupConnectionListener, 1);
 }
 
 export default function* saga() {

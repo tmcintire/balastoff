@@ -11,12 +11,17 @@ export const Instructions = () => (
       <li>{'Greet each participant with a smile and "Welcome, recruit!"'}</li>
       <li>{'Ask for the dancers name to locate them on the registration list (list is organized by last name and can be done \
           using the search bar at the top or control/command + f).'}</li>
-      <li>{'BALANCES: Check to see if the dancer has an outstanding balance on their registration that they owe to the event.  \
-        All dancers must be paid in full before they may receive their access card and enter the event.'}
-        <p className="indent"><strong>a. </strong>If the dancer pays a balance, record it on the money in/out sheet separately. </p>
-        <p className="indent"><strong>b. </strong>{'Select "Fully Paid" to notate participant has paid in full before entering event.'}</p>
+      <li>Click on their name to open their registration information.</li>
+      <li>Locate their access badge via their registration ID number.</li>
+      <li>{'LEVEL: Double check their level check/level color matches on their badge.'}
+        <p className="indent"><strong>a. </strong>Flight School and Mercury have a level color due to no level check. Flight
+          School begins at 10:00, and Mercury begins at 11:00am. Both are at UAH.</p>
+        <p className="indent"><strong>b. </strong>{'Gemini, Apollo, and Skylab all have a "level check" (LC) color. \
+          LC is at 10:00am Saturday morning at UAH. They will be issued a separate colored sticker upon completion of \
+          the level check. They MUST be present for the LC in order to be placed in these missions.'}</p>
+        <p className="indent"><strong>c. </strong>SpaceX has a dark blue color, and their first session is at 1:00pm.</p>
+        <p className="indent"><strong>d. </strong>Dance passes are orange in color.</p>
       </li>
-      <li>{'Select "View" by clicking on the registration ID number. '}</li>
       <li>COMPETITIONS: Check to see if the dancer is registered for any competitions.
         <p className="indent"><strong>a. </strong>YES: verify with dancer and confirm the name of their partner.
           <p className="indent"><strong>i. </strong>ADDING A PARTNER: type the name into the box beside the appropriate comp.</p>
@@ -32,20 +37,21 @@ export const Instructions = () => (
         <p className="indent"><strong>c. </strong>If they are registered for the Ad/Nov, ask if they are leading or following
           and select the appropriate answer on the drop down menu.</p>
       </li>
+      <li>{'BALANCES: Check to see if the dancer has an outstanding balance on their registration that they owe to the event.  \
+        All dancers must be paid in full before they may receive their access card and enter the event.'}
+        <p className="indent"><strong>a. </strong>{'Select "Fully Paid" to notate participant has paid in full before entering event.'}</p>
+      </li>
+      <li>{'Select "View" by clicking on the registration ID number. '}</li>
       <li>
-        {'ACCESS BADGE: Hand dancer their "access badge" for the event. THEY MUST KEEP TRACK OF THEIR BADGE.'}
-        <p className="indent"><strong>a: </strong>Flight School and Mercury have a level color due to no level check. Class begins at 11:00am at UAH.</p>
-        <p className="indent"><strong>b: </strong>{'Gemini, Apollo, and Skylab all have a "level check" (LC) color. LC is at 10:00am Saturday morning \
-          at UAH. They will be issued a separate colored sticker upon completion of the level check. They MUST be present for the LC in order to be \
-          placed in these missions.'}</p>
-        <p className="indent"><strong>c: </strong>SpaceX has a dark blue color, and their first session is at 1:00pm.</p>
-        <p className="indent"><strong>d: </strong>Dance passes are orange in color.</p>
+        {'ACCESS BADGE: Hand dancer their "access badge" for the event. THEY MUST KEEP TRACK OF THEIR BADGE. \
+          This will be used during the level check and throughout the weekend.'}
       </li>
       <li>
         GEAR: Check to see if the dancer has any mission gear they have purchased.
         <p className="indent"><strong>a: </strong>YES: direct them to the merchandise table.</p>
         <p className="indent"><strong>a: </strong>NO: tell them they are good to go.</p>
       </li>
+      <li>{'Once all of the above steps have been completed, click "Check In!"'}</li>
     </ol>
 
     <h2 className="text-center">IF A DANCER IS NOT REGISTERED FOR THE EVENT AND CHECKING IN FOR THE FIRST TIME – DAY PASSES ONLY</h2>

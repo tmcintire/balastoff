@@ -5,6 +5,15 @@
   }
 }
 
+.error-message {
+  color: red;
+}
+
+.form-submit-buttons {
+  margin-top: 30px;
+  width: 130px;
+}
+
 .level-check-form {
   width: 100%;
   margin-bottom: 30px;
@@ -89,4 +98,52 @@
 
 .highlighted {
   background: rgba(132, 39, 39, 0.5);
+}
+
+// Money log
+
+.money-log-wrapper {
+
+  .money-log-header {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .money-log-body {
+    border: 1px solid black;
+    box-shadow: 4px 1px 2px grey;
+    height: calc(100vh - 300px);
+    overflow-y: auto;
+
+    div:nth-child(even) {
+      background: rgba(64, 93, 108, 0.1);
+    }
+
+    .money-log {
+      border-bottom: 1px solid lightgray;
+      padding: 5px;
+    }
+  }
+}
+
+.add-money-log {
+  position: fixed;
+  width: 300px;
+  top: 130px;
+  background: lightgray;
+  padding: 20px;
+  border: 1px solid gray;
+  box-shadow: 1px 1px 1px grey;
+}
+
+.show-money-log {
+  position: absolute;
+  left: 56px;
+  top: 30px;
+  font-size: 0.8em;
+  color: #337ab7;
+
+  &:hover {
+    cursor: pointer;
+  }
 }

@@ -53,6 +53,13 @@ export class MissionGear extends React.Component {
       issue: e.target.value,
     });
   }
+  onKeyDown = (e) => {
+    e.persist();
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      this.reportMissionGearIssue(e);
+    }
+  }
 
   render() {
     const { registration } = this.props;
@@ -118,6 +125,7 @@ export class MissionGear extends React.Component {
             <textarea
               ref={(ref) => { this.issue = ref; }}
               onChange={e => this.handleChange(e)}
+              onKeyDown={e => this.onKeyDown(e)}
             />
             <button
               disabled={!this.state.issue}

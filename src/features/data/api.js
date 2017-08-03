@@ -13,15 +13,6 @@ let lastBookingId = 0;
 const regRef = firebaseRef.child('registrations');
 const development = false;
 
-const connectedRef = firebase.database().ref('.info/connected');
-connectedRef.on('value', (snap) => {
-  if (snap.val() === true) {
-    alert('You are connected again to the internet');
-  } else {
-    alert('You have lost your connection to the internet, please check your internet connection!');
-  }
-});
-
 if (development === true) {
   axios({
     method: 'get',
@@ -52,7 +43,6 @@ if (development === true) {
         object[data[1]]['Original Amount Owed'] = data[5];
         object[data[1]].OriginalLevel = data[16];
         object[data[1]].WalkIn = false;
-
 
         // Handle Paid entries
         if (data[5] === '0.00') {
@@ -117,6 +107,12 @@ if (development === true) {
   });
 }
 
+export function setupConnectionListener() {
+  const connectedRef = firebase.database().ref('.info/connected');
+  connectedRef.on('value', (snap) => {
+    store.dispatch(actions.setConnectionState(snap.val()));
+  });
+}
 /* Fetch Registrations from firebase and set them to the redux store */
 export function fetchRegistrations() {
   regRef.on('value', (snapshot) => {
@@ -184,6 +180,14 @@ export function fetchPrices() {
   });
 }
 
+export function fetchMoneyLog() {
+  firebaseRef.child('moneyLog').on('value', (snapshot) => {
+    const log = snapshot.val();
+    store.dispatch(actions.moneyLogReceived(log));
+  });
+}
+
+
 export function getTotalCollected() {
   firebaseRef.child('totalCollected').on('value', (snapshot) => {
     const totalCollected = snapshot.val();
@@ -216,7 +220,15 @@ export function addRegistration(id, object) {
 }
 
 export function updateTotalCollected(amount) {
-  firebaseRef.child('totalCollected').set(amount);
+  firebaseRef.child('totalCollected').once('value').then((res) => {
+    const amountToUpdate = res.val() + parseInt(amount, 10);
+    firebaseRef.child('totalCollected').set(amountToUpdate);
+  });
+}
+
+export function updateMoneyLog(log) {
+  const key = firebaseRef.child('moneyLog').push().key;
+  firebaseRef.child('moneyLog').child(key).update(log);
 }
 
 export const getLastBookingId = () => lastBookingId;
