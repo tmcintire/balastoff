@@ -38,8 +38,11 @@
   .registrations-body {
     border: 1px solid black;
     box-shadow: 4px 1px 2px grey;
+    height: 400px;
     height: calc(100vh - 300px);
-    overflow-y: auto;
+    height: -webkit-calc(100vh - 300px);
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 
     a:nth-child(even) {
       background: #E1E1E1
