@@ -166,7 +166,7 @@ export class EditRegistration extends React.Component {
         <div>
           {renderSaved()}
           <Link className="back" to={'/'}><i className="fa fa-arrow-left" aria-hidden="true" />Back to Registrations</Link>
-          <h1 className="text-center">{registration['First Name']} {registration['Last Name']}</h1>
+          <h1 className="text-center">{registration.BookingID} - {registration['First Name']} {registration['Last Name']}</h1>
           <div className="flex-row option flex-justify-content-center">
             <span>Check In!</span>
             <input className="no-outline" type="checkbox" checked={registration.CheckedIn} onChange={e => this.toggleCheckedIn(e)} />
