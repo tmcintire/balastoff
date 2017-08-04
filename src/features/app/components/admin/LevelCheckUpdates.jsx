@@ -141,7 +141,6 @@ export class LevelCheckUpdates extends React.Component {
 
     return (
       <div className="container form-container">
-        <Link to="/admin/levelcheck"><button className="btn btn-primary">Back to Level Check</button></Link>
           <div className="level-check-filters">
             <span onClick={() => this.changeFilter('Gemini')}>Gemini</span>
             <span onClick={() => this.changeFilter('Apollo')}>Apollo/Skylab</span>
