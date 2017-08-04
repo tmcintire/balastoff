@@ -19,6 +19,8 @@ export class EditParticipant extends React.Component {
       Level: this.Level.value,
       HasLevelCheck: this.HasLevelCheck.value,
       LeadFollow: this.LeadFollow.value,
+      'Amount Owed': this.AmountOwed.value,
+      HasPaid: this.HasPaid.value,
     };
 
     api.updateRegistration(this.props.params.id, object);
@@ -68,6 +70,14 @@ export class EditParticipant extends React.Component {
                   <select className="form-control" defaultValue={participant.LeadFollow} ref={(ref) => { this.LeadFollow = ref; }} >
                     <option value="Lead">Lead</option>
                     <option value="Follow">Follow</option>
+                  </select>
+                  <label htmlFor="type">Amount Owed</label>
+                  <input className="form-control" type="text" defaultValue={participant['Amount Owed']} ref={(ref) => { this.AmountOwed = ref; }} />
+
+                  <label htmlFor="type">Paid in full</label>
+                  <select className="form-control" defaultValue={participant.HasPaid} ref={(ref) => { this.HasPaid = ref; }} >
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
                   </select>
 
                   <button className="btn btn-danger custom-buttons"><Link to="/admin">Cancel</Link></button>

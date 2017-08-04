@@ -156,7 +156,7 @@ export class Home extends React.Component {
         <div className="flex-row flex-justify-space-between">
           <div>
             <label htmlFor="search">Search Registrations</label>
-            <input className="search" id="search" type="text" onChange={this.handleValueChange} />
+            <input className="search search-input" id="search" type="text" onChange={this.handleValueChange} />
           </div>
           <div className="flex-row">
             Total Collected:

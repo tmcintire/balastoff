@@ -61,8 +61,17 @@ export class Admin extends React.Component {
           <Link to="/admin/levelcheckdashboard">Level Check Dashboard</Link>
         </div>
         <label htmlFor="name">Search</label>
-        <input type="text" onChange={this.handleValueChange} />
-        {renderRegistrations()}
+        <input className="search-input" type="text" onChange={this.handleValueChange} />
+        <div className="admin-registrations flex-col">
+          <div className="admin-registrations-header">
+            <span className="col-xs-2">Booking ID</span>
+            <span className="col-xs-3">First Name</span>
+            <span className="col-xs-3">Last Name</span>
+            <span className="col-xs-2">Level</span>
+            <span className="col-xs-2">Has Level Check</span>
+          </div>
+          {renderRegistrations()}
+        </div>
       </div>
     );
   }

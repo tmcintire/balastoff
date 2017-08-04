@@ -76,7 +76,7 @@ export class LevelCheckDashboard extends React.Component {
     };
     return (
       <div className="container form-container">
-        <h1 className="text-center">Level Check Dashboard</h1>
+        <h1 className="text-center">Level Dashboard</h1>
         <div className="header-links">
           <Link to="/admin"><button className="btn btn-primary">Back to Admin</button></Link>
           <Link to="/admin/levelcheckupdates">View Completed Level Checks</Link>

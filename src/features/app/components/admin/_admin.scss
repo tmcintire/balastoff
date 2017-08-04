@@ -1,12 +1,21 @@
-.admin-participant {
-  &:hover {
+.admin-registrations {
+  .admin-participant {
+    &:hover {
+      background: lightgray;
+      cursor: pointer;
+    }
+  }
+  div:nth-child(even) {
     background: lightgray;
-    cursor: pointer;
   }
 }
 
 .error-message {
   color: red;
+}
+
+.search-input {
+  border: 1px solid gray;
 }
 
 .form-submit-buttons {
@@ -146,4 +155,9 @@
   &:hover {
     cursor: pointer;
   }
+}
+
+.graph-container {
+  height: 250px;
+  align-items: flex-end;
 }

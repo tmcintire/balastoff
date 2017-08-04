@@ -7,15 +7,13 @@ export class Participant extends React.Component {
   render() {
     const { registration } = this.props;
     return (
-      <tr className="admin-participant" onClick={() => this.handleClick(registration.BookingID)}>
-        <td>{registration.BookingID}</td>
-        <td>{registration['First Name']}</td>
-        <td>{registration['Last Name']}</td>
-        <td>{registration.Level}</td>
-        <td>{registration.HasPaid}</td>
-        <td>{registration.HasLevelCheck}</td>
-        <td>{registration.LevelChecked}</td>
-      </tr>
+      <div className="admin-participant flex-row flex-justify-space-between" onClick={() => this.handleClick(registration.BookingID)}>
+        <span className="col-xs-2">{registration.BookingID}</span>
+        <span className="col-xs-3">{registration['First Name']}</span>
+        <span className="col-xs-3">{registration['Last Name']}</span>
+        <span className="col-xs-2">{registration.Level}</span>
+        <span className="col-xs-2">{registration.HasLevelCheck}</span>
+      </div>
     );
   }
 }
