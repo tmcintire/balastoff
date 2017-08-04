@@ -18,7 +18,8 @@ export class EditParticipant extends React.Component {
     const object = {
       Level: this.Level.value,
       HasLevelCheck: this.HasLevelCheck.value,
-    }
+      LeadFollow: this.LeadFollow.value,
+    };
 
     api.updateRegistration(this.props.params.id, object);
     window.location = ('#/admin');
@@ -62,6 +63,11 @@ export class EditParticipant extends React.Component {
                   <select className="form-control" defaultValue={participant.HasLevelCheck} ref={(ref) => { this.HasLevelCheck = ref; }} >
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
+                  </select>
+                  <label htmlFor="type">Lead/Follow</label>
+                  <select className="form-control" defaultValue={participant.LeadFollow} ref={(ref) => { this.LeadFollow = ref; }} >
+                    <option value="Lead">Lead</option>
+                    <option value="Follow">Follow</option>
                   </select>
 
                   <button className="btn btn-danger custom-buttons"><Link to="/admin">Cancel</Link></button>

@@ -8,8 +8,8 @@ export class ApolloGraph extends React.Component {
     return (
       <div className="container form-container">
         <h1 className="text-center">Apollo</h1>
-        <p>{numLeads}</p>
-        <p>{numFollows}</p>
+        <p>Leads: {numLeads}</p>
+        <p>Follows: {numFollows}</p>
       </div>
     );
   }
