@@ -20,7 +20,7 @@ export class EditParticipant extends React.Component {
       HasLevelCheck: this.HasLevelCheck.value,
       LeadFollow: this.LeadFollow.value,
       'Amount Owed': this.AmountOwed.value,
-      HasPaid: this.HasPaid.value,
+      HasPaid: this.HasPaid.value === 'true',
     };
 
     api.updateRegistration(this.props.params.id, object);
