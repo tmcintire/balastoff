@@ -104,11 +104,7 @@ export class Comps extends React.Component {
     const renderComps = () => (
       <div className="comp-container">
         <h3><strong><u>Comps</u></strong></h3>
-        <div
-          className={`${registration.Level === 'Apollo' ||
-            registration.Level === 'Skylab' ||
-            registration.Level === 'SpaceX' ? 'hidden' : ''} info-container flex-col`}
-        >
+        <div className="info-container flex-col">
           <div className="comp-info flex-row">
             <span className="full-width">AdNov Comp ($5): </span>
             <select className="comp-select form-control" id="type" defaultValue={registration.AdNov} onChange={e => this.handleValueChange(e, 'AdNov', null, 5)}>
