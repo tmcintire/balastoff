@@ -35,6 +35,56 @@ export function tracksReceived(tracks) {
   };
 }
 
+export function configReceived(config) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_CONFIG' });
+    dispatch({
+      type: 'RECEIVED_CONFIG',
+      config,
+    });
+  };
+}
+
+export function passesReceived(passes) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_PASSES' });
+    dispatch({
+      type: 'RECEIVED_PASSES',
+      passes,
+    });
+  };
+}
+
+export function compsReceived(comps) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_COMPS' });
+    dispatch({
+      type: 'RECEIVED_COMPS',
+      comps,
+    });
+  };
+}
+
+export function storeReceived(store) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_STORE' });
+    dispatch({
+      type: 'RECEIVED_STORE',
+      store,
+    });
+  };
+}
+
+export function dancesReceived(dances) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_DANCES' });
+    dispatch({
+      type: 'RECEIVED_DANCES',
+      dances,
+    });
+  };
+}
+
 export function pricesReceived(prices) {
   return function (dispatch) { // eslint-disable-line
     dispatch({ type: 'START_FETCHING_PRICES' });

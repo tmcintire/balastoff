@@ -23,6 +23,12 @@
   width: 130px;
 }
 
+.level-check-container {
+  .leads-container, .follows-container {
+    width: 100%;
+  }
+}
+
 .level-check-form {
   width: 100%;
   margin-bottom: 30px;
@@ -64,12 +70,6 @@
   margin-bottom: 25px;
 }
 
-.level-check-container {
-  .leads-container, .follows-container {
-    width: 45%;
-  }
-}
-
 .level-check-filters {
   margin: 0 100px;
   display: flex;
@@ -91,7 +91,7 @@
     height: 500px;
     overflow-y: scroll;
 
-    div:nth-child(even) {
+    div:nth-child(even){
       background: lightgray;
     }
   }
@@ -124,7 +124,7 @@
     height: calc(100vh - 300px);
     overflow-y: auto;
 
-    div:nth-child(even) {
+    .money-log:nth-child(even) {
       background: rgba(64, 93, 108, 0.1);
     }
 
@@ -160,4 +160,8 @@
 .graph-container {
   height: 250px;
   align-items: flex-end;
+}
+
+.voided {
+  color: red;
 }

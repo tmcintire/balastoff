@@ -23,3 +23,21 @@ export function sortRegistrations(registrations, filter) {
     return 0;
   });
 }
+
+export function sortTracks(data) {
+  return data.sort((a, b) => {
+    if (a.sortBy < b.sortBy) {
+      return -1;
+    }
+    if (a.sortBy > b.sortBy) {
+      return 1;
+    }
+
+    // names must be equal
+    return 0;
+  });
+}
+
+export function checkMobile() {
+  return window.innerWidth < 400 ? 'mobile-view' : '';
+}

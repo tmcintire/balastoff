@@ -123,6 +123,95 @@ export const connectionState = (state = [], action) => {
   }
 };
 
+export const passes = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_PASSES':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_PASSES':
+      return {
+        ...state,
+        passes: action.passes,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
+export const config = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_CONFIG':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_CONFIG':
+      return {
+        ...state,
+        config: action.config,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
+export const dances = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_DANCES':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_DANCES':
+      return {
+        ...state,
+        dances: action.dances,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
+export const comps = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_COMPS':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_COMPS':
+      return {
+        ...state,
+        comps: action.comps,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
+export const store = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_STORE':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_STORE':
+      return {
+        ...state,
+        store: action.store,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
 
 export default combineReducers({
   registrations,
@@ -131,4 +220,9 @@ export default combineReducers({
   prices,
   moneyLog,
   connectionState,
+  passes,
+  config,
+  dances,
+  store,
+  comps,
 });

@@ -1,0 +1,55 @@
+.store-btn {
+  height: 50px;
+  width: 100%;
+  font-size: 1.5em;
+}
+
+.store-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px 20px;
+  flex: 1;
+  border: 1px solid silver;
+  border-radius: 5px;
+  padding: 10px;
+
+  .item-name {
+    font-size: 3em;
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  .item-price {
+    font-size: 2em;
+  }
+}
+
+.purchase-toast {
+  position: fixed;
+  right: 25px;
+  top: 65px;
+  background: green;
+  animation: pulse 3s infinite;
+  padding: 15px;
+  border-radius: 5px;
+  color: white;
+}
+
+.item-amount-container {
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+
+  .amount-btns {
+    font-size: 4em;
+  }
+
+  .current-amount {
+    font-size: 6em;
+  }
+}
+
+.final-total {
+  font-size: 2em;
+}

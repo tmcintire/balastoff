@@ -28,8 +28,8 @@ export class RegistrationBox extends React.Component {
         </span>
         <span className="col-xs-2">{registration['Last Name']}</span>
         <span className="col-xs-2">{registration['First Name']}</span>
-        <span className="col-xs-2">{registration.Level}</span>
-        <span className="col-xs-1">{registration.HasLevelCheck}</span>
+        <span className="col-xs-2">{registration.Level.name}</span>
+        <span className="col-xs-1">{registration.HasLevelCheck ? 'Yes' : 'No'}</span>
         <span className="col-xs-1" style={style}>${registration['Amount Owed']}</span>
         <span className="col-xs-1">{hasMerchandise}</span>
         <span className="col-xs-1 text-center">

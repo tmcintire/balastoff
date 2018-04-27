@@ -17,6 +17,8 @@ export class LevelCheck extends React.Component {
       apolloSkylabFilter: ['Apollo', 'Skylab'],
       mercuryFilter: ['Mercury'],
       currentFilter: ['Gemini'],
+      showLeads: true,
+      title: 'Gemini',
       loading: true,
     };
   }
@@ -90,6 +92,7 @@ export class LevelCheck extends React.Component {
       filteredLeads,
       filteredFollows,
       currentFilter: filter,
+      title: filter[0],
     });
   }
 
@@ -120,6 +123,13 @@ export class LevelCheck extends React.Component {
 
     this.setState({
       filteredRegistrations,
+    });
+  }
+
+
+  toggleLeadFollow = () => {
+    this.setState({
+      showLeads: !this.state.showLeads,
     });
   }
 
@@ -154,22 +164,23 @@ export class LevelCheck extends React.Component {
     };
     return (
       <div className="container form-container">
-        <h1 className="text-center">Level Check</h1>
+        <h1 className="text-center">{this.state.title} Level Check</h1>
         <div className="header-links">
           <Link to="/admin"><button className="btn btn-primary">Back to Admin</button></Link>
           <Link to="/admin/levelcheckupdates">View Completed Level Checks</Link>
         </div>
         <div className="level-check-filters">
+          <span onClick={() => this.toggleLeadFollow()}>Toggle Lead/Follow</span>
           <span onClick={() => this.changeFilter(this.state.geminiFilter)}>Gemini</span>
           <span onClick={() => this.changeFilter(this.state.apolloSkylabFilter)}>Apollo/Skylab</span>
         </div>
         <hr />
         <div className="level-check-container flex-row flex-justify-space-between">
-          <div className="leads-container">
+          <div className={`leads-container ${!this.state.showLeads ? 'hidden' : ''}`}>
             <h3 className="text-center">Leads</h3>
             {renderLeads()}
           </div>
-          <div className="follows-container">
+          <div className={`follows-container ${this.state.showLeads ? 'hidden' : ''}`}>
             <h3 className="text-center">Follows</h3>
             {renderFollows()}
           </div>

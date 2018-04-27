@@ -6,6 +6,7 @@ import store from './store';
 import app from './features/app';
 import * as actions from './features/data/actions';
 
+
 /* Initial actions, including setting the logged in user and getting all events */
 store.dispatch(actions.initialized());
 
@@ -24,7 +25,14 @@ const {
   MissedLevelCheckContainer,
   MissionGearIssuesContainer,
   Instructions,
-  MoneyLogContainer } = app.components;
+  MoneyLogContainer,
+  MasterAdminContainer,
+  EditTracks,
+  EditPasses,
+  EditDances,
+  EditConfig,
+  EditStore,
+  StoreContainer } = app.components;
 
 /* Define routes for administrators */
 const adminUserRoutes = () => (
@@ -42,6 +50,15 @@ const adminUserRoutes = () => (
     <Route path="/comps" component={CompRegistrationsContainer} />
     <Route path="/admin/missiongearissues" component={MissionGearIssuesContainer} />
     <Route path="/instructions" component={Instructions} />
+    <Route path="administrator" component={MasterAdminContainer} >
+      <IndexRoute component={EditTracks} />
+      <Route path="edittracks" component={EditTracks} />
+      <Route path="editpasses" component={EditPasses} />
+      <Route path="editdances" component={EditDances} />
+      <Route path="editconfig" component={EditConfig} />
+      <Route path="editstore" component={EditStore} />
+    </Route >
+    <Route path="store" component={StoreContainer} />
   </Route>
 );
 /* End Administrator Routes */

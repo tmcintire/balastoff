@@ -44,7 +44,8 @@ export class Home extends React.Component {
         return (
           _.includes(reg['First Name'].toLowerCase(), target.toLowerCase()) ||
           _.includes(reg['Last Name'].toLowerCase(), target.toLowerCase()) ||
-          _.includes(reg.Level.toLowerCase(), target.toLowerCase()) ||
+          _.includes(reg.Level.level.toLowerCase(), target.toLowerCase()) ||
+          _.includes(reg.Level.name.toLowerCase(), target.toLowerCase()) ||
           _.isEqual(reg.BookingID, target)
         );
       }

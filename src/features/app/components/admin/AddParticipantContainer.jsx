@@ -3,8 +3,10 @@ import { AddParticipant } from './AddParticipant';
 
 const mapStateToProps = state => ({
   registrations: state.data.registrations.registrations,
-  loading: state.data.prices.loading,
-  prices: state.data.prices.prices,
+  tracksLoading: state.data.tracks.loading,
+  tracks: state.data.tracks.tracks,
+  passes: state.data.passes.passes,
+  passesLoading: state.data.passes.loading,
   totalCollected: state.data.totalCollected.totalCollected,
 });
 

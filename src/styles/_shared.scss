@@ -17,6 +17,14 @@ body {
   -webkit-flex-direction: column;
 }
 
+.flex-grid {
+  display: flex;
+}
+
+.flex-grid-col {
+  flex: 1;
+}
+
 .flex-wrap {
   flex-wrap: wrap;
   -webkit-flex-wrap: wrap;
@@ -34,6 +42,27 @@ body {
   justify-content: center;
 }
 
+.flex-justify-start {
+  justify-content: flex-start;
+}
+
+.flex-justify-end {
+  justify-content: flex-end;
+}
+
+.flex-align-start {
+  align-items: flex-start;
+}
+
+.flex-align-center {
+  align-items: center;
+}
+
+.flex-align-end {
+  align-items: flex-end;
+}
+
+
 .no-outline {
   &:focus {
     outline: none!important;
@@ -47,5 +76,57 @@ body {
 .custom-buttons {
   a {
     color: white;
+  }
+}
+
+.confirmation-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(128,128,128, 0.5);
+  padding: 10px;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  box-shadow: 2px 2px 13px 2px grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .confirmation-inner {
+    position: relative;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid gray;
+    width: 50%;
+    padding: 10px;
+    box-shadow: 4px 4px 9px 0px lightslategrey;
+
+    .close-popup {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50px;
+      height: 50px;
+      background: darkred;
+      border: 1px solid silver;
+      border-radius: 5px;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .confirm-btn {
+    width: 75%;
+    height: 45px;
+    font-size: 1.2em;
+    margin-top: 20px;
   }
 }

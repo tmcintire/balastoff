@@ -1,0 +1,41 @@
+.title {
+  font-weight: bold;
+}
+
+.saved-message {
+  position: fixed;
+  right: 25px;
+  top: 65px;
+  background: green;
+  animation: pulse 3s infinite;
+  padding: 15px;
+  border-radius: 5px;
+  color: white;
+}
+
+.header-links {
+  display: flex;
+  justify-content: space-between;
+  font-size: 2em;
+  margin-bottom: 25px;
+}
+
+.items-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  margin-bottom: 15px;
+
+  .items-div {
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      cursor: pointer;
+      background: lightgray;
+    }
+  }
+  .items-div:not(last-child) {
+    border-bottom: 1px solid gray;
+  }
+}

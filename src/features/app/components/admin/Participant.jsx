@@ -11,7 +11,7 @@ export class Participant extends React.Component {
         <span className="col-xs-2">{registration.BookingID}</span>
         <span className="col-xs-3">{registration['First Name']}</span>
         <span className="col-xs-3">{registration['Last Name']}</span>
-        <span className="col-xs-2">{registration.Level}</span>
+        <span className="col-xs-2">{registration.Level.level}</span>
         <span className="col-xs-2">{registration.HasLevelCheck}</span>
       </div>
     );

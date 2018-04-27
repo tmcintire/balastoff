@@ -11,12 +11,12 @@ let rawData;
 let lastBookingId = 0;
 
 const regRef = firebaseRef.child('registrations');
-const development = false;
+const development = true;
 
 if (development === true) {
   axios({
     method: 'get',
-    url: 'https://cors-anywhere.herokuapp.com/http://balastoff.dancecamps.org/api.php?token=aa8cb508a33d&format=json&report=registration',
+    url: 'https://cors-anywhere.herokuapp.com/http://balastoff.dancecamps.org/api.php?token=67905e25c961&format=json&report=RegistrationApp',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
   }).then((response) => {
     headers = response.data.header;
@@ -41,7 +41,7 @@ if (development === true) {
         object[data[1]].MissionGearIssues = [];
         object[data[1]].Comments = [];
         object[data[1]]['Original Amount Owed'] = data[5];
-        object[data[1]].OriginalLevel = data[16];
+        object[data[1]].OriginalLevel = data[18];
         object[data[1]].WalkIn = false;
 
         // Handle Paid entries
@@ -52,14 +52,43 @@ if (development === true) {
         }
 
         // Handle Level Check
-        if (data[16] === 'Gemini' || data[16] === 'Apollo' || data[16] === 'Skylab') {
-          object[data[1]].HasLevelCheck = 'Yes';
-        } else {
-          object[data[1]].HasLevelCheck = 'No';
+        object[data[1]].HasLevelCheck = data[18] === 'Gemini' || data[18] === 'Apollo' || data[18] === 'Skylab';
+
+
+        let level;
+        switch (data[18]) {
+          case 'Beginner':
+            level = 'Beginner';
+            break;
+          case 'Mercury':
+            level = 'Intermediate';
+            break;
+          case 'Gemini':
+            level = 'Intermediate-Advanced';
+            break;
+          case 'Apollo':
+            level = 'Advanced';
+            break;
+          case 'Skylab':
+            level = 'Advanced-Plus';
+            break;
+          case 'SpaceX':
+            level = 'Invitational';
+            break;
+          case 'DancePass':
+            level = 'Dance Pass';
+            break;
+          default:
+            return;
         }
 
+        object[data[1]].Level = {
+          name: data[18],
+          level,
+        };
+
         // check for gear
-        object[data[1]].HasGear = (data[40] || data[42] || data[44]) ? 'Yes' : 'No';
+        object[data[1]].HasGear = (data[45] || data[48]) ? 'Yes' : 'No';
       });
     });
 
@@ -166,12 +195,48 @@ function getPartners(registrations) {
   store.dispatch(actions.partnersReceived(partners));
 }
 
+export function fetchConfig() {
+  firebaseRef.child('config').on('value', (snapshot) => {
+    const config = snapshot.val();
+    store.dispatch(actions.configReceived(config));
+  });
+}
+
 export function fetchTracks() {
   firebaseRef.child('Tracks').on('value', (snapshot) => {
     const tracks = snapshot.val();
     store.dispatch(actions.tracksReceived(tracks));
   });
 }
+
+export function fetchPasses() {
+  firebaseRef.child('Passes').on('value', (snapshot) => {
+    const passes = snapshot.val();
+    store.dispatch(actions.passesReceived(passes));
+  });
+}
+
+export function fetchDances() {
+  firebaseRef.child('Dances').on('value', (snapshot) => {
+    const dances = snapshot.val();
+    store.dispatch(actions.dancesReceived(dances));
+  });
+}
+
+export function fetchComps() {
+  firebaseRef.child('Comps').on('value', (snapshot) => {
+    const comps = snapshot.val();
+    store.dispatch(actions.compsReceived(comps));
+  });
+}
+
+export function fetchStore() {
+  firebaseRef.child('Store').on('value', (snapshot) => {
+    const storeItem = snapshot.val();
+    store.dispatch(actions.storeReceived(storeItem));
+  });
+}
+
 
 export function fetchPrices() {
   firebaseRef.child('prices').on('value', (snapshot) => {
@@ -229,6 +294,32 @@ export function updateTotalCollected(amount) {
 export function updateMoneyLog(log) {
   const key = firebaseRef.child('moneyLog').push().key;
   firebaseRef.child('moneyLog').child(key).update(log);
+
+  this.updateTotalCollected(log.amount);
 }
 
 export const getLastBookingId = () => lastBookingId;
+
+export function update(child, index, data, isUpdate, nextIndex) {
+  if (isUpdate) {
+    firebaseRef.child(child).child(index).update(data);
+  } else {
+    firebaseRef.child(child).child(nextIndex).set(data);
+  }
+}
+
+export function updateConfig(value) {
+  firebaseRef.child('config').update(value);
+}
+
+export function deleteRef(child, index) {
+  firebaseRef.child(child).child(index).remove();
+}
+
+export function voidTransaction(id, initials) {
+  firebaseRef.child('moneyLog').child(id).update({ status: 'Voided', initials });
+}
+
+export function updateStoreItemCount(id, newCount) {
+  firebaseRef.child('Store').child(id).update({ count: newCount });
+}

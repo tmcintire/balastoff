@@ -21,50 +21,34 @@ export class EditRegistration extends React.Component {
       const registration = props.registrations.filter(reg =>
         reg.BookingID === props.params.id)[0];
 
-      let partner = '';
-      const comps = [];
-      _.forEach(props.partners, (p) => {
-        if (registration['First Name'] === p.partner.first && registration['Last Name'] === p.partner.last) {
-          partner = `${p.first} ${p.last}`;
-          comps.push(p.comp);
-        }
-      });
       if (registration) {
         loading = false;
       }
 
       this.state = {
         registration,
-        comps,
         loading,
         showSaved: false,
+        moneyLogComment: 'Paid off amount due on registration',
+        error: '',
       };
     } else {
       this.state = {
         registration: {},
         loading: true,
         showSaved: false,
+        moneyLogComment: 'Paid off amount due on registration',
+        error: '',
       };
     }
-
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.registrations) {
       const registration = nextProps.registrations.filter(reg =>
         reg.BookingID === nextProps.params.id)[0];
-      let partner = '';
-      let comps = [];
-      _.forEach(nextProps.partners, (p) => {
-        if (registration['First Name'] === p.partner.first && registration['Last Name'] === p.partner.last) {
-          partner = `${p.first} ${p.last}`;
-          comps.push(p.comp);
-        }
-      });
       this.setState({
         registration,
-        partner,
-        comps,
         loading: false,
       });
     }
@@ -87,6 +71,11 @@ export class EditRegistration extends React.Component {
   }
 
   toggleCheckedIn = (e) => {
+    if (this.state.registration['Amount Owed'] !== '0.00') {
+      this.setState({ error: 'Registration must be paid before checking in' });
+      return;
+    }
+
     const object = {
       CheckedIn: e.target.checked,
     };
@@ -110,7 +99,9 @@ export class EditRegistration extends React.Component {
       const moneyLog = {
         bookingId: this.state.registration.BookingID,
         amount,
-        reason: 'Paid off amount due on registration form',
+        quantity: 'N/A',
+        unitPrice: 'N/A',
+        description: 'Paid Final Balance',
       };
       api.updateMoneyLog(moneyLog);
 
@@ -126,6 +117,16 @@ export class EditRegistration extends React.Component {
 
   backToRegistrations = () => {
     window.location('/');
+  }
+
+  updateMoneyLogComment = (comment) => {
+    let newComment = comment;
+    if (parseInt(this.state.registration['Amount Owed'], 10) > 0) {
+      newComment = this.state.moneyLogComment + ', ' + comment
+    }
+    this.setState({
+      moneyLogComment: newComment,
+    });
   }
 
   toggleResolved = (e, id, index) => {
@@ -156,6 +157,8 @@ export class EditRegistration extends React.Component {
   render() {
     const { registration, partner, comps } = this.state;
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
+    const renderError = this.state.error !== '' ? this.state.error : '';
+
     const renderRegistration = () => {
       if (this.state.loading) {
         return (
@@ -172,20 +175,23 @@ export class EditRegistration extends React.Component {
             <input className="no-outline" type="checkbox" checked={registration.CheckedIn} onChange={e => this.toggleCheckedIn(e)} />
           </div>
 
+          <p className="error-text">{renderError}</p>
+
           <hr />
           <div className="flex-row flex-wrap flex-justify-space-between">
             <Level
               saved={this.saved}
               id={this.props.params.id}
-              level={registration.Level}
+              level={registration.Level.name}
               hasLevelCheck={registration.HasLevelCheck}
             />
             <Comps
-              comps={comps}
+              comps={this.props.comps}
               partner={partner}
               saved={this.saved}
               id={this.props.params.id}
               registration={registration}
+              updateMoneyLogComment={this.updateMoneyLogComment}
             />
             <Payment
               saved={this.saved}
