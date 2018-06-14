@@ -31,9 +31,11 @@
 
 .level-check-form {
   width: 100%;
-  margin-bottom: 30px;
-  font-size: 2em;
+  height: 115px;
+  margin-bottom: 10px;
+  font-size: 1.9em;
   align-items: center;
+  border-bottom: 1px solid lightgray;
 
   .level-check-dropdown {
     width: 100%;
@@ -41,8 +43,16 @@
     font-size: 0.7em;
   }
 
-  span {
+  div {
     width: 25%;
+  }
+
+  .levelcheck-box-id {
+
+  }
+
+  .levelcheck-box-name {
+    font-size: 0.5em;
   }
 
   .accept-level {

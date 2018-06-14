@@ -7,6 +7,29 @@ import { LevelCheckBox } from './LevelCheckBox';
 const Loading = require('react-loading-animation');
 
 export class LevelCheck extends React.Component {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.registrations) {
+      const filteredLeads = nextProps.registrations.filter(r =>
+        r.HasLevelCheck &&
+        r.LeadFollow.toLowerCase() === 'lead' &&
+        r.LevelChecked === false &&
+        r.MissedLevelCheck === false &&
+        _.includes(prevState.currentFilter, r.OriginalLevel));
+      const filteredFollows = nextProps.registrations.filter(r =>
+        r.HasLevelCheck &&
+        r.LeadFollow.toLowerCase() === 'follow' &&
+        r.LevelChecked === false &&
+        r.MissedLevelCheck === false &&
+        _.includes(prevState.currentFilter, r.OriginalLevel));
+      return {
+        filteredLeads,
+        filteredFollows,
+        loading: false,
+      };
+    }
+
+    return null;
+  }
   constructor(props) {
     super(props);
 
@@ -23,56 +46,12 @@ export class LevelCheck extends React.Component {
     };
   }
 
-  componentWillMount() {
-    if (this.props.registrations) {
-      const filteredLeads = this.props.registrations.filter(r =>
-        r.HasLevelCheck === 'Yes' &&
-        r.LeadFollow === 'Lead' &&
-        r.LevelChecked === false &&
-        r.MissedLevelCheck === false &&
-        _.includes(this.state.currentFilter, r.OriginalLevel));
-      const filteredFollows = this.props.registrations.filter(r =>
-        r.HasLevelCheck === 'Yes' &&
-        r.LeadFollow === 'Follow' &&
-        r.LevelChecked === false &&
-        r.MissedLevelCheck === false &&
-        _.includes(this.state.currentFilter, r.OriginalLevel));
-      this.setState({
-        filteredLeads,
-        filteredFollows,
-        loading: false,
-      });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.registrations) {
-      const filteredLeads = nextProps.registrations.filter(r =>
-        r.HasLevelCheck === 'Yes' &&
-        r.LeadFollow === 'Lead' &&
-        r.LevelChecked === false &&
-        r.MissedLevelCheck === false &&
-        _.includes(this.state.currentFilter, r.OriginalLevel));
-      const filteredFollows = nextProps.registrations.filter(r =>
-        r.HasLevelCheck === 'Yes' &&
-        r.LeadFollow === 'Follow' &&
-        r.LevelChecked === false &&
-        r.MissedLevelCheck === false &&
-        _.includes(this.state.currentFilter, r.OriginalLevel));
-      this.setState({
-        filteredLeads,
-        filteredFollows,
-        loading: false,
-      });
-    }
-  }
-
   changeFilter = (filter) => {
     const filteredLeads = this.props.registrations.filter(r => {
       return (
         _.includes(filter, r.OriginalLevel) &&
         r.LeadFollow === 'Lead' &&
-        r.HasLevelCheck === 'Yes' &&
+        r.HasLevelCheck &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false
       );
@@ -82,7 +61,7 @@ export class LevelCheck extends React.Component {
       return (
         _.includes(filter, r.OriginalLevel) &&
         r.LeadFollow === 'Follow' &&
-        r.HasLevelCheck === 'Yes' &&
+        r.HasLevelCheck &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false
       );

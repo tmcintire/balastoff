@@ -45,7 +45,7 @@ export class MoneyLog extends React.Component {
     });
   }
 
-  voidTransaction = (transactionId) => {
+  toggleVoid = (transactionId) => {
     this.setState({
       showVoidConfirmation: true,
       transactionToVoid: {
@@ -74,15 +74,15 @@ export class MoneyLog extends React.Component {
                 <Link to={`editregistration/${eachLog.bookingId}`}>{eachLog.bookingId}</Link>
               </span>
               <div className="col-xs-5 flex-col money-log-details">
-                {renderDetails(eachLog.details)}
+                {eachLog.details && renderDetails(eachLog.details)}
               </div>
               <span className="col-xs-2">${eachLog.amount.toFixed(2)}</span>
-              {eachLog.status === 'Voided' ?
-                <span className="voided col-xs-3">{eachLog.status} by {eachLog.initials}</span>
+              {eachLog.void ?
+                <span className="voided col-xs-3">Voided by {eachLog.initials}</span>
                 :
-                <span className="col-xs-3">{eachLog.status}</span>
+                <span className="col-xs-3"></span>
               }
-              <i className="col-xs-1 fa fa-times-circle" onClick={() => this.voidTransaction(l)} />
+              <i className="col-xs-1 fa fa-times-circle" onClick={() => this.toggleVoid(l)} />
             </div>
           );
         });

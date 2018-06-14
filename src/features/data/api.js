@@ -355,7 +355,11 @@ export function deleteRef(child, index) {
 }
 
 export function voidTransaction(id, initials) {
-  firebaseRef.child('moneyLog').child(id).update({ status: 'Voided', initials });
+  firebaseRef.child('moneyLog').child(id).update({ void: true, initials });
+}
+
+export function unvoidTransaction(id, initials) {
+  firebaseRef.child('moneyLog').child(id).update({ void: false, initials });
 }
 
 export function updateStoreItemCount(id, newCount) {

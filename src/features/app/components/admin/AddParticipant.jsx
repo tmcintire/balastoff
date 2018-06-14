@@ -93,6 +93,7 @@ export class AddParticipant extends React.Component {
       HasLevelCheck: this.state.level.name === 'Gemini' || this.state.level.name === 'Apollo' || this.state.level.name === 'Skylab',
       LevelChecked: false,
       LevelUpdated: false,
+      MissedLevelCheck: false,
       OriginalLevel: this.state.level.name || 'NA',
       HasPaid: this.state.hasPaid,
       LeadFollow: this.state.leadFollow,
@@ -216,8 +217,8 @@ export class AddParticipant extends React.Component {
                   <label htmlFor="type">Lead/Follow</label>
                   <select name="leadFollow" onChange={this.handleChange} className={`form-control ${this.state.errors.leadFollow ? 'error' : ''}`} >
                     <option value="" />
-                    <option value="lead">Lead</option>
-                    <option value="follow">Follow</option>
+                    <option value="Lead">Lead</option>
+                    <option value="Follow">Follow</option>
                   </select>
                   <label htmlFor="type">Pass</label>
                   <select name="pass" onChange={this.handleChange} className={`form-control ${this.state.errors.pass ? 'error' : ''}`} >

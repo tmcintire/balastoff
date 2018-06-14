@@ -89,6 +89,7 @@ export class CompsPurchase extends React.Component {
         } else if (compData.Role) {
           return (
             <select value={found.Role} onChange={e => this.handleRoleChange(e.target.value, comp.Key)}>
+              <option value=""></option>
               <option value="Lead">Lead</option>
               <option value="Follow">Follow</option>
             </select>

@@ -14,15 +14,18 @@ export class VoidTransaction extends React.Component {
 
   confirmVoidTransaction() {
     if (this.state.typedPassword === this.state.confirmPassword) {
-      // void the transaction
-
-      api.updateTotalCollected(-(this.props.transaction.data.amount));
-
-      api.voidTransaction(this.props.transaction.id, this.state.initials);
+      // if its already void, reverse it
+      if (this.props.transaction.data.void) {
+        api.updateTotalCollected(this.props.transaction.data.amount);
+        api.unvoidTransaction(this.props.transaction.id, this.state.initials);
+      } else {
+        api.updateTotalCollected(-(this.props.transaction.data.amount));
+        api.voidTransaction(this.props.transaction.id, this.state.initials);
+      }
+      
     }
 
     this.props.closePopup();
-    // this.props.purchaseToast({ total: amount, quantity: this.state.amount, name: this.props.item.name });
   }
 
   handlePasswordEntry = (e) => this.setState({ typedPassword: e.target.value });
@@ -30,17 +33,18 @@ export class VoidTransaction extends React.Component {
   handleInitialsChanged = (e) => this.setState({ initials: e.target.value });
 
   render() {
+    const { id, data } = this.props.transaction;
     return (
       <div className="confirmation-container">
         <div className="confirmation-inner flex-col flex-align-center">
           <div className="close-popup" onClick={() => this.props.closePopup()}>
             x
           </div>
-          <h1 className="text-center">Void Transaction</h1>
+          <h1 className="text-center">{!data.void ? 'Void Transaction' : 'Reinstate Transaction'}</h1>
           <div className="flex-col flex-align-start">
-            <span>TransactionId: {this.props.transaction.id}</span>
-            <span>Amount: ${this.props.transaction.data.amount}</span>
-            <span>Reason: {this.props.transaction.data.reason}</span>
+            <span>TransactionId: {id}</span>
+            <span>Amount: ${data.amount}</span>
+            <span>Reason: {data.reason}</span>
           </div>
           
           <label htmlFor="password" >Confirmation Password</label>
