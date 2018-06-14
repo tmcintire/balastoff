@@ -65,10 +65,14 @@ export class CompsPurchase extends React.Component {
 
       return (
         <div key={index} className="info-container">
-          <div className="comp-info flex-align-center flex-row">
-            <input type="checkbox" checked={isSelected} onChange={e => this.compSelectionChange(e, comp)} />
-            <span>{comp.Name}(${comp.Price}): </span>
-            {renderPartnerOrRole(comp)}
+          <div className="comp-info flex-align-center flex-row flex-justify-space-between">
+            <div className="flex-row">
+              <input type="checkbox" checked={isSelected} onChange={e => this.compSelectionChange(e, comp)} />
+              <span>{comp.Name}(${comp.Price}): </span>
+            </div>
+            <div className="partner-role-container">
+              {renderPartnerOrRole(comp)}
+            </div>
           </div>
         </div>
       );
@@ -84,7 +88,10 @@ export class CompsPurchase extends React.Component {
           );
         } else if (compData.Role) {
           return (
-            <input type="text" value={found.Role} onChange={e => this.handleRoleChange(e.target.value, comp.Key)} />
+            <select value={found.Role} onChange={e => this.handleRoleChange(e.target.value, comp.Key)}>
+              <option value="Lead">Lead</option>
+              <option value="Follow">Follow</option>
+            </select>
           );
         }
       }
@@ -97,7 +104,7 @@ export class CompsPurchase extends React.Component {
           x
           </div>
           <h1>Confirm Purchase</h1>
-          <div className="flex-col flex-align-start">
+          <div className="flex-col flex-align-start full-width">
             {renderCompsList()}
           </div>
 

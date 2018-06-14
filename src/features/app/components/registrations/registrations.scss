@@ -42,9 +42,21 @@ input[type='checkbox']:checked {
   margin-bottom: 10px;
   flex-direction: column;
 
-  input {
+  .partner-role-container {
+    width: 47.4%
+  }
+  
+  input, select {
     margin-right: 10px;
   }
+
+  select {
+    width: 96%;
+  }
+}
+
+.info-container {
+  width: 100%;
 }
 
 .track-info-container {

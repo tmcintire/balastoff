@@ -68,7 +68,7 @@ export class MissionGear extends React.Component {
         return (
           <tr>
             <td>{registration.TShirts}</td>
-            <td>{registration.Size}</td>
+            <td>{registration.MenSize || registration.WomenSize}</td>
             <td className="text-center">
               <input
                 className="no-outline"
@@ -86,7 +86,7 @@ export class MissionGear extends React.Component {
         return (
           <tr>
             <td>{registration.AdditionalTShirts}</td>
-            <td>{registration.Size2}</td>
+            <td>{registration.MenSize2 || registration.WomenSize2}</td>
             <td className="text-center">
               <input
                 className="no-outline"

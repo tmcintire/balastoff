@@ -198,7 +198,7 @@ export class Comps extends React.Component {
         <div className="comp-container">
           <h3><strong><u>Comps</u></strong></h3>
           {renderComps()}
-          <button className="btn btn-primary" onClick={() => this.showAddComps()}>Add Comps</button>
+          <button className="btn btn-primary" onClick={() => this.showAddComps()}>Edit Comps</button>
         </div>
         {renderCompPurchase()}
       </div>
