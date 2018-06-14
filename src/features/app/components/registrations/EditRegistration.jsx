@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
 
@@ -186,7 +187,8 @@ export class EditRegistration extends React.Component {
               hasLevelCheck={registration.HasLevelCheck}
             />
             <Comps
-              comps={this.props.comps}
+              comps={registration.Comps}
+              allComps={this.props.allComps}
               partner={partner}
               saved={this.saved}
               id={this.props.params.id}
@@ -233,10 +235,10 @@ export class EditRegistration extends React.Component {
 }
 
 EditRegistration.propTypes = {
-  registration: React.PropTypes.array,
+  registration: PropTypes.array,
   params: {
-    id: React.PropTypes.string,
+    id: PropTypes.string,
   },
-  totalCollected: React.PropTypes.number,
-  partners: React.PropTypes.array,
+  totalCollected: PropTypes.number,
+  partners: PropTypes.array,
 };

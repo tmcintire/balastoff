@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export const EditMissionGearIssues = (props) => {
   const { issues } = props;
@@ -30,5 +31,5 @@ export const EditMissionGearIssues = (props) => {
 };
 
 EditMissionGearIssues.propTypes = {
-  issues: React.PropTypes.array,
+  issues: PropTypes.array,
 };

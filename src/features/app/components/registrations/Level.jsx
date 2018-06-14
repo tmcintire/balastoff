@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as api from '../../../data/api';
 
 export class Level extends React.Component {
@@ -32,6 +33,6 @@ export class Level extends React.Component {
 }
 
 Level.propTypes = {
-  level: React.PropTypes.string,
-  hasLevelCheck: React.PropTypes.boolean,
+  level: PropTypes.string,
+  hasLevelCheck: PropTypes.boolean,
 };

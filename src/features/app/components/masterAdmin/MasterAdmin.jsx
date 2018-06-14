@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 
 export const MasterAdmin = props => (
@@ -16,5 +17,5 @@ export const MasterAdmin = props => (
 );
 
 MasterAdmin.propTypes = {
-  children: React.PropTypes.node,
+  children: PropTypes.node,
 };

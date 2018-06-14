@@ -24,11 +24,9 @@ if (development === true) {
 
     const object = {};
     _.forEach(rawData, (data) => {
-      // console.log("************");
       object[data[1]] = {};
+      object[data[1]].Comps = [];
       _.forEach(headers, (header, headerIndex) => {
-        // console.log("Header", header);
-        // console.log("Data", data[headerIndex]);
         object[data[1]][header] = data[headerIndex];
         object[data[1]].CheckedIn = false;
         object[data[1]].HasComments = false;
@@ -43,6 +41,37 @@ if (development === true) {
         object[data[1]]['Original Amount Owed'] = data[5];
         object[data[1]].OriginalLevel = data[18];
         object[data[1]].WalkIn = false;
+
+        // Setup Comps Object
+        if (header === 'AdNov' && data[32] === 'Yes') {
+          object[data[1]].Comps.push({
+            Name: 'AdNov Draw',
+            Key: header,
+            Role: data[33],
+            Partner: null,
+          });
+        } else if (header === 'Open' && data[34] === 'Yes') {
+          object[data[1]].Comps.push({
+            Name: 'Open',
+            Key: header,
+            Role: null,
+            Partner: data[35],
+          });
+        } else if (header === 'Amateur Couples' && data[36] === 'Yes') {
+          object[data[1]].Comps.push({
+            Name: 'Amateur Couples',
+            Key: header,
+            Role: null,
+            Partner: data[37],
+          });
+        } else if (header === 'AmateurDraw' && data[38] === 'Yes') {
+          object[data[1]].Comps.push({
+            Name: 'Amateur Draw',
+            Key: header,
+            Role: null,
+            Partner: data[39],
+          });
+        }
 
         // Handle Paid entries
         if (data[5] === '0.00') {
@@ -271,6 +300,15 @@ export function getTotalCollected() {
 export function updateRegistration(bookingID, object) {
   return new Promise((resolve) => {
     regRef.child(bookingID).update(object).then(() => {
+      resolve();
+    });
+  });
+}
+
+// Updates to comps on a registration
+export function updateRegistrationComps(bookingID, comps) {
+  return new Promise((resolve) => {
+    regRef.child(bookingID).child('Comps').set(comps).then(() => {
       resolve();
     });
   });

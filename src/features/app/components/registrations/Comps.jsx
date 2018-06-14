@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import * as api from '../../../data/api';
 
 import { CompsPurchase } from './CompsPurchase';
@@ -8,35 +9,14 @@ export class Comps extends React.Component {
   constructor(props) {
     super(props);
 
-    const comps = this.getComps();
+    // const comps = this.getComps();
 
     this.state = {
       hasPaid: props.registration.HasPaid,
       originalAmountOwed: props.registration['Amount Owed'],
       showAddComps: false,
-      comps,
-      purchasingComps: [],
-      purchaseAmount: 0,
+      registrantComps: [],
     };
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    console.log(nextProps);
-  }
-
-  getComps = () => {
-    const comps = [];
-    if (this.props.registration.AdNov === 'Yes') {
-      comps.push({ comp: 'AdNov', role: this.props.registration.AdNovDrawRole, partner: null });
-    }
-    if (this.props.registration['Amateur Couples'] === 'Yes') {
-      comps.push({ comp: 'Amateur Couples', role: null, partner: this.props.registration['Amateur Partner'] });
-    }
-    if (this.props.registration.Open === 'Yes') {
-      comps.push({ comp: 'Open', role: null, partner: this.props.registration.Partner });
-    }
-
-    return comps;
   }
 
   handleValueChange = (e, comp, role, amount) => {
@@ -93,70 +73,53 @@ export class Comps extends React.Component {
   showAddComps = () => this.setState({ showAddComps: true });
   closePopup = () => this.setState({ showAddComps: false });
 
-  compSelectionChange = (e, comp) => {
-    const checked = e.target.checked;
-
-    if (checked) {
-      if (comp.key === 'AdNov') {
-        this.setState({ showAdNovRole: true });
-      } else if (comp.key === 'Open') {
-        this.setState({ showOpenPartner: true });
-      } else {
-        this.setState({ showAmateurPartner: true });
-      }
-
-      this.setState({
-        purchasingComps: this.state.purchasingComps.concat(comp),
-        purchaseAmount: this.state.purchaseAmount + comp.price,
-      });
-    } else {
-      this.setState({
-        purchasingComps: _.without(this.state.purchasingComps, comp),
-        purchaseAmount: this.state.purchaseAmount - comp.price,
-      });
-    }
-  }
-
-  modifyComps = () => {
+  modifyComps = (purchasingComps) => {
     const registration = {};
-    _.forEach(this.state.purchasingComps, c => {
-      registration[c.key] = 'Yes';
+    _.forEach(purchasingComps, (c) => {
+      registration[c.comp] = c.IsCompeting ? 'Yes' : 'No';
     });
 
-    api.updateRegistration(this.props.id, registration);
+    /////*** need to modify this to update comps object on the registration */
+    api.updateRegistrationComps(this.props.id, registration);
   };
 
-  confirmPurchase = () => {
-    this.modifyComps();
+  confirmPurchase = (purchasingComps, purchaseAmount) => {
+    api.updateRegistrationComps(this.props.id, purchasingComps).then(() => {
+      this.setState({
+        showAddComps: false,
+      });
+    });
 
     const details = [];
 
-    _.forEach(this.state.purchasingComps, (c) => {
+    let comps = purchasingComps.filter(pc => {
+      return _.some(this.props.comps, c => c.Key !== pc.Key);
+    });
+
+    _.forEach(comps, c => {
       details.push({
-        item: c.name,
+        item: c.Name,
         quantity: 1,
-        price: c.price,
+        price: this.findCompPrice(c.Key),
       });
     });
 
     const moneyLog = {
       bookingId: this.props.id,
-      amount: this.state.purchaseAmount,
+      amount: purchaseAmount,
       details,
     };
 
-    const comps = this.getComps();
+    // const comps = this.getComps();
 
     api.updateMoneyLog(moneyLog);
   }
 
+  findCompPrice = comp => _.find(this.props.allComps, c => c.Key === comp).Price;
+
   render() {
     const { registration } = this.props;
 
-    const unregisteredComps = _.filter(this.props.comps, (c => {
-      return !_.some(this.state.comps, uc => c.key === uc.comp);
-    }));
-  
     const amCouplesPartner = () => {
       if (registration['Amateur Couples'] === 'Yes') {
         return (
@@ -194,55 +157,19 @@ export class Comps extends React.Component {
     };
 
     const renderComps = () => {
-      if (!_.isEmpty(this.state.comps)) {
-        return this.state.comps.map(c => (
-          <div className="info-container">
-            {
-              c.comp === 'AdNov Draw' ?
-                <span>{c.comp} - {c.role}</span>
-              :
-                <span>{c.comp} - {c.partner}</span>
-            }
-          </div>
-        ));
-
-        // return (
-        //   <div>
-        //     <div className="info-container flex-col">
-        //       <span>
-        //     </div>
-        //     <div className="info-container flex-col">
-        //       <div className="comp-info flex-row">
-        //         <span className="full-width">AdNov Comp ($5): </span>
-        //         <select className="comp-select form-control" id="type" defaultValue={registration.AdNov} onChange={e => this.handleValueChange(e, 'AdNov', null, 5)}>
-        //           <option value="Yes">Yes</option>
-        //           <option value="No">No</option>
-        //         </select>
-        //       </div>
-        //       {adNovRoleSelect()}
-        //     </div>
-        //     <div className="info-container flex-col">
-        //       <div className="comp-info flex-row">
-        //         <span className="full-width">Amateur Couples ($20): </span>
-        //         <select className="comp-select form-control" id="type" defaultValue={registration['Amateur Couples']} onChange={e => this.handleValueChange(e, 'Amateur Couples', null, 20)}>
-        //           <option value="Yes">Yes</option>
-        //           <option value="No">No</option>
-        //         </select>
-        //       </div>
-        //       {amCouplesPartner()}
-        //     </div>
-        //     <div className="info-container flex-col">
-        //       <div className="comp-info flex-row">
-        //         <span className="full-width">Three Stage Open ($40): </span>
-        //         <select className="comp-select form-control" id="type" defaultValue={registration.Open} onChange={e => this.handleValueChange(e, 'Open', null, 40)}>
-        //           <option value="Yes">Yes</option>
-        //           <option value="No">No</option>
-        //         </select>
-        //       </div>
-        //       {openPartner()}
-        //     </div>
-        //   </div>
-        // );
+      if (!_.isEmpty(this.props.comps)) {
+        return this.props.comps.map((c) => {
+          return (
+            <div className="info-container">
+              {
+                c.Key === 'AdNov' || c.Key === 'AmateurDraw' ?
+                  <span>{c.Name} - {c.Role}</span>
+                :
+                  <span>{c.Name} - {c.Partner}</span>
+              }
+            </div>
+          );
+        });
       }
       return (
         <h4>No Comps Selected </h4>
@@ -255,7 +182,8 @@ export class Comps extends React.Component {
           <CompsPurchase
             confirmPurchase={this.confirmPurchase}
             closePopup={this.closePopup}
-            unregisteredComps={unregisteredComps}
+            allComps={this.props.allComps}
+            comps={this.props.comps}
             compSelectionChange={this.compSelectionChange}
             purchasingAmount={this.state.purchaseAmount}
           />
@@ -279,7 +207,7 @@ export class Comps extends React.Component {
 }
 
 Comps.propTypes = {
-  registration: React.PropTypes.array,
-  partner: React.PropTypes.string,
-  updateMoneyLogComment: React.PropTypes.function,
+  registration: PropTypes.array,
+  partner: PropTypes.string,
+  updateMoneyLogComment: PropTypes.func,
 };

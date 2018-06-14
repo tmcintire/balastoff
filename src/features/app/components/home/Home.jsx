@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { RegistrationBox } from './RegistrationBox';
 import * as helpers from '../../../data/helpers';
 import * as api from '../../../data/api';
@@ -186,6 +187,6 @@ export class Home extends React.Component {
 }
 
 Home.propTypes = {
-  registrations: React.PropTypes.array,
-  loading: React.PropTypes.boolean,
+  registrations: PropTypes.array,
+  loading: PropTypes.boolean,
 };

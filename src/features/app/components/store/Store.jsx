@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Column, Table, AutoSizer } from 'react-virtualized';
 import { PurchaseItem } from './PurchaseItem';
 
@@ -132,5 +133,5 @@ export class Store extends React.Component {
 }
 
 Store.propTypes = {
-  children: React.PropTypes.node,
+  children: PropTypes.node,
 };

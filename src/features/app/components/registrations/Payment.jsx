@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export const Payment = props => {
   let style = {};
@@ -31,7 +32,7 @@ export const Payment = props => {
 };
 
 Payment.propTypes = {
-  amountOwed: React.PropTypes.string,
-  fullyPaid: React.PropTypes.boolean,
-  togglePaid: React.PropTypes.function,
+  amountOwed: PropTypes.string,
+  fullyPaid: PropTypes.boolean,
+  togglePaid: PropTypes.function,
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as api from '../../../data/api';
 
 export class Comments extends React.Component {
@@ -72,6 +73,6 @@ export class Comments extends React.Component {
 }
 
 Comments.propTypes = {
-  saved: React.PropTypes.function,
-  id: React.PropTypes.string,
+  saved: PropTypes.function,
+  id: PropTypes.string,
 };

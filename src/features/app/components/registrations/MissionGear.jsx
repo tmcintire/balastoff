@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import * as api from '../../../data/api';
 
 export class MissionGear extends React.Component {
@@ -173,8 +173,8 @@ export class MissionGear extends React.Component {
 }
 
 MissionGear.propTypes = {
-  registration: React.PropTypes.array,
+  registration: PropTypes.array,
   params: {
-    id: React.PropTypes.string,
+    id: PropTypes.string,
   },
 };

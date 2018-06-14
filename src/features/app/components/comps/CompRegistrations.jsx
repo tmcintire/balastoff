@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 
 const Loading = require('react-loading-animation');
 
@@ -16,11 +17,17 @@ export class CompRegistrations extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.registrations) {
-      const openRegs = nextProps.registrations.filter(reg => reg.Open === 'Yes');
+      const openRegs = nextProps.registrations.filter(reg => {
+        if (reg.Comps) {
+          return reg.Comps.some(c => c.Key === 'Open');
+        }
+        return false;
+      });
       const open = [];
       _.forEach(openRegs, (r) => {
+        const openComp = r.Comps.find(c => c.Key === 'Open');
         const name = r['First Name'] + ' ' + r['Last Name'];
-        const partner = r.Partner;
+        const partner = openComp.Partner;
 
         const exists = _.some(open, o => {
           if (name === o.name && partner === o.partner) {
@@ -36,11 +43,17 @@ export class CompRegistrations extends React.Component {
         }
       });
 
-      const amateurRegistrations = nextProps.registrations.filter(reg => reg['Amateur Couples'] === 'Yes');
+      const amateurRegistrations = nextProps.registrations.filter(reg => {
+        if (reg.Comps) {
+          return reg.Comps.some(c => c.Key === 'Amateur Couples');
+        }
+        return false;
+      });
       const amateur = [];
       _.forEach(amateurRegistrations, (a) => {
+        const amateurCouplesComp = a.Comps.find(c => c.Key === 'Amateur Couples');        
         const name = a['First Name'] + ' ' + a['Last Name'];
-        const partner = a['Amateur Partner'];
+        const partner = amateurCouplesComp.Partner;
 
         const exists = _.some(amateur, am => {
           if (name === am.name && partner === am.partner) {
@@ -55,11 +68,20 @@ export class CompRegistrations extends React.Component {
           amateur.push({ name, partner });
         }
       });
-      const adNov = (nextProps.registrations.filter(reg => reg.AdNov === 'Yes')).map(r => {
+
+      const adNovRegistrations = nextProps.registrations.filter(reg => {
+        if (reg.Comps) {
+          return reg.Comps.some(c => c.Key === 'AdNov');
+        }
+        return false;
+      });
+
+      const adNov = adNovRegistrations.map(r => {
+        const adNovComp = r.Comps.find(c => c.Key === 'AdNov');        
         return {
           name: r['First Name'] + ' ' + r['Last Name'],
-          role: r.AdNovLeadFollow,
-        }
+          role: adNovComp.Role,
+        };
       });
 
       this.setState({
@@ -140,5 +162,5 @@ export class CompRegistrations extends React.Component {
 }
 
 CompRegistrations.PropTypes = {
-  loading: React.PropTypes.boolean,
+  loading: PropTypes.boolean,
 };
