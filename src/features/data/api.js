@@ -84,36 +84,36 @@ if (development === true) {
         object[data[1]].HasLevelCheck = data[18] === 'Gemini' || data[18] === 'Apollo' || data[18] === 'Skylab';
 
 
-        let level;
+        let levelName;
         switch (data[18]) {
           case 'Beginner':
-            level = 'Beginner';
+            levelName = 'Beginner';
             break;
           case 'Mercury':
-            level = 'Intermediate';
+            levelName = 'Intermediate';
             break;
           case 'Gemini':
-            level = 'Intermediate-Advanced';
+            levelName = 'Intermediate-Advanced';
             break;
           case 'Apollo':
-            level = 'Advanced';
+            levelName = 'Advanced';
             break;
           case 'Skylab':
-            level = 'Advanced-Plus';
+            levelName = 'Advanced-Plus';
             break;
           case 'SpaceX':
-            level = 'Invitational';
+            levelName = 'Invitational';
             break;
           case 'DancePass':
-            level = 'Dance Pass';
+            levelName = 'Dance Pass';
             break;
           default:
             return;
         }
 
         object[data[1]].Level = {
-          name: data[18],
-          level,
+          name: levelName,
+          level: data[18],
         };
 
         // check for gear
@@ -271,6 +271,13 @@ export function fetchPrices() {
   firebaseRef.child('prices').on('value', (snapshot) => {
     const prices = snapshot.val();
     store.dispatch(actions.pricesReceived(prices));
+  });
+}
+
+export function fetchAdminFields() {
+  firebaseRef.child('Fields').on('value', (snapshot) => {
+    const fields = snapshot.val();
+    store.dispatch(actions.fieldsReceived(fields));
   });
 }
 

@@ -20,7 +20,7 @@ export class LevelCheckInfo extends React.Component {
         <span>{registration.BookingID}</span>
         <span>{registration['First Name']}</span>
         <span>{registration['Last Name']}</span>
-        <span>{registration.Level}</span>
+        <span>{registration.Level.level}</span>
         <input
           type="checkbox"
           checked={registration.BadgeUpdated}

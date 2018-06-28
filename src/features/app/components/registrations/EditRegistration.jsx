@@ -183,7 +183,7 @@ export class EditRegistration extends React.Component {
             <Level
               saved={this.saved}
               id={this.props.params.id}
-              level={registration.Level.name}
+              level={registration.Level.level}
               hasLevelCheck={registration.HasLevelCheck}
             />
             <Comps

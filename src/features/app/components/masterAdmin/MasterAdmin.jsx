@@ -11,6 +11,7 @@ export const MasterAdmin = props => (
       <Link to="/administrator/editdances">Dances</Link>
       <Link to="/administrator/editconfig">Config</Link>
       <Link to="/administrator/editstore">Store</Link>
+      <Link to="/administrator/editadminfields">Admin Fields</Link>
     </div>
     {React.cloneElement(props.children, { ...props })}
   </div>

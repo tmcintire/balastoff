@@ -159,6 +159,24 @@ export const config = (state = [], action) => {
   }
 };
 
+export const fields = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_FIELDS':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_FIELDS':
+      return {
+        ...state,
+        fields: action.fields,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
 export const dances = (state = [], action) => {
   switch (action.type) {
     case 'START_FETCHING_DANCES':
@@ -225,4 +243,5 @@ export default combineReducers({
   dances,
   store,
   comps,
+  fields,
 });

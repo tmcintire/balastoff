@@ -45,6 +45,16 @@ export function configReceived(config) {
   };
 }
 
+export function fieldsReceived(fields) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_FIELDS' });
+    dispatch({
+      type: 'RECEIVED_FIELDS',
+      fields,
+    });
+  };
+}
+
 export function passesReceived(passes) {
   return function (dispatch) { // eslint-disable-line
     dispatch({ type: 'START_FETCHING_PASSES' });

@@ -32,6 +32,7 @@ const {
   EditDances,
   EditConfig,
   EditStore,
+  EditAdminFields,
   StoreContainer } = app.components;
 
 /* Define routes for administrators */
@@ -57,6 +58,7 @@ const adminUserRoutes = () => (
       <Route path="editdances" component={EditDances} />
       <Route path="editconfig" component={EditConfig} />
       <Route path="editstore" component={EditStore} />
+      <Route path="editadminfields" component={EditAdminFields} />
     </Route >
     <Route path="store" component={StoreContainer} />
   </Route>

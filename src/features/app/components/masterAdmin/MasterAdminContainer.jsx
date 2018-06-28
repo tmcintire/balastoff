@@ -7,6 +7,7 @@ const mapStateToProps = state => ({
   dances: state.data.dances.dances,
   passes: state.data.passes.passes,
   store: state.data.store.store,
+  fields: state.data.fields.fields,
 });
 
 export const MasterAdminContainer = connect(mapStateToProps)(MasterAdmin);

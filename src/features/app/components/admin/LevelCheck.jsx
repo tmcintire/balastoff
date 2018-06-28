@@ -14,12 +14,14 @@ export class LevelCheck extends React.Component {
         r.LeadFollow.toLowerCase() === 'lead' &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
+        r.CheckedIn === true &&        
         _.includes(prevState.currentFilter, r.OriginalLevel));
       const filteredFollows = nextProps.registrations.filter(r =>
         r.HasLevelCheck &&
         r.LeadFollow.toLowerCase() === 'follow' &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
+        r.CheckedIn === true &&
         _.includes(prevState.currentFilter, r.OriginalLevel));
       return {
         filteredLeads,
@@ -53,7 +55,8 @@ export class LevelCheck extends React.Component {
         r.LeadFollow === 'Lead' &&
         r.HasLevelCheck &&
         r.LevelChecked === false &&
-        r.MissedLevelCheck === false
+        r.MissedLevelCheck === false &&
+        r.CheckedIn === true
       );
     });
 
@@ -63,7 +66,8 @@ export class LevelCheck extends React.Component {
         r.LeadFollow === 'Follow' &&
         r.HasLevelCheck &&
         r.LevelChecked === false &&
-        r.MissedLevelCheck === false
+        r.MissedLevelCheck === false &&
+        r.CheckedIn === true
       );
     });
 
