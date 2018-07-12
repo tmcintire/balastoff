@@ -90,8 +90,8 @@ export class Comps extends React.Component {
       });
     });
 
-    const newAmountOwed = this.props.registration['Amount Owed'] + purchaseAmount;
-    api.updateRegistration(this.props.id, { 'Amount Owed': newAmountOwed });
+    const newAmountOwed = parseInt(this.props.registration['Amount Owed']) + purchaseAmount;
+    api.updateRegistration(this.props.id, { 'Amount Owed': newAmountOwed, HasPaid: newAmountOwed === 0 });
 
     const details = [];
 

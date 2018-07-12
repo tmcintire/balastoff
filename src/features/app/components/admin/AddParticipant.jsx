@@ -81,11 +81,11 @@ export class AddParticipant extends React.Component {
       BookingID: JSON.stringify(this.state.bookingId),
       'Last Name': this.state.lastName,
       Level: this.state.level || { level: 'NA', name: 'NA' },
-      HasLevelCheck: this.state.level.level === 'Gemini' || this.state.level.level === 'Apollo' || this.state.level.level === 'Skylab',
+      HasLevelCheck: this.state.level === 'Gemini' || this.state.level === 'Apollo' || this.state.level === 'Skylab',
       LevelChecked: false,
       LevelUpdated: false,
       MissedLevelCheck: false,
-      OriginalLevel: this.state.level.level || 'NA',
+      OriginalLevel: this.state.level || 'NA',
       HasPaid: false,
       LeadFollow: this.state.leadFollow,
       Open: 'No',
@@ -138,7 +138,7 @@ export class AddParticipant extends React.Component {
         break;
       case 'level':
         level = _.filter(this.props.tracks, t => t.level === e.target.value)[0];
-        this.setState({ [target]: level });
+        this.setState({ [target]: level.level });
         break;
       case 'hasPaid':
         this.setState({ [target]: e.target.checked });

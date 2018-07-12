@@ -8,7 +8,9 @@ const Loading = require('react-loading-animation');
 export class EditAdminFields extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.fields) {
-      return { loading: false };
+      return { 
+        loading: false,
+      };
     }
 
     return null;
@@ -22,28 +24,24 @@ export class EditAdminFields extends React.Component {
       showForm: false,
       isEditing: false,
       editedObject: {},
-      editedIndex: null,
+      editedKey: null,
       showSaved: false,
       options: null
     };
   }
 
-  componentWillMount() {
-    if (this.props.fields) {
-      this.setState({
-        loading: false,
-      });
+  addEdit = (key, addEdit) => {
+    let options = [];
+    if (key && this.props.fields[key].options && this.props.fields[key].options.length > 0) {
+      options = this.props.fields[key].options;
     }
-  }
 
-
-  addEdit = (index, addEdit) => {
     this.setState({
       showForm: true,
       isEditing: addEdit,
-      editedIndex: index,
-      editedObject: addEdit ? this.props.fields : {},
-      options: this.props.fields[index].options,
+      editedKey: key,
+      editedObject: addEdit ? this.props.fields[key] : {},
+      options,
     });
   }
 
@@ -52,6 +50,7 @@ export class EditAdminFields extends React.Component {
 
     this.setState({
       editedObject: {
+        ...this.state.editedObject,
         [target]: e.target.value,
       },
     });
@@ -59,19 +58,23 @@ export class EditAdminFields extends React.Component {
 
   handleOptionChange = (e, index, key) => {
     const target = e.target.name;
+    let option = {};
+    if (!this.state.editedObject.options) {
+      // if the edited object does not have options already on it
+      option = { [key]: e.target.value };
+    } else if (this.state.editedObject.options[index]) {
+      option = {
+        ...this.state.editedObject.options[index],
+        [key]: e.target.value,
+      };
+    }
 
     this.setState({
       editedObject: {
         ...this.state.editedObject,
-        [this.state.editedIndex]: {
-          ...this.state.editedObject[this.state.editedIndex],
-          options: {
-            ...this.state.editedObject[this.state.editedIndex].options,
-            [index]: {
-              ...this.state.editedObject[this.state.editedIndex].options[index],
-              [key]: e.target.value,
-            },
-          },
+        options: {
+          ...this.state.editedObject.options,
+          [index]: option,
         },
       },
     });
@@ -79,17 +82,15 @@ export class EditAdminFields extends React.Component {
 
   saveChanges = (e) => {
     e.preventDefault();
-    const configKey = this.state.editedIndex;
-    const nextFieldIndex = this.props.fields ? this.props.fields.length : 0;
-    const isUpdate = this.state.isEditing;    
-    api.update('Fields', this.state.editedIndex, this.state.editedObject, isUpdate, nextFieldIndex);
+    const isUpdate = this.state.isEditing;
+    api.update('Fields', this.state.editedKey, this.state.editedObject, isUpdate);
     this.saved();
     this.setState({ showForm: false });
   }
 
   delete = (e) => {
     e.preventDefault();
-    api.deleteRef('config', this.state.editedIndex);
+    api.deleteRef('config', this.state.editedKey);
     this.setState({ showForm: false });
   }
 
@@ -123,16 +124,16 @@ export class EditAdminFields extends React.Component {
     };
 
     const renderFields = () => {
-      const sortedFields = _.orderBy(this.props.fields, 'sortOrder');
-
       if (this.state.loading) {
         return (
           <Loading />
         );
       }
-      return sortedFields.map((field, index) => {
+
+      return Object.keys(this.props.fields).map((key) => {
+        const field = this.props.fields[key];
         return (
-          <tr key={index} onClick={() => this.addEdit(index, true)}>
+          <tr key={key} onClick={() => this.addEdit(key, true)}>
             <td>{field.key}</td>
             <td>{field.label}</td>
             <td>{field.sortOrder}</td>
@@ -147,8 +148,8 @@ export class EditAdminFields extends React.Component {
       return this.state.options.map((option, index) => {
         return (
           <div className="flex-row">
-            <input className="form-control" type="text" defaultValue={option.label} onChange={(e) => this.handleOptionChange(e, index, 'label')} />
-            <input className="form-control" type="text" defaultValue={option.value} onChange={(e) => this.handleOptionChange(e, index, 'value')} />
+            <input className="form-control" type="text" name="label" defaultValue={option.label} onChange={(e) => this.handleOptionChange(e, index, 'label')} />
+            <input className="form-control" type="text" name="value" defaultValue={option.value} onChange={(e) => this.handleOptionChange(e, index, 'value')} />
           </div>
         );
       });
@@ -166,15 +167,15 @@ export class EditAdminFields extends React.Component {
             <div className="form-group">
               <form>
                 <label htmlFor="type">Key</label>
-                <input className="form-control" name="key" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedIndex].key : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="key" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].key : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Label</label>
-                <input className="form-control" name={this.state.editedIndex} defaultValue={this.state.isEditing ? this.props.fields[this.state.editedIndex].label : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="label" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].label : ''} onChange={this.handleChange} type="text" />
                 
                 <label htmlFor="type">Sort Order</label>
-                <input className="form-control" name={this.state.editedIndex} defaultValue={this.state.isEditing ? this.props.fields[this.state.editedIndex].sortOrder : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="sortOrder" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].sortOrder : ''} onChange={this.handleChange} type="text" />
 
                 <label htmlFor="type">Type</label>
-                <input className="form-control" name={this.state.editedIndex} defaultValue={this.state.isEditing ? this.props.fields[this.state.editedIndex].type : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="type" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].type : ''} onChange={this.handleChange} type="text" />
                 
                 <label htmlFor="type">Options</label>
                 {renderOptionsInput()}

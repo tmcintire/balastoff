@@ -1,36 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as api from '../../../data/api';
 
-export class Level extends React.Component {
-  handleValueChange = (e, comp) => {
-    const object = {
-      [comp]: e.target.value,
-    };
+export const Level = (props) => {
+  const { level, hasLevelCheck } = props;
 
-    api.updateRegistration(this.props.id, object);
-    this.props.saved();
-  }
-  render() {
-    const { level, hasLevelCheck } = this.props;
-
-    const renderComps = () => (
-      <div className="level-container">
-        <h3><strong><u>Track Information</u></strong></h3>
-        <div className="track-info-container">
-          <span className="full-width"><strong>Level: </strong>{level} </span>
-          <span className={`${hasLevelCheck ? 'has-level-check' : ''} full-width`}><strong>Level Check: </strong>{hasLevelCheck ? 'Yes' : 'No'} </span>
-        </div>
-
+  const renderComps = () => (
+    <div className="level-container">
+      <h3><strong><u>Track Information</u></strong></h3>
+      <div className="track-info-container">
+        <span className="full-width"><strong>Level: </strong>{level} </span>
+        <span className={`${hasLevelCheck ? 'has-level-check' : ''} full-width`}><strong>Level Check: </strong>{hasLevelCheck ? 'Yes' : 'No'} </span>
       </div>
-    );
-    return (
-      <div>
-        {renderComps()}
-      </div>
-    );
-  }
-}
+
+    </div>
+  );
+
+  return (
+    <div>
+      {renderComps()}
+    </div>
+  );
+};
 
 Level.propTypes = {
   level: PropTypes.string,

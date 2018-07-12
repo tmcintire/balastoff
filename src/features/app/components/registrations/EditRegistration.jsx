@@ -14,6 +14,23 @@ import { EditMissionGearIssues } from './EditMissionGearIssues';
 const Loading = require('react-loading-animation');
 
 export class EditRegistration extends React.Component {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.registrations && nextProps.tracks) {
+      const registration = nextProps.registrations.filter(reg =>
+        reg.BookingID === nextProps.params.id)[0];
+
+      const hasLevelCheck = _.some(nextProps.tracks, track => track.level === registration.Level && track.levelCheck === true);
+
+      return {
+        registration,
+        loading: false,
+        hasLevelCheck,
+      };
+    }
+
+    return null;
+  }
+
   constructor(props) {
     super(props);
     let loading = true;
@@ -44,17 +61,6 @@ export class EditRegistration extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.registrations) {
-      const registration = nextProps.registrations.filter(reg =>
-        reg.BookingID === nextProps.params.id)[0];
-      this.setState({
-        registration,
-        loading: false,
-      });
-    }
-  }
-
   saveForm(e) {
     e.preventDefault();
     let hasComments;
@@ -72,7 +78,7 @@ export class EditRegistration extends React.Component {
   }
 
   toggleCheckedIn = (e) => {
-    if (this.state.registration['Amount Owed'] !== '0.00') {
+    if (this.state.registration['Amount Owed'] !== '0.00' && this.state.registration['Amount Owed'] !== 0) {
       this.setState({ error: 'Registration must be paid before checking in' });
       return;
     }
@@ -183,8 +189,8 @@ export class EditRegistration extends React.Component {
             <Level
               saved={this.saved}
               id={this.props.params.id}
-              level={registration.Level.level}
-              hasLevelCheck={registration.HasLevelCheck}
+              level={registration.Level}
+              hasLevelCheck={this.state.hasLevelCheck}
             />
             <Comps
               comps={registration.Comps}

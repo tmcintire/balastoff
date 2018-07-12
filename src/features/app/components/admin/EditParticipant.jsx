@@ -75,7 +75,7 @@ export class EditParticipant extends React.Component {
             <input type="text" className="form-control" defaultValue={participant[field.key]} ref={(ref) => { this[field.key] = ref; }} />
           </React.Fragment>
 
-        )
+        );
       }
     });
   }

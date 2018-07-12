@@ -83,39 +83,6 @@ if (development === true) {
         // Handle Level Check
         object[data[1]].HasLevelCheck = data[18] === 'Gemini' || data[18] === 'Apollo' || data[18] === 'Skylab';
 
-
-        let levelName;
-        switch (data[18]) {
-          case 'Beginner':
-            levelName = 'Beginner';
-            break;
-          case 'Mercury':
-            levelName = 'Intermediate';
-            break;
-          case 'Gemini':
-            levelName = 'Intermediate-Advanced';
-            break;
-          case 'Apollo':
-            levelName = 'Advanced';
-            break;
-          case 'Skylab':
-            levelName = 'Advanced-Plus';
-            break;
-          case 'SpaceX':
-            levelName = 'Invitational';
-            break;
-          case 'DancePass':
-            levelName = 'Dance Pass';
-            break;
-          default:
-            return;
-        }
-
-        object[data[1]].Level = {
-          name: levelName,
-          level: data[18],
-        };
-
         // check for gear
         object[data[1]].HasGear = (data[45] || data[48]) ? 'Yes' : 'No';
       });
@@ -345,11 +312,12 @@ export function updateMoneyLog(log) {
 
 export const getLastBookingId = () => lastBookingId;
 
-export function update(child, index, data, isUpdate, nextIndex) {
+export function update(child, index, data, isUpdate) {
   if (isUpdate) {
     firebaseRef.child(child).child(index).update(data);
   } else {
-    firebaseRef.child(child).child(nextIndex).set(data);
+    const key = firebaseRef.child('Fields').push().key;
+    firebaseRef.child(child).child(key).set(data);
   }
 }
 
