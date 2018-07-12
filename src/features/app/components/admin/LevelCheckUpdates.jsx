@@ -1,8 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
-import * as api from '../../../data/api';
 import { LevelCheckInfo } from './LevelCheckInfo';
-import { GeminiBadges } from './GeminiBadges';
 
 const Loading = require('react-loading-animation');
 
@@ -65,8 +62,10 @@ export class LevelCheckUpdates extends React.Component {
     let newFilter = [];
     if (filter === 'Gemini') {
       newFilter = ['Gemini'];
+    } else if (filter === 'Apollo') {
+      newFilter = ['Apollo'];
     } else {
-      newFilter = ['Apollo', 'Skylab'];
+      newFilter = ['Skylab'];
     }
     const updatedRegistrations = this.props.registrations.filter(r =>
       (r.OriginalLevel === newFilter[0] || r.OriginalLevel === newFilter[1]) && r.HasLevelCheck && r.LevelChecked && r.BadgeUpdatede && !r.MissedLevelCheck
@@ -80,9 +79,11 @@ export class LevelCheckUpdates extends React.Component {
 
     let title = '';
     if (filter === 'Apollo') {
-      title = 'Apollo/Skylab';
+      title = 'Apollo';
     } else if (filter === 'Gemini') {
       title = 'Gemini';
+    } else if (filter === 'Skylab') {
+      title = 'Skylab';
     }
 
     this.setState({
@@ -135,7 +136,8 @@ export class LevelCheckUpdates extends React.Component {
       <div className="container form-container">
           <div className="level-check-filters">
             <span onClick={() => this.changeFilter('Gemini')}>Gemini</span>
-            <span onClick={() => this.changeFilter('Apollo')}>Apollo/Skylab</span>
+            <span onClick={() => this.changeFilter('Apollo')}>Apollo</span>
+            <span onClick={() => this.changeFilter('Skylab')}>Skylab</span>
           </div>
         <h1 className="text-center">{this.state.title}</h1>
         {renderRegistrations()}

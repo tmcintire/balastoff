@@ -39,7 +39,8 @@ export class LevelCheck extends React.Component {
       filteredLeads: {},
       filteredFollows: {},
       geminiFilter: ['Gemini'],
-      apolloSkylabFilter: ['Apollo', 'Skylab'],
+      apolloFilter: ['Apollo'],
+      skylabFilter: ['Skylab'],
       mercuryFilter: ['Mercury'],
       currentFilter: ['Gemini'],
       showLeads: true,
@@ -155,7 +156,9 @@ export class LevelCheck extends React.Component {
         <div className="level-check-filters">
           <span onClick={() => this.toggleLeadFollow()}>Toggle Lead/Follow</span>
           <span onClick={() => this.changeFilter(this.state.geminiFilter)}>Gemini</span>
-          <span onClick={() => this.changeFilter(this.state.apolloSkylabFilter)}>Apollo/Skylab</span>
+          <span onClick={() => this.changeFilter(this.state.apolloFilter)}>Apollo</span>
+          <span onClick={() => this.changeFilter(this.state.skylabFilter)}>Skylab</span>
+
         </div>
         <hr />
         <div className="level-check-container flex-row flex-justify-space-between">

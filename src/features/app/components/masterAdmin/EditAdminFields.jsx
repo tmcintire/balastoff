@@ -6,6 +6,14 @@ import * as api from '../../../data/api';
 const Loading = require('react-loading-animation');
 
 export class EditAdminFields extends React.Component {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.fields) {
+      return { loading: false };
+    }
+
+    return null;
+  }
+
   constructor(props) {
     super(props);
 
@@ -16,6 +24,7 @@ export class EditAdminFields extends React.Component {
       editedObject: {},
       editedIndex: null,
       showSaved: false,
+      options: null
     };
   }
 
@@ -27,13 +36,6 @@ export class EditAdminFields extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.fields) {
-      this.setState({
-        loading: false,
-      });
-    }
-  }
 
   addEdit = (index, addEdit) => {
     this.setState({
@@ -41,6 +43,7 @@ export class EditAdminFields extends React.Component {
       isEditing: addEdit,
       editedIndex: index,
       editedObject: addEdit ? this.props.fields : {},
+      options: this.props.fields[index].options,
     });
   }
 
@@ -54,10 +57,32 @@ export class EditAdminFields extends React.Component {
     });
   }
 
+  handleOptionChange = (e, index, key) => {
+    const target = e.target.name;
+
+    this.setState({
+      editedObject: {
+        ...this.state.editedObject,
+        [this.state.editedIndex]: {
+          ...this.state.editedObject[this.state.editedIndex],
+          options: {
+            ...this.state.editedObject[this.state.editedIndex].options,
+            [index]: {
+              ...this.state.editedObject[this.state.editedIndex].options[index],
+              [key]: e.target.value,
+            },
+          },
+        },
+      },
+    });
+  }
+
   saveChanges = (e) => {
     e.preventDefault();
     const configKey = this.state.editedIndex;
-    api.updateConfig({ [configKey]: this.state.editedObject[configKey] });
+    const nextFieldIndex = this.props.fields ? this.props.fields.length : 0;
+    const isUpdate = this.state.isEditing;    
+    api.update('Fields', this.state.editedIndex, this.state.editedObject, isUpdate, nextFieldIndex);
     this.saved();
     this.setState({ showForm: false });
   }
@@ -84,30 +109,51 @@ export class EditAdminFields extends React.Component {
     }, 2000);
   }
 
+  addOption = () => {
+    this.setState({
+      options: this.state.options.concat({ key: '', label: '' }),
+    });
+  }
+
   render() {
     const renderOptions = (options) => {
       return options.map(option => {
-        return <div>{option}</div>;
+        return <div>{option.label}</div>;
       });
     };
 
     const renderFields = () => {
+      const sortedFields = _.orderBy(this.props.fields, 'sortOrder');
+
       if (this.state.loading) {
         return (
           <Loading />
         );
       }
-      return this.props.fields.map((field, index) => {
+      return sortedFields.map((field, index) => {
         return (
-          <tr key={index} onClick={() => this.addEdit(field, true)}>
+          <tr key={index} onClick={() => this.addEdit(index, true)}>
             <td>{field.key}</td>
             <td>{field.label}</td>
+            <td>{field.sortOrder}</td>
             <td>{field.type}</td>
             <td>{field.options && renderOptions(field.options)}</td>
           </tr>
         );
       });
     };
+
+    const renderOptionsInput = () => {
+      return this.state.options.map((option, index) => {
+        return (
+          <div className="flex-row">
+            <input className="form-control" type="text" defaultValue={option.label} onChange={(e) => this.handleOptionChange(e, index, 'label')} />
+            <input className="form-control" type="text" defaultValue={option.value} onChange={(e) => this.handleOptionChange(e, index, 'value')} />
+          </div>
+        );
+      });
+
+    }
 
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
 
@@ -120,9 +166,19 @@ export class EditAdminFields extends React.Component {
             <div className="form-group">
               <form>
                 <label htmlFor="type">Key</label>
-                <input className="form-control" name="key" defaultValue={this.state.isEditing ? this.state.editedIndex : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="key" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedIndex].key : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Label</label>
-                <input className="form-control" name={this.state.editedIndex} defaultValue={this.state.isEditing ? this.state.editedObject[this.state.editedIndex] : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name={this.state.editedIndex} defaultValue={this.state.isEditing ? this.props.fields[this.state.editedIndex].label : ''} onChange={this.handleChange} type="text" />
+                
+                <label htmlFor="type">Sort Order</label>
+                <input className="form-control" name={this.state.editedIndex} defaultValue={this.state.isEditing ? this.props.fields[this.state.editedIndex].sortOrder : ''} onChange={this.handleChange} type="text" />
+
+                <label htmlFor="type">Type</label>
+                <input className="form-control" name={this.state.editedIndex} defaultValue={this.state.isEditing ? this.props.fields[this.state.editedIndex].type : ''} onChange={this.handleChange} type="text" />
+                
+                <label htmlFor="type">Options</label>
+                {renderOptionsInput()}
+                <i className="fa fa-plus" onClick={this.addOption} />
                 <br />
 
                 <div className="form-submit-buttons flex-row flex-justify-space-between">
@@ -148,6 +204,7 @@ export class EditAdminFields extends React.Component {
             <tr>
               <th>Key</th>
               <th>Label</th>
+              <th>Sort</th>
               <th>Type</th>
               <th>Options</th>
             </tr>

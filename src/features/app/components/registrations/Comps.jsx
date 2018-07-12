@@ -90,30 +90,33 @@ export class Comps extends React.Component {
       });
     });
 
+    const newAmountOwed = this.props.registration['Amount Owed'] + purchaseAmount;
+    api.updateRegistration(this.props.id, { 'Amount Owed': newAmountOwed });
+
     const details = [];
 
     let comps = purchasingComps.filter(pc => {
       return !_.some(this.props.comps, c => c.Key === pc.Key);
     });
 
-    if (purchaseAmount > 0) {
-      _.forEach(comps, c => {
-        details.push({
-          item: c.Name,
-          quantity: 1,
-          price: this.findCompPrice(c.Key),
-        });
-      });
+    // if (purchaseAmount > 0) {
+    //   _.forEach(comps, c => {
+    //     details.push({
+    //       item: c.Name,
+    //       quantity: 1,
+    //       price: this.findCompPrice(c.Key),
+    //     });
+    //   });
 
-      const moneyLog = {
-        bookingId: this.props.id,
-        amount: purchaseAmount,
-        details,
-        void: false,
-      };
+    //   const moneyLog = {
+    //     bookingId: this.props.id,
+    //     amount: purchaseAmount,
+    //     details,
+    //     void: false,
+    //   };
 
-      api.updateMoneyLog(moneyLog);
-    }
+    //   api.updateMoneyLog(moneyLog);
+    // }
   }
 
   findCompPrice = comp => _.find(this.props.allComps, c => c.Key === comp).Price;

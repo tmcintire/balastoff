@@ -44,7 +44,7 @@ export class LevelCheckBox extends React.Component {
       case 'Skylab':
         levelName = 'Advanced-Plus';
         break;
-      case 'SpaceX':
+      case 'Space-X':
         levelName = 'Invitational';
         break;
       case 'DancePass':

@@ -16,7 +16,6 @@ export class AddParticipant extends React.Component {
       lastName: '',
       leadFollow: '',
       price: '',
-      hasPaid: false,
       pass: '',
       level: '',
       displayMessage: false,
@@ -47,25 +46,17 @@ export class AddParticipant extends React.Component {
       leadFollow: leadFollow.length === 0,
       price: price.length === 0,
       pass: pass.length === 0,
-      hasPaid: !hasPaid,
     };
   }
 
   addParticipant = (e, id) => {
     e.preventDefault();
-    if (!this.state.hasPaid) {
-      this.setState({
-        displayMessage: true,
-      });
-      return;
-    }
     const errors = this.validate(
       this.state.firstName,
       this.state.lastName,
       this.state.leadFollow,
       this.state.price,
-      this.state.pass,
-      this.state.hasPaid);
+      this.state.pass);
 
     this.setState({ errors, hasErrors: false }); // set state as false for now
 
@@ -95,7 +86,7 @@ export class AddParticipant extends React.Component {
       LevelUpdated: false,
       MissedLevelCheck: false,
       OriginalLevel: this.state.level.level || 'NA',
-      HasPaid: this.state.hasPaid,
+      HasPaid: false,
       LeadFollow: this.state.leadFollow,
       Open: 'No',
       AdNov: 'No',
@@ -106,11 +97,6 @@ export class AddParticipant extends React.Component {
       TicketType: this.state.pass.name,
     };
 
-    if (this.HasPaid) {
-      const newTotal = this.state.price;
-      api.updateTotalCollected(newTotal);
-    }
-
     api.addRegistration(id, object);
     window.location = `#/editregistration/${id}`;
   }
@@ -119,7 +105,6 @@ export class AddParticipant extends React.Component {
     this['First Name'].value = '';
     this['Last Name'].value = '';
     this.Level.value = '';
-    this.HasPaid.checked = false;
     this.Paid.value = '0.00';
     this.BookingID = this.BookingID + 1;
   }
@@ -137,7 +122,7 @@ export class AddParticipant extends React.Component {
     let items = [];
     let tracks = helpers.sortTracks(this.props.tracks);    
     _.forIn(tracks, (t, index) => {
-      items.push(<option key={index} value={t.level}>{t.name}</option>);
+      items.push(<option key={index} value={t.level}>{t.level}</option>);
     });
     return items;
   }
@@ -168,8 +153,7 @@ export class AddParticipant extends React.Component {
         this.state.firstName,
         this.state.lastName,
         this.state.leadFollow,
-        this.state.price,
-        this.state.hasPaid);
+        this.state.price);
 
       if (errors) {
         this.setState({
@@ -188,13 +172,6 @@ export class AddParticipant extends React.Component {
   }
   render() {
     const  { displayMessage } = this.state;
-    const renderDisplayMessage = () => {
-      if (displayMessage) {
-        return (
-          <h3 className="error-message">Participants must pay the full amount before entering</h3>
-        );
-      }
-    };
 
     const renderErrorMessage = this.state.hasErrors ? (<h4 className="error-message">Plese check the form for errors</h4>) : '';
 
@@ -234,10 +211,6 @@ export class AddParticipant extends React.Component {
                   <label htmlFor="type">Price</label>
                   <input onChange={this.handleChange} name="price" className={`form-control ${this.state.errors.price ? 'error' : ''}`} type="text" value={this.state.price} />
 
-                  <label htmlFor="type">Fully Paid</label>
-                  <input onChange={this.handleChange} name="hasPaid" className="form-control" type="checkbox" />
-
-                  {renderDisplayMessage()}
                   {renderErrorMessage}
                   <div className="form-submit-buttons flex-row flex-justify-space-between">
                     <button onClick={e => this.handleCancel(e)} className="btn btn-danger custom-buttons">Cancel</button>
