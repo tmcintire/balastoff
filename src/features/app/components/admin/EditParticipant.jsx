@@ -103,49 +103,7 @@ export class EditParticipant extends React.Component {
               <div className="form-group">
                 <form>
                   {this.renderDynamicForm(participant)}
-                  {/* <label htmlFor="type">Track</label>
-                  <select className="form-control" id="type" defaultValue={participant.Level.level} ref={(ref) => { this.Level = ref; }}>
-                    <option value="DancePass">Dance Pass</option>
-                    <option value="Staff">Staff</option>
-                    <option value="Other">Other</option>
-                    <option value="Beginner">Beginner</option>
-                    <option value="Mercury">Mercury</option>
-                    <option value="Gemini">Gemini</option>
-                    <option value="Apollo">Apollo</option>
-                    <option value="Skylab">Skylab</option>
-                    <option value="Space-X">Space-X</option>
-                  </select>
-                  <label htmlFor="type">Has Level Check</label>
-                  <select className="form-control" defaultValue={participant.HasLevelCheck} ref={(ref) => { this.HasLevelCheck = ref; }} >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
-
-                  <label htmlFor="type">Missed Level Check</label>
-                  <select className="form-control" defaultValue={participant.MissedLevelCheck} ref={(ref) => { this.MissedLevelCheck = ref; }} >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
-
-                  <label htmlFor="type">Lead/Follow</label>
-                  <select className="form-control" defaultValue={participant.LeadFollow} ref={(ref) => { this.LeadFollow = ref; }} >
-                    <option value="Lead">Lead</option>
-                    <option value="Follow">Follow</option>
-                  </select>
-                  <label htmlFor="type">Amount Owed</label>
-                  <input className="form-control" type="text" defaultValue={participant['Amount Owed']} ref={(ref) => { this.AmountOwed = ref; }} />
-
-                  <label htmlFor="type">Paid in full</label>
-                  <select className="form-control" defaultValue={participant.HasPaid} ref={(ref) => { this.HasPaid = ref; }} >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
-
-                  <label htmlFor="type">Checked In</label>
-                  <select className="form-control" defaultValue={participant.CheckedIn} ref={(ref) => { this.CheckedIn = ref; }} >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select> */}
+                  
 
                   <button className="btn btn-danger custom-buttons"><Link to="/admin">Cancel</Link></button>
                   <button onClick={e => this.handleSubmit(e)} className="btn btn-success custom-buttons">Update</button>
