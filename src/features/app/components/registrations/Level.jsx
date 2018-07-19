@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export const Level = (props) => {
   const { level, hasLevelCheck } = props;
 
-  const renderComps = () => (
+  const renderLevel = () => (
     <div className="level-container">
       <h3><strong><u>Track Information</u></strong></h3>
       <div className="track-info-container">
@@ -17,7 +17,7 @@ export const Level = (props) => {
 
   return (
     <div>
-      {renderComps()}
+      {renderLevel()}
     </div>
   );
 };

@@ -98,14 +98,16 @@ export class EditStore extends React.Component {
           <Loading />
         );
       }
-      return this.props.store.map((s, index) => (
-        <tr key={index} onClick={() => this.addEdit(index, true)}>
-          <td>{s.name}</td>
-          <td>${s.price.toFixed(2)}</td>
-          <td>{s.count}</td>
-        </tr>
-
-      ));
+      return Object.keys(this.props.store).map((key) => {
+        const item = this.props.store[key];
+        return (
+          <tr key={key} onClick={() => this.addEdit(key, true)}>
+            <td>{item.name}</td>
+            <td>${item.price.toFixed(2)}</td>
+            <td>{item.count}</td>
+          </tr>
+        );
+      });
     };
 
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
@@ -122,6 +124,8 @@ export class EditStore extends React.Component {
                 <input className="form-control" name="name" defaultValue={this.state.isEditing ? this.state.editedObject.name : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Price</label>
                 <input className="form-control" name="price" defaultValue={this.state.isEditing ? this.state.editedObject.price : ''} onChange={this.handleChange} type="text" />
+                <label htmlFor="type">Amount Sold</label>
+                <input className="form-control" name="count" defaultValue={this.state.isEditing ? this.state.editedObject.count : ''} onChange={this.handleChange} type="text" />
                 <br />
 
                 <div className="form-submit-buttons flex-row flex-justify-space-between">

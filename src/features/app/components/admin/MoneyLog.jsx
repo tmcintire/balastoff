@@ -1,9 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router';
-import * as api from '../../../data/api';
+import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router";
+import { Column, Table, AutoSizer } from "react-virtualized";
+import * as api from "../../../data/api";
+// This only needs to be done once; probably during your application's bootstrapping process.
 
 import { VoidTransaction } from './VoidTransaction';
+import { AddMoneyLog } from './AddMoneyLog';
 
 export class MoneyLog extends React.Component {
   constructor() {
@@ -28,23 +31,6 @@ export class MoneyLog extends React.Component {
     });
   }
 
-
-  submitForm = (e) => {
-    e.preventDefault();
-    const object = {
-      bookingId: this.bookingId.value,
-      amount: this.amount.value,
-      details: this.details.value,
-    };
-
-    api.updateTotalCollected(this.amount.value);
-
-    api.updateMoneyLog(object);
-    this.setState({
-      showMoneyLog: false,
-    });
-  }
-
   toggleVoid = (transactionId) => {
     this.setState({
       showVoidConfirmation: true,
@@ -55,60 +41,62 @@ export class MoneyLog extends React.Component {
     });
   }
 
+  getRow = ({ index }) => {
+    return this.props.log[Object.keys(this.props.log)[index]];
+  }
+
+  rowClassName({ index }) {
+    if (index < 0) {
+      return 'header-row';
+    } else {
+      return index % 2 === 0 ? 'even-row' : 'odd-row'
+    }
+  }
+
+  renderDetails = ({ rowData, rowIndex }) => {
+    return (
+      <div className="flex-col">
+        {
+          rowData.details.map(d => {
+            return (
+              <span>({d.quantity}) {d.item} @ ${d.price.toFixed(2)}/ea</span>
+            );
+          })
+        }
+      </div>
+    );
+  };
+
+  renderAmount = ({ rowData }) => {
+    return <span>${rowData.amount.toFixed(2)}</span>;
+  }
+
+  renderStatus = ({ rowData }) => {
+    if (rowData.void) {
+      return <span className="voided">Voided by {rowData.initials}</span>;
+    }
+    return null;
+  }
+
+  getRowHeight = ({ index }) => {
+    const log = this.props.log[Object.keys(this.props.log)[index]];
+    if (log.details.length > 1) {
+      const datum = log.details.length;
+      return datum * 30;
+    }
+    return 40;
+  }
+
+  renderVoid = ({ rowIndex, rowData }) => {
+    const transactionId = Object.keys(this.props.log)[rowIndex];
+    return <i className="col-xs-1 fa fa-times-circle" onClick={() => this.toggleVoid(transactionId)} />;
+  }
+
+  renderBookingId = ({ rowData }) => {
+    return <Link to={`editregistration/${rowData.bookingId}`}>{rowData.bookingId}</Link>;
+  }
+
   render() {
-    const renderDetails = (details) => {
-      return details.map(d => {
-        return (
-          <span>{d.quantity} - {d.item} | ${d.price.toFixed(2)}</span>
-        );
-      });
-    };
-
-    const renderLogs = () => {
-      if (this.props.log) {
-        return Object.keys(this.props.log).map((l) => {
-          const eachLog = this.props.log[l];
-          return (
-            <div className="money-log flex-row flex-align-center" key={l}>
-              <span className="col-xs-1">
-                <Link to={`editregistration/${eachLog.bookingId}`}>{eachLog.bookingId}</Link>
-              </span>
-              <div className="col-xs-5 flex-col money-log-details">
-                {eachLog.details && renderDetails(eachLog.details)}
-              </div>
-              <span className="col-xs-2">${eachLog.amount.toFixed(2)}</span>
-              {eachLog.void ?
-                <span className="voided col-xs-3">Voided by {eachLog.initials}</span>
-                :
-                <span className="col-xs-3"></span>
-              }
-              <i className="col-xs-1 fa fa-times-circle" onClick={() => this.toggleVoid(l)} />
-            </div>
-          );
-        });
-      }
-    };
-
-    const renderAddMoneyLog = () => {
-      if (this.state.showMoneyLog) {
-        return (
-          <div className="add-money-log">
-            <form className="form">
-              <label htmlFor="text">Booking ID</label>
-              <input className="form-control" type="text" ref={(ref) => { this.bookingId = ref; }} />
-
-              <label htmlFor="text">Details</label>
-              <input className="form-control" type="text" ref={(ref) => { this.details = ref; }} />
-
-              <label htmlFor="text">Amount</label>
-              <input className="form-control" type="text" ref={(ref) => { this.amount = ref; }} />
-
-              <button onClick={e => this.submitForm(e)} className="btn btn-primary">Submit</button>
-            </form>
-          </div>
-        );
-      }
-    };
     const renderVoidTransaction = () => {
       if (this.state.showVoidConfirmation) {
         return (
@@ -118,25 +106,67 @@ export class MoneyLog extends React.Component {
       return null;
     };
 
+    const renderLogTable = () => {
+      if (this.props.log) {
+        return (
+          <AutoSizer>
+            {({ height, width }) => (
+              <Table
+                width={width}
+                height={height}
+                headerHeight={35}
+                rowHeight={this.getRowHeight}
+                rowCount={Object.keys(this.props.log).length}
+                rowGetter={this.getRow}
+                rowClassName={this.rowClassName}
+              >
+                <Column
+                  width={50}
+                  label="ID"
+                  dataKey="bookingId"
+                  cellRenderer={this.renderBookingId}
+                />
+                <Column
+                  label="Details"
+                  dataKey="details"
+                  width={500}
+                  cellRenderer={this.renderDetails}
+                />
+                <Column
+                  label="Amount"
+                  dataKey="amount"
+                  width={100}
+                  cellRenderer={this.renderAmount}
+                />
+                <Column
+                  label="Status"
+                  dataKey="void"
+                  width={150}
+                  cellRenderer={this.renderStatus}
+                />
+                <Column
+                  label="Void"
+                  dataKey="void"
+                  width={50}
+                  cellRenderer={this.renderVoid}
+                />
+              </Table>
+            )}
+          </AutoSizer>
+        );
+      }
+      return null;
+    };
+
     return (
       <div className="container">
         <span className="show-money-log" onClick={() => this.showMoneyLog()}>Log Money</span>
         <h1 className="text-center">Money Log</h1>
-        <hr />
-        <div className="money-log-wrapper flex-col">
-          <div className="money-log-header">  
-            <span className="col-xs-1">ID</span>
-            <span className="col-xs-5">Details</span>
-            <span className="col-xs-2">Amount</span>
-            <span className="col-xs-3">Status</span>
-            <span className="col-xs-1">Void?</span>
-          </div>
-          <div className="money-log-body flex-col">
-            {renderLogs()}
-          </div>
+        <div style={{ height: '600px' }}>
+          {renderLogTable()}
         </div>
         <h2>Total Collected: ${this.props.totalCollected}</h2>
-        {renderAddMoneyLog()}
+        {this.state.showMoneyLog && <AddMoneyLog showMoneyLog={this.showMoneyLog} registrations={this.props.registrations} />}
         {renderVoidTransaction()}
       </div>
     );

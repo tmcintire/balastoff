@@ -14,7 +14,7 @@ export class RegistrationBox extends React.Component {
   render() {
     const { registration } = this.props;
     let style = {};
-    if (!registration.HasPaid) {
+    if (!registration.HasPaid || parseInt(registration['Amount Owed'], 10) > 0) {
       style = {
         color: 'red',
       };

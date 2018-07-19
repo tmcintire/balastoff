@@ -60,7 +60,7 @@ if (development === true) {
         } else if (header === 'Amateur Couples' && data[36] === 'Yes') {
           object[data[1]].Comps.push({
             Name: 'Amateur Couples',
-            Key: header,
+            Key: 'AmateurCouples',
             Role: null,
             Partner: data[37],
           });
@@ -68,12 +68,12 @@ if (development === true) {
           object[data[1]].Comps.push({
             Name: 'Amateur Draw',
             Key: header,
-            Role: null,
-            Partner: data[39],
+            Role: data[39],
+            Partner: null,
           });
         }
 
-        // Handle Paid entries
+        // Handle Paid entries -- Need to remove this and handle it just by checking the amount
         if (data[5] === '0.00') {
           object[data[1]].HasPaid = true;
         } else {
@@ -319,6 +319,10 @@ export function update(child, index, data, isUpdate) {
     const key = firebaseRef.child('Fields').push().key;
     firebaseRef.child(child).child(key).set(data);
   }
+}
+
+export function updateFields(data) {
+  firebaseRef.child('Fields').set(data);
 }
 
 export function updateConfig(value) {

@@ -25,43 +25,6 @@ export class LevelCheckBox extends React.Component {
     });
   }
 
-  getLevel = (level) => {
-    let levelName;
-
-    switch (level) {
-      case 'Beginner':
-        levelName = 'Beginner';
-        break;
-      case 'Mercury':
-        levelName = 'Intermediate';
-        break;
-      case 'Gemini':
-        levelName = 'Intermediate-Advanced';
-        break;
-      case 'Apollo':
-        levelName = 'Advanced';
-        break;
-      case 'Skylab':
-        levelName = 'Advanced-Plus';
-        break;
-      case 'Space-X':
-        levelName = 'Invitational';
-        break;
-      case 'DancePass':
-        levelName = 'Dance Pass';
-        break;
-      default:
-        return;
-    }
-
-    const levelObj = {
-      name: levelName,
-      level,
-    };
-
-    return levelObj;
-  }
-
   acceptLevel = () => {
     const confirm = window.confirm(`Accept ${this.state.level} for number ${this.props.registration.BookingID}`);
 
@@ -69,7 +32,7 @@ export class LevelCheckBox extends React.Component {
       api.updateRegistration(this.props.registration.BookingID, {
         LevelChecked: true,
         MissedLevelCheck: false,
-        Level: this.getLevel(this.state.level),
+        Level: this.state.level,
       });
     }
   }

@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Column, Table, AutoSizer } from 'react-virtualized';
 import { PurchaseItem } from './PurchaseItem';
 
 const Loading = require('react-loading-animation');
@@ -82,12 +81,13 @@ export class Store extends React.Component {
           <Loading />
         );
       }
-      return this.props.store.map((s, index) => {
+      return Object.keys(this.props.store).map((key) => {
+        const item = this.props.store[key];
         return (
           <div className="store-item">
-            <span className="item-name">{s.name}</span>
-            <span className="item-price">${s.price}</span>
-            <button className="store-btn btn btn-primary" onClick={() => this.purchaseItem(s, index)}>Buy</button>
+            <span className="item-name">{item.name}</span>
+            <span className="item-price">${item.price}</span>
+            <button className="store-btn btn btn-primary" onClick={() => this.purchaseItem(item, key)}>Buy</button>
           </div>
         );
       });

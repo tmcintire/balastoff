@@ -1,14 +1,50 @@
 import React from 'react';
-import _ from 'lodash';
-import { Link } from 'react-router';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as api from '../../../data/api';
 
 const Loading = require('react-loading-animation');
 
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+  const newSortOrder = endIndex + 1;
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  const newList = result.map((r, index) => {
+    return {
+      ...r,
+      sortOrder: index + 1,
+    };
+  });
+
+  return newList;
+};
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  // some basic styles to make the items look a bit nicer
+  userSelect: 'none',
+  padding: grid * 2,
+  margin: `0 0 ${grid}px 0`,
+
+  // change background colour if dragging
+  background: isDragging ? 'lightgreen' : 'grey',
+
+  // styles we need to apply on draggables
+  ...draggableStyle,
+});
+
+const getListStyle = isDraggingOver => ({
+  background: 'white',
+  padding: grid,
+});
+
 export class EditAdminFields extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.fields) {
-      return { 
+      return {
         loading: false,
       };
     }
@@ -26,7 +62,8 @@ export class EditAdminFields extends React.Component {
       editedObject: {},
       editedKey: null,
       showSaved: false,
-      options: null
+      options: null,
+      sortedFields: [],
     };
   }
 
@@ -46,12 +83,15 @@ export class EditAdminFields extends React.Component {
   }
 
   handleChange = (e) => {
-    const target = e.target.name;
-
+    const key = e.target.name;
+    let value = e.target.value;
+    if (key === 'sortOrder') {
+      value = parseInt(value, 10);
+    }
     this.setState({
       editedObject: {
         ...this.state.editedObject,
-        [target]: e.target.value,
+        [key]: value,
       },
     });
   }
@@ -90,7 +130,7 @@ export class EditAdminFields extends React.Component {
 
   delete = (e) => {
     e.preventDefault();
-    api.deleteRef('config', this.state.editedKey);
+    api.deleteRef('Fields', this.state.editedKey);
     this.setState({ showForm: false });
   }
 
@@ -116,6 +156,21 @@ export class EditAdminFields extends React.Component {
     });
   }
 
+  onDragEnd = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const sortedFields = reorder(
+      this.props.fields,
+      result.source.index,
+      result.destination.index
+    );
+
+    api.updateFields(sortedFields);
+  }
+
   render() {
     const renderOptions = (options) => {
       return options.map(option => {
@@ -130,18 +185,42 @@ export class EditAdminFields extends React.Component {
         );
       }
 
-      return Object.keys(this.props.fields).map((key) => {
-        const field = this.props.fields[key];
-        return (
-          <tr key={key} onClick={() => this.addEdit(key, true)}>
-            <td>{field.key}</td>
-            <td>{field.label}</td>
-            <td>{field.sortOrder}</td>
-            <td>{field.type}</td>
-            <td>{field.options && renderOptions(field.options)}</td>
-          </tr>
-        );
-      });
+      return (
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <tbody
+                ref={provided.innerRef}
+                style={getListStyle(snapshot.isDraggingOver)}
+              >
+                {Object.keys(this.props.fields).map((key, index) => {
+                  const field = this.props.fields[key];
+                  
+                  return (
+                    <Draggable key={field.key} draggableId={field.key} index={index}>
+                      {(provided, snapshot) => (
+                        <tr
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          onClick={() => this.addEdit(key, true)}
+                        >
+                          <td>{field.key}</td>
+                          <td>{field.label}</td>
+                          <td>{field.sortOrder}</td>
+                          <td>{field.type}</td>
+                          <td>{field.options && renderOptions(field.options)}</td>
+                        </tr>
+                      )}
+                    </Draggable>
+                  );
+                })}
+                {provided.placeholder}
+              </tbody>
+            )}
+          </Droppable>
+        </DragDropContext>
+      );
     };
 
     const renderOptionsInput = () => {
@@ -153,8 +232,7 @@ export class EditAdminFields extends React.Component {
           </div>
         );
       });
-
-    }
+    };
 
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
 
@@ -172,7 +250,7 @@ export class EditAdminFields extends React.Component {
                 <input className="form-control" name="label" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].label : ''} onChange={this.handleChange} type="text" />
                 
                 <label htmlFor="type">Sort Order</label>
-                <input className="form-control" name="sortOrder" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].sortOrder : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" type="number" name="sortOrder" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].sortOrder : ''} onChange={this.handleChange} />
 
                 <label htmlFor="type">Type</label>
                 <input className="form-control" name="type" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].type : ''} onChange={this.handleChange} type="text" />
@@ -210,9 +288,7 @@ export class EditAdminFields extends React.Component {
               <th>Options</th>
             </tr>
           </thead>
-          <tbody>
-            {renderFields()}
-          </tbody>
+          {renderFields()}
         </table>
         <button className="btn btn-primary" onClick={() => this.addEdit(null, false)}>Add New Configuration</button>
         {renderForm()}
