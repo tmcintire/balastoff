@@ -19,12 +19,9 @@ export class EditRegistration extends React.Component {
       const registration = nextProps.registrations.filter(reg =>
         reg.BookingID === nextProps.params.id)[0];
 
-      const hasLevelCheck = _.some(nextProps.tracks, track => track.level === registration.Level && track.levelCheck === true);
-
       return {
         registration,
         loading: false,
-        hasLevelCheck,
       };
     }
 
@@ -190,7 +187,7 @@ export class EditRegistration extends React.Component {
               saved={this.saved}
               id={this.props.params.id}
               level={registration.Level}
-              hasLevelCheck={this.state.hasLevelCheck}
+              hasLevelCheck={registration.HasLevelCheck}
             />
             <Comps
               comps={registration.Comps}

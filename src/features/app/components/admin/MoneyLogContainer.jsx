@@ -6,6 +6,7 @@ const mapStateToProps = state => ({
   totalCollected: state.data.totalCollected.totalCollected,
   loading: state.data.moneyLog.loading,
   config: state.data.config.config,
+  registrations: state.data.registrations.registrations,
 });
 
 export const MoneyLogContainer = connect(mapStateToProps)(MoneyLog);

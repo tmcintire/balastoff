@@ -9,121 +9,127 @@ export class CompRegistrations extends React.Component {
     super();
     this.state = {
       registration: {},
-      open: {},
-      amateur: {},
-      adNov: {},
+      open: [],
+      amateurCouples: [],
+      adNov: [],
+      amateurDraw: [],
       loading: true,
     };
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.registrations) {
-      const openRegs = nextProps.registrations.filter(reg => {
-        if (reg.Comps) {
-          return reg.Comps.some(c => c.Key === 'Open');
-        }
-        return false;
-      });
       const open = [];
-      _.forEach(openRegs, (r) => {
-        const openComp = r.Comps.find(c => c.Key === 'Open');
-        const name = r['First Name'] + ' ' + r['Last Name'];
-        const partner = openComp.Partner;
-
-        const exists = _.some(open, o => {
-          if (name === o.name && partner === o.partner) {
-            return true;
+      const amateurCouples = [];
+      const adNov = [];
+      const amateurDraw = [];
+      _.forEach(nextProps.registrations, (reg) => {
+        if (reg) {
+          const name = `${reg['First Name']} ${reg['Last Name']}`;
+          if (reg.Comps && reg.Comps.length > 0) {
+            _.forEach(reg.Comps, (comp) => {
+              if (comp.Key === 'Open') {
+                // get open comps
+                const partner = comp.Partner;
+                const exists = this.compAlreadyInArray(open, partner);
+        
+                if (!exists) {
+                  open.push({ name, partner });
+                }
+              } else if (comp.Key === 'AmateurCouples') {
+                // Get the amateur couples comps
+                const partner = comp.Partner;
+                const exists = this.compAlreadyInArray(partner);
+  
+                if (!exists) {
+                  amateurCouples.push({ name, partner });
+                }
+              } else if (comp.Key === 'AdNov') {
+                adNov.push({ name, role: comp.Role });
+              } else if (comp.Key === 'AmateurDraw') {
+                amateurDraw.push({ name, role: comp.Role });
+              }
+            });
           }
-          if (name === o.partner && partner === o.name) {
-            return true;
-          }
-        });
-
-        if (!exists) {
-          open.push({ name, partner });
         }
-      });
-
-      const amateurRegistrations = nextProps.registrations.filter(reg => {
-        if (reg.Comps) {
-          return reg.Comps.some(c => c.Key === 'Amateur Couples');
-        }
-        return false;
-      });
-      const amateur = [];
-      _.forEach(amateurRegistrations, (a) => {
-        const amateurCouplesComp = a.Comps.find(c => c.Key === 'Amateur Couples');        
-        const name = a['First Name'] + ' ' + a['Last Name'];
-        const partner = amateurCouplesComp.Partner;
-
-        const exists = _.some(amateur, am => {
-          if (name === am.name && partner === am.partner) {
-            return true;
-          }
-          if (name === am.partner && partner === am.name) {
-            return true;
-          }
-        });
-
-        if (!exists) {
-          amateur.push({ name, partner });
-        }
-      });
-
-      const adNovRegistrations = nextProps.registrations.filter(reg => {
-        if (reg.Comps) {
-          return reg.Comps.some(c => c.Key === 'AdNov');
-        }
-        return false;
-      });
-
-      const adNov = adNovRegistrations.map(r => {
-        const adNovComp = r.Comps.find(c => c.Key === 'AdNov');        
-        return {
-          name: r['First Name'] + ' ' + r['Last Name'],
-          role: adNovComp.Role,
-        };
       });
 
       this.setState({
         open,
-        amateur,
+        amateurCouples,
         adNov,
+        amateurDraw,
         loading: nextProps.loading,
       });
     }
   }
 
+  // check if this entry is alredy in the array
+  compAlreadyInArray = (array, partner) => {
+    const exists = _.some(array, (o) => {
+      if (name === o.name && partner === o.partner) {
+        return true;
+      }
+      if (name === o.partner && partner === o.name) {
+        return true;
+      }
+
+      return false;
+    });
+
+    return exists;
+  }
+
   backToRegistrations = () => {
     window.location('/');
   }
+
+  renderOpen = () => {
+    if (!this.state.loading) {
+      return this.state.open.map((o, index) => (
+        <div key={index}>
+          <p>{o.name} <strong>&</strong> {o.partner}</p>
+        </div>
+      ));
+    }
+    return null;
+  };
+
+  renderAmateur = () => {
+    if (!this.state.loading) {
+      return this.state.amateurCouples.map((o, index) => (
+        <div key={index}>
+          <p>{o.name} <strong>&</strong> {o.partner}</p>
+        </div>
+      ));
+    }
+    return null;
+  };
+
+  renderAdNov = () => {
+    if (!this.state.loading) {
+      const sorted = _.orderBy(this.state.adNov, 'role');
+      return sorted.map((o, index) => (
+        <div key={index}>
+          <p>{o.name} -- {o.role || ''}</p>
+        </div>
+      ));
+    }
+    return null;
+  };
+
+  renderAmateurDraw = () => {
+    if (!this.state.loading) {
+      const sorted = _.orderBy(this.state.amateurDraw, 'role');
+      return sorted.map((o, index) => (
+        <div key={index}>
+          <p>{o.name} -- {o.role || ''}</p>
+        </div>
+      ));
+    }
+    return null;
+  };
+
   render() {
-    const renderOpen = () => {
-      if (!this.state.loading) {
-        return this.state.open.map((o, index) => (
-          <div key={index}>
-            <p>{o.name} <strong>&</strong> {o.partner}</p>
-          </div>
-        ));
-      }
-    };
-    const renderAmateur = () => {
-      if (!this.state.loading) {
-        return this.state.amateur.map((o, index) => (
-          <div key={index}>
-            <p>{o.name} <strong>&</strong> {o.partner}</p>
-          </div>
-        ));
-      }
-    };
-    const renderAdNov = () => {
-      if (!this.state.loading) {
-        return this.state.adNov.map((o, index) => (
-          <div key={index}>
-            <p>{o.name} -- {o.role || ''}</p>
-          </div>
-        ));
-      }
-    };
     const renderRegistration = () => {
       if (this.state.loading) {
         return (
@@ -132,22 +138,29 @@ export class CompRegistrations extends React.Component {
       }
       return (
         <div>
-          <h1 className="text-center">Comp Registrations</h1>
-          <div className="flex-row flex-wrap flex-justify-space-between">
+          <h1 className="text-center flex-col">Comp Registrations</h1>
+          <div className="flex-row flex-wrap flex-justify-space-around">
             <div>
               <h3 className="text-center">Open</h3>
               <hr />
-              {renderOpen()}
+              {this.renderOpen()}
             </div>
             <div>
               <h3 className="text-center">Amateur Couples</h3>
               <hr />
-              {renderAmateur()}
+              {this.renderAmateur()}
             </div>
+          </div>
+          <div className="flex-row flex-wrap flex-justify-space-around">
             <div>
               <h3 className="text-center">AdNov</h3>
               <hr />
-              {renderAdNov()}
+              {this.renderAdNov()}
+            </div>
+            <div>
+              <h3 className="text-center">Amateur Draw</h3>
+              <hr />
+              {this.renderAmateurDraw()}
             </div>
           </div>
         </div>

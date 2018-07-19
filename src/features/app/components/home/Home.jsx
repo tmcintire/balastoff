@@ -125,7 +125,6 @@ export class Home extends React.Component {
       if (loading === false && this.state.filteredRegistrations !== undefined) {
         return this.state.filteredRegistrations.map((registration, index) => {
           if (registration) {
-            const hasLevelCheck = _.some(this.props.tracks, track => track.level === registration.Level && track.levelCheck === true);
             
             return (
               <RegistrationBox
@@ -133,7 +132,7 @@ export class Home extends React.Component {
                 updateTotal={this.updateTotal}
                 registration={registration}
                 changePaidCheckBox={this.changePaidCheckBox}
-                hasLevelCheck={hasLevelCheck}
+                hasLevelCheck={registration.HasLevelCheck}
               />
             );
           }

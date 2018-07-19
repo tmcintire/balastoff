@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import _ from 'lodash';
-import * as api from '../../../data/api';
 import { LevelCheckBox } from './LevelCheckBox';
 
 const Loading = require('react-loading-animation');
@@ -14,7 +13,7 @@ export class LevelCheck extends React.Component {
         r.LeadFollow.toLowerCase() === 'lead' &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
-        r.CheckedIn === true &&        
+        r.CheckedIn === true &&
         _.includes(prevState.currentFilter, r.OriginalLevel));
       const filteredFollows = nextProps.registrations.filter(r =>
         r.HasLevelCheck &&
@@ -39,8 +38,7 @@ export class LevelCheck extends React.Component {
       filteredLeads: {},
       filteredFollows: {},
       geminiFilter: ['Gemini'],
-      apolloFilter: ['Apollo'],
-      skylabFilter: ['Skylab'],
+      apolloSkylabFilter: ['Apollo', 'Skylab'],
       mercuryFilter: ['Mercury'],
       currentFilter: ['Gemini'],
       showLeads: true,
@@ -79,37 +77,6 @@ export class LevelCheck extends React.Component {
       title: filter[0],
     });
   }
-
-  handleValueChange = (e) => {
-    e.preventDefault();
-    const target = e.target.value;
-    const { registrations } = this.props;
-
-    let filteredLeads = registrations.filter(reg => {
-      if (reg) {
-        return (
-          _.isEqual(reg.BookingID, target)
-        );
-      }
-    });
-
-    let filteredFollows = registrations.filter(reg => {
-      if (reg) {
-        return (
-          _.isEqual(reg.BookingID, target)
-        );
-      }
-    });
-
-    if (target === '') {
-      filteredRegistrations = registrations;
-    }
-
-    this.setState({
-      filteredRegistrations,
-    });
-  }
-
 
   toggleLeadFollow = () => {
     this.setState({
@@ -156,8 +123,7 @@ export class LevelCheck extends React.Component {
         <div className="level-check-filters">
           <span onClick={() => this.toggleLeadFollow()}>Toggle Lead/Follow</span>
           <span onClick={() => this.changeFilter(this.state.geminiFilter)}>Gemini</span>
-          <span onClick={() => this.changeFilter(this.state.apolloFilter)}>Apollo</span>
-          <span onClick={() => this.changeFilter(this.state.skylabFilter)}>Skylab</span>
+          <span onClick={() => this.changeFilter(this.state.apolloSkylabFilter)}>Apollo/Skylab</span>
 
         </div>
         <hr />

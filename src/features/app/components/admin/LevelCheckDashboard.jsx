@@ -9,46 +9,26 @@ export class LevelCheckDashboard extends React.Component {
   constructor(props) {
     super(props);
 
-    if (props.registrations) {
-      const apollo = props.registrations.filter(r => r.Level === 'Apollo');
-      const gemini = props.registrations.filter(r => r.Level === 'Gemini');
-      const skylab = props.registrations.filter(r => r.Level === 'Mercury');
-      const spacex = props.registrations.filter(r => r.Level === 'Space-X');
-      const mercury = props.registrations.filter(r => r.Level === 'Mercury');
-
-      this.state = {
-        filteredLeads: {},
-        filteredFollows: {},
-        filter: '',
-        loading: true,
-        apollo,
-        gemini,
-        skylab,
-        spacex,
-        mercury,
-      };
-    } else {
-      this.state = {
-        filteredLeads: {},
-        filteredFollows: {},
-        filter: '',
-        loading: true,
-        apollo: [],
-        gemini: [],
-        skylab: [],
-        spacex: [],
-        mercury: [],
-      };
-    }
+    this.state = {
+      filteredLeads: {},
+      filteredFollows: {},
+      filter: '',
+      loading: true,
+      apollo: [],
+      gemini: [],
+      skylab: [],
+      spacex: [],
+      mercury: [],
+    };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.registrations) {
-      const apollo = nextProps.registrations.filter(r => r.Level === 'Apollo');
-      const gemini = nextProps.registrations.filter(r => r.Level === 'Gemini');
-      const skylab = nextProps.registrations.filter(r => r.Level === 'Mercury');
-      const spacex = nextProps.registrations.filter(r => r.Level === 'Space-X');
-      const mercury = nextProps.registrations.filter(r => r.Level === 'Mercury');
+      const apollo = nextProps.registrations.filter(r => r.Level === 'Apollo' && r.LevelChecked);
+      const gemini = nextProps.registrations.filter(r => r.Level === 'Gemini' && r.LevelChecked);
+      const skylab = nextProps.registrations.filter(r => r.Level === 'Skylab' && r.LevelChecked);
+      const spacex = nextProps.registrations.filter(r => r.Level === 'Space-X' && r.LevelChecked);
+      const mercury = nextProps.registrations.filter(r => r.Level === 'Mercury' && r.LevelChecked);
 
       this.setState({
         apollo,
@@ -73,6 +53,7 @@ export class LevelCheckDashboard extends React.Component {
           </div>
         );
       }
+      return <Loading />;
     };
     return (
       <div className="container form-container">
