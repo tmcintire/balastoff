@@ -57,7 +57,7 @@ export class MoneyLog extends React.Component {
     return (
       <div className="flex-col">
         {
-          rowData.details.map(d => {
+          rowData.details && rowData.details.map(d => {
             return (
               <span>({d.quantity}) {d.item} @ ${d.price.toFixed(2)}/ea</span>
             );
@@ -80,7 +80,7 @@ export class MoneyLog extends React.Component {
 
   getRowHeight = ({ index }) => {
     const log = this.props.log[Object.keys(this.props.log)[index]];
-    if (log.details.length > 1) {
+    if (log.details && log.details.length > 1) {
       const datum = log.details.length;
       return datum * 30;
     }

@@ -238,6 +238,11 @@ export class EditAdminFields extends React.Component {
 
     const renderForm = () => {
       if (this.state.showForm) {
+        let sortOrders = this.props.fields.map(f => {
+          return f.sortOrder;
+        });
+        const sortOrderValue = this.state.isEditing ? this.props.fields[this.state.editedKey] : _.last(sortOrders) + 1;
+
         return (
           <div>
             <h1 className="text-center">{this.state.isEditing ? 'Edit Configuration' : 'Add Configuration'}</h1>
@@ -250,7 +255,7 @@ export class EditAdminFields extends React.Component {
                 <input className="form-control" name="label" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].label : ''} onChange={this.handleChange} type="text" />
                 
                 <label htmlFor="type">Sort Order</label>
-                <input className="form-control" type="number" name="sortOrder" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].sortOrder : ''} onChange={this.handleChange} />
+                <input className="form-control" type="number" name="sortOrder" defaultValue={sortOrderValue} onChange={this.handleChange} />
 
                 <label htmlFor="type">Type</label>
                 <input className="form-control" name="type" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].type : ''} onChange={this.handleChange} type="text" />

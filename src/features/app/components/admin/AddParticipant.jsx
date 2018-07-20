@@ -20,6 +20,7 @@ export class AddParticipant extends React.Component {
       level: '',
       displayMessage: false,
       errors: {},
+      email: '',
     };
   }
 
@@ -65,17 +66,6 @@ export class AddParticipant extends React.Component {
       return;
     }
 
-    const moneyLog = {
-      bookingId: this.state.bookingId,
-      amount: this.state.price,
-      details: [{
-        item: `New registration - ${this.state.pass.name}`,
-        quantity: 1,
-        price: this.state.price,
-      }],
-    };
-    api.updateMoneyLog(moneyLog);
-
     const object = {
       'First Name': this.state.firstName,
       BookingID: JSON.stringify(this.state.bookingId),
@@ -84,6 +74,8 @@ export class AddParticipant extends React.Component {
       HasLevelCheck: this.state.level === 'Gemini' || this.state.level === 'Apollo' || this.state.level === 'Skylab',
       LevelChecked: false,
       LevelUpdated: false,
+      BadgeUpdated: false,
+      Email: this.state.email,
       MissedLevelCheck: false,
       OriginalLevel: this.state.level || 'NA',
       HasPaid: false,
@@ -122,7 +114,7 @@ export class AddParticipant extends React.Component {
     let items = [];
     let tracks = helpers.sortTracks(this.props.tracks);    
     _.forIn(tracks, (t, index) => {
-      items.push(<option key={index} value={t.level}>{t.level}</option>);
+      items.push(<option key={index} value={t.name}>{t.name}</option>);
     });
     return items;
   }
@@ -137,8 +129,8 @@ export class AddParticipant extends React.Component {
         this.setState({ [target]: pass, price: pass ? pass.price: '' });
         break;
       case 'level':
-        level = _.filter(this.props.tracks, t => t.level === e.target.value)[0];
-        this.setState({ [target]: level.level });
+        level = _.filter(this.props.tracks, t => t.name === e.target.value)[0];
+        this.setState({ [target]: level.name });
         break;
       case 'hasPaid':
         this.setState({ [target]: e.target.checked });
@@ -191,6 +183,8 @@ export class AddParticipant extends React.Component {
                   <input name="firstName" onChange={this.handleChange} className={`form-control ${this.state.errors.firstName ? 'error' : ''}`} type="text" />
                   <label htmlFor="type">Last</label>
                   <input name="lastName" onChange={this.handleChange} className={`form-control ${this.state.errors.lastName ? 'error' : ''}`} type="text" />
+                  <label htmlFor="type">Email</label>
+                  <input name="email" onChange={this.handleChange} className={`form-control ${this.state.errors.email ? 'error' : ''}`} type="text" />
                   <label htmlFor="type">Lead/Follow</label>
                   <select name="leadFollow" onChange={this.handleChange} className={`form-control ${this.state.errors.leadFollow ? 'error' : ''}`} >
                     <option value="" />

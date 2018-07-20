@@ -244,7 +244,10 @@ export function fetchPrices() {
 export function fetchAdminFields() {
   firebaseRef.child('Fields').on('value', (snapshot) => {
     const fields = snapshot.val();
-    store.dispatch(actions.fieldsReceived(fields));
+
+    let orderedFields = _.orderBy(fields, 'sortOrder');
+
+    store.dispatch(actions.fieldsReceived(orderedFields));
   });
 }
 
