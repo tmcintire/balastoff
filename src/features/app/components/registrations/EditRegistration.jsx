@@ -103,9 +103,11 @@ export class EditRegistration extends React.Component {
       const moneyLog = {
         bookingId: this.state.registration.BookingID,
         amount,
-        quantity: 'N/A',
-        unitPrice: 'N/A',
-        description: 'Paid Final Balance',
+        details: [{
+          item: `New registration - ${this.state.registration.TicketType}`,
+          quantity: 1,
+          price: amount,
+        }],
       };
       api.updateMoneyLog(moneyLog);
 
