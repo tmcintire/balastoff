@@ -14,122 +14,130 @@ const regRef = firebaseRef.child('registrations');
 const development = true;
 
 if (development === true) {
-  axios({
-    method: 'get',
-    url: 'https://cors-anywhere.herokuapp.com/http://balastoff.dancecamps.org/api.php?token=67905e25c961&format=json&report=RegistrationApp',
-    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-  }).then((response) => {
-    headers = response.data.header;
-    rawData = response.data.data;
-
-    const object = {};
-    _.forEach(rawData, (data) => {
-      object[data[1]] = {};
-      object[data[1]].Comps = [];
-      _.forEach(headers, (header, headerIndex) => {
-        object[data[1]][header] = data[headerIndex];
-        object[data[1]].CheckedIn = false;
-        object[data[1]].HasComments = false;
-        object[data[1]].Shirt1 = false;
-        object[data[1]].Shirt2 = false;
-        object[data[1]].Patch = false;
-        object[data[1]].LevelChecked = false;
-        object[data[1]].BadgeUpdated = false;
-        object[data[1]].MissedLevelCheck = false;
-        object[data[1]].MissionGearIssues = [];
-        object[data[1]].Comments = [];
-        object[data[1]]['Original Amount Owed'] = data[5];
-        object[data[1]].OriginalLevel = data[18];
-        object[data[1]].WalkIn = false;
-
-        // Setup Comps Object
-        if (header === 'AdNov' && data[32] === 'Yes') {
-          object[data[1]].Comps.push({
-            Name: 'AdNov Draw',
-            Key: header,
-            Role: data[33],
-            Partner: null,
-          });
-        } else if (header === 'Open' && data[34] === 'Yes') {
-          object[data[1]].Comps.push({
-            Name: 'Open',
-            Key: header,
-            Role: null,
-            Partner: data[35],
-          });
-        } else if (header === 'Amateur Couples' && data[36] === 'Yes') {
-          object[data[1]].Comps.push({
-            Name: 'Amateur Couples',
-            Key: 'AmateurCouples',
-            Role: null,
-            Partner: data[37],
-          });
-        } else if (header === 'AmateurDraw' && data[38] === 'Yes') {
-          object[data[1]].Comps.push({
-            Name: 'Amateur Draw',
-            Key: header,
-            Role: data[39],
-            Partner: null,
-          });
-        }
-
-        // Handle Paid entries -- Need to remove this and handle it just by checking the amount
-        if (data[5] === '0.00') {
-          object[data[1]].HasPaid = true;
-        } else {
-          object[data[1]].HasPaid = false;
-        }
-
-        // Handle Level Check
-        object[data[1]].HasLevelCheck = data[18] === 'Gemini' || data[18] === 'Apollo' || data[18] === 'Skylab';
-
-        // check for gear
-        object[data[1]].HasGear = (data[45] || data[48]) ? 'Yes' : 'No';
+  firebaseRef.child('Tracks').once('value').then((res) => {
+    const tracks = res.val();
+  
+    axios({
+      method: 'get',
+      url: 'https://cors-anywhere.herokuapp.com/http://balastoff.dancecamps.org/api.php?token=67905e25c961&format=json&report=RegistrationApp',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    }).then((response) => {
+      headers = response.data.header;
+      rawData = response.data.data;
+  
+      const object = {};
+      _.forEach(rawData, (data) => {
+        object[data[1]] = {};
+        object[data[1]].Comps = [];
+        _.forEach(headers, (header, headerIndex) => {
+          object[data[1]][header] = data[headerIndex];
+          object[data[1]].CheckedIn = false;
+          object[data[1]].HasComments = false;
+          object[data[1]].Shirt1 = false;
+          object[data[1]].Shirt2 = false;
+          object[data[1]].Patch = false;
+          object[data[1]].LevelChecked = false;
+          object[data[1]].BadgeUpdated = false;
+          object[data[1]].MissedLevelCheck = false;
+          object[data[1]].MissionGearIssues = [];
+          object[data[1]].Comments = [];
+          object[data[1]]['Original Amount Owed'] = data[5];
+          object[data[1]].OriginalLevel = data[18];
+          object[data[1]].WalkIn = false;
+  
+          // Setup Comps Object
+          if (header === 'AdNov' && data[32] === 'Yes') {
+            object[data[1]].Comps.push({
+              Name: 'AdNov Draw',
+              Key: header,
+              Role: data[33],
+              Partner: null,
+            });
+          } else if (header === 'Open' && data[34] === 'Yes') {
+            object[data[1]].Comps.push({
+              Name: 'Open',
+              Key: header,
+              Role: null,
+              Partner: data[35],
+            });
+          } else if (header === 'Amateur Couples' && data[36] === 'Yes') {
+            object[data[1]].Comps.push({
+              Name: 'Amateur Couples',
+              Key: 'AmateurCouples',
+              Role: null,
+              Partner: data[37],
+            });
+          } else if (header === 'AmateurDraw' && data[38] === 'Yes') {
+            object[data[1]].Comps.push({
+              Name: 'Amateur Draw',
+              Key: header,
+              Role: data[39],
+              Partner: null,
+            });
+          }
+  
+          // Handle Paid entries -- Need to remove this and handle it just by checking the amount
+          if (data[5] === '0.00') {
+            object[data[1]].HasPaid = true;
+          } else {
+            object[data[1]].HasPaid = false;
+          }
+  
+          // Handle Level Check
+          const foundTrack = _.find(tracks, track => track.name === data[18]);
+          object[data[1]].HasLevelCheck = foundTrack ? foundTrack.levelCheck : false;
+  
+          // check for gear
+          object[data[1]].HasGear = (data[45] || data[48]) ? 'Yes' : 'No';
+        });
       });
-    });
-
-    // Setup partners
-    _.forEach(object, (r) => {
-      if (r) {
-        let registrationToUpdate = [];
-        let first;
-        let last;
-        if (r.Open === 'Yes' && r.Partner !== '') {
-          first = r.Partner.split(' ')[0].toLowerCase() || 'TBD';
-          last = r.Partner.split(' ')[1].toLowerCase() || 'TBD';
-          registrationToUpdate = _.find(object, reg =>
-            reg['First Name'].toLowerCase() === first && reg['Last Name'].toLowerCase() === last);
-
-          if (!_.isEmpty(registrationToUpdate)) {
-            registrationToUpdate.Open = 'Yes';
-            registrationToUpdate.Partner = `${r['First Name']} ${r['Last Name']}`;
+  
+      // Setup partners
+      _.forEach(object, (r) => {
+        if (r) {
+          let registrationToUpdate = [];
+          let first;
+          let last;
+          if (r.Open === 'Yes' && r.Partner !== '') {
+            first = r.Partner.split(' ')[0].toLowerCase() || 'TBD';
+            last = r.Partner.split(' ')[1].toLowerCase() || 'TBD';
+            registrationToUpdate = _.find(object, reg =>
+              reg['First Name'].toLowerCase() === first && reg['Last Name'].toLowerCase() === last);
+  
+            if (!_.isEmpty(registrationToUpdate)) {
+              registrationToUpdate.Open = 'Yes';
+              registrationToUpdate.Partner = `${r['First Name']} ${r['Last Name']}`;
+            }
+          }
+          if (r['Amateur Couples'] === 'Yes' && r['Amateur Partner'] !== '') {
+            first = r['Amateur Partner'].split(' ')[0];
+            last = r['Amateur Partner'].split(' ')[1];
+            registrationToUpdate = _.find(object, (reg) => {
+              if (!first) {
+                first = 'TBD';
+              }
+              if (!last) {
+                last = 'TBD';
+              }
+              return reg['First Name'].toLowerCase() === first.toLowerCase() && reg['Last Name'].toLowerCase() === last.toLowerCase();
+            });
+  
+            if (!_.isEmpty(registrationToUpdate)) {
+              registrationToUpdate['Amateur Couples'] = 'Yes';
+              registrationToUpdate['Amateur Partner'] = `${r['First Name']} ${r['Last Name']}`;
+            }
           }
         }
-        if (r['Amateur Couples'] === 'Yes' && r['Amateur Partner'] !== '') {
-          first = r['Amateur Partner'].split(' ')[0];
-          last = r['Amateur Partner'].split(' ')[1];
-          registrationToUpdate = _.find(object, (reg) => {
-            if (!first) {
-              first = 'TBD';
-            }
-            if (!last) {
-              last = 'TBD';
-            }
-            return reg['First Name'].toLowerCase() === first.toLowerCase() && reg['Last Name'].toLowerCase() === last.toLowerCase();
-          });
-
-          if (!_.isEmpty(registrationToUpdate)) {
-            registrationToUpdate['Amateur Couples'] = 'Yes';
-            registrationToUpdate['Amateur Partner'] = `${r['First Name']} ${r['Last Name']}`;
-          }
-        }
-      }
+      });
+  
+      regRef.set(object);
+    }).catch((error) => {
+      console.log(error);
     });
-
-    regRef.set(object);
-  }).catch((error) => {
-    console.log(error);
+    
+  
   });
+  
 }
 
 export function setupConnectionListener() {
@@ -344,6 +352,6 @@ export function unvoidTransaction(id, initials) {
   firebaseRef.child('moneyLog').child(id).update({ void: false, initials });
 }
 
-export function updateStoreItemCount(id, newCount) {
-  firebaseRef.child('Store').child(id).update({ count: newCount });
+export function updateStoreItemCount(newStoreCounts) {
+  firebaseRef.child('Store').update(newStoreCounts);
 }

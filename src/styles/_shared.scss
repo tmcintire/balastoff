@@ -17,6 +17,10 @@ body {
   -webkit-flex-direction: column;
 }
 
+.flex-grow {
+  flex-grow: 1;
+}
+
 .flex-grid {
   display: flex;
 }

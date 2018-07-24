@@ -46,10 +46,14 @@ export class EditTracks extends React.Component {
   handleChange = (e) => {
     const target = e.target.name;
 
+    let value = e.target.value;
+    if (e.target.name === 'levelCheck') {
+      value = e.target.value === 'true';
+    }
     this.setState({
       editedObject: {
         ...this.state.editedObject,
-        [target]: e.target.value,
+        [target]: value,
       },
     });
   }
@@ -91,15 +95,17 @@ export class EditTracks extends React.Component {
           <Loading />
         );
       }
-      return this.props.tracks.map((track, index) => (
-        <tr key={index} onClick={() => this.addEdit(index, true)}>
-          <td>{track.name}</td>
-          <td>{track.level}</td>
-          <td>{String(track.levelCheck)}</td>
-          <td>{track.sortBy}</td>
-        </tr>
-
-      ));
+      return Object.keys(this.props.tracks).map((key, index) => {
+        const track = this.props.tracks[key];
+        return (
+          <tr key={key} onClick={() => this.addEdit(key, true)}>
+            <td>{track.name}</td>
+            <td>{track.level}</td>
+            <td>{String(track.levelCheck)}</td>
+            <td>{track.sortBy}</td>
+          </tr>
+        );
+      });
     };
 
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
@@ -117,7 +123,10 @@ export class EditTracks extends React.Component {
                 <label htmlFor="type">Level</label>
                 <input className="form-control" name="level" defaultValue={this.state.isEditing ? this.state.editedObject.level : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Level Check?</label>
-                <input className="form-control" name="levelCheck" defaultValue={this.state.isEditing ? this.state.editedObject.levelCheck : ''} onChange={this.handleChange} type="text" />
+                <select className="form-control" name="levelCheck" defaultValue={this.state.isEditing ? this.state.editedObject.levelCheck : ''} onChange={this.handleChange}>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
                 <label htmlFor="type">Sort By</label>
                 <input className="form-control" name="sortBy" defaultValue={this.state.isEditing ? this.state.editedObject.sortBy : ''} onChange={this.handleChange} type="text" />
                 <br />
