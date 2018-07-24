@@ -1,7 +1,7 @@
 .store-btn {
   height: 50px;
   width: 100%;
-  font-size: 1.5em;
+  font-size: 0.9em;
 }
 
 .store-item {
@@ -16,13 +16,13 @@
   margin-bottom: 15px;
 
   .item-name {
-    font-size: 2.2em;
+    font-size: 1.5em;
     flex-grow: 1;
     text-align: center;
   }
   
   .item-price {
-    font-size: 2em;
+    font-size: 1.5em;
   }
 }
 
@@ -53,4 +53,33 @@
 
 .final-total {
   font-size: 2em;
+}
+
+.cart-checkout {
+  width: 85%;
+
+  .row:not(:last-child) {
+    border-bottom: 1px solid lightgray;
+  }
+}
+
+.checkout {
+  &.confirmation-inner {
+    padding: 30px 10px;
+    width: 85%;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    height: 45px;
+
+    &.header {
+      font-weight: bold;
+    }
+  }
+}
+
+.store-btns {
+  width: 275px;
 }

@@ -352,6 +352,6 @@ export function unvoidTransaction(id, initials) {
   firebaseRef.child('moneyLog').child(id).update({ void: false, initials });
 }
 
-export function updateStoreItemCount(id, newCount) {
-  firebaseRef.child('Store').child(id).update({ count: newCount });
+export function updateStoreItemCount(newStoreCounts) {
+  firebaseRef.child('Store').update(newStoreCounts);
 }
