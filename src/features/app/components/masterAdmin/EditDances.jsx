@@ -112,7 +112,7 @@ export class EditDances extends React.Component {
         );
       }
       return Object.keys(this.props.dances).map((key, index) => {
-        const dance = this.props.dances(key);
+        const dance = this.props.dances[key];
         return (
           <tr key={index} onClick={() => this.addEdit(index, true)}>
             <td>{dance.key}</td>
