@@ -47,7 +47,7 @@ export class LevelCheckUpdates extends React.Component {
       newFilter = ['Apollo', 'Skylab'];
     }
     const updatedRegistrations = this.props.registrations.filter(r =>
-      (r.OriginalLevel === newFilter[0] || r.OriginalLevel === newFilter[1]) && r.HasLevelCheck && r.LevelChecked && r.BadgeUpdatede && !r.MissedLevelCheck
+      (r.OriginalLevel === newFilter[0] || r.OriginalLevel === newFilter[1]) && r.HasLevelCheck && r.LevelChecked && r.BadgeUpdated && !r.MissedLevelCheck
     );
 
     const pendingRegistrations = this.props.registrations.filter(r => {
