@@ -92,14 +92,16 @@ export class EditPasses extends React.Component {
           <Loading />
         );
       }
-      return this.props.passes.map((pass, index) => (
-        <tr key={index} onClick={() => this.addEdit(index, true)}>
-          <td>{pass.name}</td>
-          <td>{pass.price}</td>
-          <td>{pass.sortBy}</td>
-        </tr>
-
-      ));
+      return Object.keys(this.props.passes).map((key, index) => {
+        const pass = this.props.passes[key];
+        return (
+          <tr key={index} onClick={() => this.addEdit(index, true)}>
+            <td>{pass.name}</td>
+            <td>{pass.price}</td>
+            <td>{pass.sortBy}</td>
+          </tr>
+        );
+      });
     };
 
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);

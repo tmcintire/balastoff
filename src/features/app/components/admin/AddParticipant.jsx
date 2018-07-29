@@ -103,7 +103,8 @@ export class AddParticipant extends React.Component {
 
   createSelectPassItems() {
     let items = [];
-    let passes = helpers.sortTracks(this.props.passes);    
+    let passesArray = Object.keys(this.props.passes).map(key => this.props.passes[key]);    
+    let passes = helpers.sortTracks(passesArray);    
     _.forIn(passes, (p, index) => {
       items.push(<option key={index} value={p.name}>{p.name}</option>);
     });
