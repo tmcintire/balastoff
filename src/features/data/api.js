@@ -79,7 +79,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
             }
     
             // Handle Paid entries -- Need to remove this and handle it just by checking the amount
-            if (data[5] === '0.00') {
+            if (parseInt(data[5], 10) <= 0) {
               object[data[1]].HasPaid = true;
             } else {
               object[data[1]].HasPaid = false;
