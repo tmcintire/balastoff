@@ -6,6 +6,7 @@ export { AdminContainer } from './admin/AdminContainer';
 export { MoneyLogContainer } from './admin/MoneyLogContainer';
 export { EditParticipantContainer } from './admin/EditParticipantContainer';
 export { EditRegistrationContainer } from './registrations/EditRegistrationContainer';
+export { CompsTablesContainer } from './admin/CompsTablesContainer';
 export { Comps } from './registrations/Comps';
 export { Level } from './registrations/Level';
 export { MissionGear } from './registrations/MissionGear';

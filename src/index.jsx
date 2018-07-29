@@ -33,7 +33,8 @@ const {
   EditConfig,
   EditStore,
   EditAdminFields,
-  StoreContainer } = app.components;
+  StoreContainer,
+  CompsTablesContainer } = app.components;
 
 /* Define routes for administrators */
 const adminUserRoutes = () => (
@@ -47,6 +48,7 @@ const adminUserRoutes = () => (
     <Route path="/admin/moneylog" component={MoneyLogContainer} />
     <Route path="/admin/levelcheckdashboard" component={LevelCheckDashboardContainer} />
     <Route path="/admin/missedlevelcheck" component={MissedLevelCheckContainer} />
+    <Route path="/admin/compstables" component={CompsTablesContainer} />
     <Route path="/editregistration/:id" component={EditRegistrationContainer} />
     <Route path="/comps" component={CompRegistrationsContainer} />
     <Route path="/admin/missiongearissues" component={MissionGearIssuesContainer} />

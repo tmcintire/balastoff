@@ -79,16 +79,13 @@ export class CompRegistrations extends React.Component {
     return exists;
   }
 
-  backToRegistrations = () => {
-    window.location('/');
-  }
-
   renderOpen = () => {
     if (!this.state.loading) {
       return this.state.open.map((o, index) => (
-        <div key={index}>
-          <p>{o.name} <strong>&</strong> {o.partner}</p>
-        </div>
+        <tr key={index}>
+          <td>{o.name}</td>
+          <td>{o.partner}</td>
+        </tr>
       ));
     }
     return null;
@@ -97,9 +94,10 @@ export class CompRegistrations extends React.Component {
   renderAmateur = () => {
     if (!this.state.loading) {
       return this.state.amateurCouples.map((o, index) => (
-        <div key={index}>
-          <p>{o.name} <strong>&</strong> {o.partner}</p>
-        </div>
+        <tr key={index}>
+          <td>{o.name}</td>
+          <td>{o.partner}</td>
+        </tr>
       ));
     }
     return null;
@@ -109,9 +107,10 @@ export class CompRegistrations extends React.Component {
     if (!this.state.loading) {
       const sorted = _.orderBy(this.state.adNov, 'role');
       return sorted.map((o, index) => (
-        <div key={index}>
-          <p>{o.name} -- {o.role || ''}</p>
-        </div>
+        <tr key={index}>
+          <td>{o.name}</td>
+          <td>{o.role || ''}</td>
+        </tr>
       ));
     }
     return null;
@@ -121,9 +120,10 @@ export class CompRegistrations extends React.Component {
     if (!this.state.loading) {
       const sorted = _.orderBy(this.state.amateurDraw, 'role');
       return sorted.map((o, index) => (
-        <div key={index}>
-          <p>{o.name} -- {o.role || ''}</p>
-        </div>
+        <tr key={index}>
+          <td>{o.name}</td>
+          <td>{o.role || ''}</td>
+        </tr>
       ));
     }
     return null;
@@ -143,24 +143,64 @@ export class CompRegistrations extends React.Component {
             <div>
               <h3 className="text-center">Open</h3>
               <hr />
-              {this.renderOpen()}
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Partner</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.renderOpen()}
+                </tbody>
+              </table>
             </div>
             <div>
               <h3 className="text-center">Amateur Couples</h3>
               <hr />
-              {this.renderAmateur()}
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Partner</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.renderAmateur()}
+                </tbody>
+              </table>
             </div>
           </div>
           <div className="flex-row flex-wrap flex-justify-space-around">
             <div>
               <h3 className="text-center">AdNov</h3>
               <hr />
-              {this.renderAdNov()}
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.renderAdNov()}
+                </tbody>
+              </table>
             </div>
             <div>
               <h3 className="text-center">Amateur Draw</h3>
               <hr />
-              {this.renderAmateurDraw()}
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.renderAmateurDraw()}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
