@@ -142,10 +142,13 @@ export class Home extends React.Component {
             <label htmlFor="search">Search Registrations</label>
             <input className="search search-input" id="search" type="text" onChange={this.handleValueChange} />
           </div>
-          <div className="flex-row">
-            Total Collected:
-            <span className="collected-text">${this.props.totalCollected.toFixed(2)}</span>
-          </div>
+          {
+            this.props.totalCollected !== undefined &&
+              <div className="flex-row">
+                Total Collected:
+                <span className="collected-text">${this.props.totalCollected.toFixed(2)}</span>
+              </div>
+          }
         </div>
         <div className="registrations-wrapper flex-col">
           <div className="registrations-header">
