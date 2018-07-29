@@ -11,7 +11,7 @@ export class Home extends React.Component {
 
     this.state = {
       filteredRegistrations: props.registrations,
-      filter: '',
+      filter: 'Last Name',
       filterText: '',
     };
   }
@@ -19,8 +19,9 @@ export class Home extends React.Component {
   componentWillReceiveProps(nextProps) {
     const registrations = this.state.filterText !== '' ? this.state.filteredRegistrations : nextProps.registrations;
     if (registrations) {
+      const sortedRegistrations = helpers.sortRegistrations(registrations, this.state.filter);
       this.setState({
-        filteredRegistrations: registrations,
+        filteredRegistrations: sortedRegistrations,
       });
     }
   }
