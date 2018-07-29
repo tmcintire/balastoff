@@ -28,7 +28,7 @@ export class LevelCheckDashboard extends React.Component {
       const gemini = nextProps.registrations.filter(r => r.Level === 'Gemini' && r.LevelChecked);
       const skylab = nextProps.registrations.filter(r => r.Level === 'Skylab' && r.LevelChecked);
       const spacex = nextProps.registrations.filter(r => r.Level === 'SpaceX');
-      const mercury = nextProps.registrations.filter(r => r.Level === 'Mercury' && r.LevelChecked);
+      const mercury = nextProps.registrations.filter(r => r.Level === 'Mercury');
 
       this.setState({
         apollo,
