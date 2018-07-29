@@ -103,36 +103,16 @@ export class Home extends React.Component {
     });
   }
 
-  updateTotal = (amount) => {
-    const total = parseInt(amount, 10) + this.props.totalCollected;
-    api.updateTotalCollected(total);
-  }
-
-  changePaidCheckBox = (data) => {
-    const owed = data.checked ? '0.00' : data.originalAmountOwed;
-    const amountToUpdate = data.checked ?
-      parseInt(data.originalAmountOwed, 10) : -parseInt(data.originalAmountOwed, 10);
-    this.updateTotal(amountToUpdate);
-    const object = {
-      HasPaid: data.checked,
-      'Amount Owed': owed,
-    };
-    api.updateRegistration(data.bookingID, object);
-  }
-
   render() {
     const { loading } = this.props;
     const renderRegistrations = () => {
       if (loading === false && this.state.filteredRegistrations !== undefined) {
         return this.state.filteredRegistrations.map((registration, index) => {
           if (registration) {
-            
             return (
               <RegistrationBox
                 key={index}
-                updateTotal={this.updateTotal}
                 registration={registration}
-                changePaidCheckBox={this.changePaidCheckBox}
                 hasLevelCheck={registration.HasLevelCheck}
               />
             );
@@ -164,7 +144,7 @@ export class Home extends React.Component {
           </div>
           <div className="flex-row">
             Total Collected:
-            <span className="collected-text">${this.props.totalCollected}</span>
+            <span className="collected-text">${this.props.totalCollected.toFixed(2)}</span>
           </div>
         </div>
         <div className="registrations-wrapper flex-col">
@@ -191,4 +171,5 @@ export class Home extends React.Component {
 Home.propTypes = {
   registrations: PropTypes.array,
   loading: PropTypes.boolean,
+  totalCollected: PropTypes.number,
 };
