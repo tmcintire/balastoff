@@ -61,27 +61,6 @@ export class CompsPurchase extends React.Component {
     api.updateRegistration(this.props.id, { 'Amount Owed': purchaseAmount, HasPaid: purchaseAmount <= 0 });
 
     api.updateRegistrationComps(this.props.id, comps);
-
-
-    // let purchaseAmount;
-    // let newComp;
-    // let updatedComps;
-    // if (IsCompeting) {
-    //   purchaseAmount = this.state.purchaseAmount ? this.state.purchaseAmount + comp.Price : comp.Price;
-    //   newComp = new NewComp(comp.Key, comp.Name, '', '');
-    //   if (this.state.updatedComps) {
-    //     updatedComps = this.state.updatedComps.concat(newComp);
-    //   } else {
-    //     updatedComps = [newComp];
-    //   }
-    // } else {
-    //   purchaseAmount = this.state.purchaseAmount ? this.state.purchaseAmount - comp.Price : -comp.Price;
-
-    //   // find the comp that was unselsected and remove it
-    //   updatedComps = _.filter(this.state.comps, c => c.Key !== comp.Key);
-    // }
-
-    // this.setState({ updatedComps, purchaseAmount });
   }
 
   handlePartnerChange = (Partner, key) => {
@@ -95,46 +74,6 @@ export class CompsPurchase extends React.Component {
   }
 
   confirmPurchase = (updatedComps, purchaseAmount) => {
-    // api.updateRegistrationComps(this.props.id, updatedComps).then(() => {
-    //   this.setState({
-    //     showAddComps: false,
-    //   });
-    // });
-
-    // const newAmountOwed = parseInt(this.props.amountOwed, 10) + purchaseAmount;
-    // api.updateRegistration(this.props.id, { 'Amount Owed': newAmountOwed, HasPaid: newAmountOwed === 0 });
-
-    // const details = _.cloneDeep(this.props.pendingMoneyLog.details);
-    // const addedComps = _.difference(updatedComps, this.props.registrationComps);
-    // const removedComps = _.difference(this.props.registrationComps, updatedComps);
-
-    // _.forEach(addedComps, comp => {
-    //   const c = _.find(this.props.allComps, ac => ac.Key === comp.Key);
-
-    //   details.push({
-    //     item: `Added Comp - ${comp.Name}`,
-    //     price: c.Price,
-    //     quantity: 1,
-    //   });
-    // });
-
-    // _.forEach(removedComps, comp => {
-    //   if (details.length > 0) {
-    //     // we have money logs already, so we need to find the one and remove it
-    //     _.remove(details, d => _.includes(d.item, comp.Name));
-    //   } else {
-    //     // we are just removing comps
-    //     const c = _.find(this.props.allComps, ac => ac.Key === comp.Key);
-
-    //     details.push({
-    //       item: `Removed Comp - ${comp.Name}`,
-    //       price: -(c.Price),
-    //       quantity: 1,
-    //     });
-    //   }
-    // });
-
-    // this.props.updatePendingMoneyLog(details, purchaseAmount);
     this.props.toggleAddComps();
   }
 

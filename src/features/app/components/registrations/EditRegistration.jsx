@@ -21,14 +21,14 @@ export class EditRegistration extends React.Component {
         reg.BookingID === nextProps.params.id)[0];
 
       let pendingMoneyLog = _.cloneDeep(prevState.pendingMoneyLog);
-      if (parseInt(registration['Amount Owed'], 10) > 0 && !prevState.moneyLogInitialized) {
+      if (registration['Amount Owed'] !== 0 && !prevState.moneyLogInitialized) {
         pendingMoneyLog = {
           bookingId: registration.BookingID,
-          amount: parseInt(registration['Amount Owed'], 10),
+          amount: registration['Amount Owed'],
           details: [
             {
               item: 'Original Amount Owed',
-              price: parseInt(registration['Amount Owed'], 10),
+              price: registration['Amount Owed'],
               quantity: 1,
             },
           ],
@@ -101,7 +101,7 @@ export class EditRegistration extends React.Component {
   changePaidCheckBox = (e) => {
     const tempOwed = this.state.registration['Amount Owed'];
     let confirm;
-    if (parseInt(tempOwed, 10) > 0) {
+    if (tempOwed > 0) {
       confirm = window.confirm(`Confirm payment of $${tempOwed} for ${this.state.registration['First Name']} ${this.state.registration['Last Name']}`);
     } else {
       confirm = window.confirm(`Confirm refund of $${tempOwed} to ${this.state.registration['First Name']} ${this.state.registration['Last Name']}`);
@@ -109,8 +109,7 @@ export class EditRegistration extends React.Component {
 
     if (confirm === true) {
       const checked = e.target.checked;
-      const owed = e.target.checked ? '0.00' : tempOwed;
-
+      const owed = e.target.checked ? 0 : tempOwed;
 
       const object = {
         HasPaid: checked,

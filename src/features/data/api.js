@@ -32,7 +32,12 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
           object[data[1]] = {};
           object[data[1]].Comps = [];
           _.forEach(headers, (header, headerIndex) => {
-            object[data[1]][header] = data[headerIndex];
+            if (header === 'Amount Owed') {
+              object[data[1]][header] = parseInt(data[headerIndex], 10);
+            } else {
+              object[data[1]][header] = data[headerIndex];
+            }
+
             object[data[1]].CheckedIn = false;
             object[data[1]].HasComments = false;
             object[data[1]].Shirt1 = false;
@@ -43,7 +48,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
             object[data[1]].MissedLevelCheck = false;
             object[data[1]].MissionGearIssues = [];
             object[data[1]].Comments = [];
-            object[data[1]]['Original Amount Owed'] = data[5];
+            object[data[1]]['Original Amount Owed'] = parseInt(data[5], 10);
             object[data[1]].OriginalLevel = data[18];
             object[data[1]].WalkIn = false;
     
