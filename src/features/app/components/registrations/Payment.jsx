@@ -17,6 +17,17 @@ export const Payment = props => {
       );
     }
   };
+
+  const renderRefund = () => {
+    if (parseInt(props.amountOwed, 10) < 0) {
+      return (
+        <span className="full-width"><strong>Refunded: </strong>
+          <input type="checkbox" checked={parseInt(props.amountOwed, 10) === 0} onChange={props.togglePaid} />
+        </span>
+      );
+    }
+  };
+
   return (
     <div>
       <div className="level-container">
@@ -24,6 +35,7 @@ export const Payment = props => {
         <div className="info-container">
           <p className="full-width"><strong>Amount Owed: </strong><span style={style}>${props.amountOwed}</span></p>
           {renderPay()}
+          {renderRefund()}
         </div>
 
       </div>

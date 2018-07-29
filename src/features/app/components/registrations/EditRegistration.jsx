@@ -10,6 +10,7 @@ import { Level } from './Level';
 import { Comments } from './Comments';
 import { Payment } from './Payment';
 import { EditMissionGearIssues } from './EditMissionGearIssues';
+import { CompsPurchase } from './CompsPurchase';
 
 const Loading = require('react-loading-animation');
 
@@ -19,9 +20,27 @@ export class EditRegistration extends React.Component {
       const registration = nextProps.registrations.filter(reg =>
         reg.BookingID === nextProps.params.id)[0];
 
+      let pendingMoneyLog = _.cloneDeep(prevState.pendingMoneyLog);
+      if (parseInt(registration['Amount Owed'], 10) > 0 && !prevState.moneyLogInitialized) {
+        pendingMoneyLog = {
+          bookingId: registration.BookingID,
+          amount: parseInt(registration['Amount Owed'], 10),
+          details: [
+            {
+              item: 'Original Amount Owed',
+              price: parseInt(registration['Amount Owed'], 10),
+              quantity: 1,
+            },
+          ],
+        };
+      }
+
       return {
         registration,
+        registrationComps: registration['Comps'] ? registration['Comps'] : [],
         loading: false,
+        pendingMoneyLog,
+        moneyLogInitialized: true,
       };
     }
 
@@ -30,32 +49,21 @@ export class EditRegistration extends React.Component {
 
   constructor(props) {
     super(props);
-    let loading = true;
-
-    if (props.registrations) {
-      const registration = props.registrations.filter(reg =>
-        reg.BookingID === props.params.id)[0];
-
-      if (registration) {
-        loading = false;
-      }
-
-      this.state = {
-        registration,
-        loading,
-        showSaved: false,
-        moneyLogComment: 'Paid off amount due on registration',
-        error: '',
-      };
-    } else {
-      this.state = {
-        registration: {},
-        loading: true,
-        showSaved: false,
-        moneyLogComment: 'Paid off amount due on registration',
-        error: '',
-      };
-    }
+    
+    this.state = {
+      registrationComps: [],
+      registration: null,
+      loading: true,
+      showSaved: false,
+      showAddComps: false,
+      purchaseAmount: 0,
+      pendingMoneyLog: {
+        amount: 0,
+        details: [],
+      },
+      moneyLogInitialized: false,
+      error: '',
+    };
   }
 
   saveForm(e) {
@@ -92,24 +100,17 @@ export class EditRegistration extends React.Component {
 
   changePaidCheckBox = (e) => {
     const tempOwed = this.state.registration['Amount Owed'];
-    const confirm = window.confirm(`Confirm payment of $${tempOwed} for ${this.state.registration['First Name']} ${this.state.registration['Last Name']}`);
+    let confirm;
+    if (parseInt(tempOwed, 10) > 0) {
+      confirm = window.confirm(`Confirm payment of $${tempOwed} for ${this.state.registration['First Name']} ${this.state.registration['Last Name']}`);
+    } else {
+      confirm = window.confirm(`Confirm refund of $${tempOwed} to ${this.state.registration['First Name']} ${this.state.registration['Last Name']}`);
+    }
 
     if (confirm === true) {
       const checked = e.target.checked;
       const owed = e.target.checked ? '0.00' : tempOwed;
 
-      const amount = parseInt(tempOwed, 10);
-      api.updateTotalCollected(amount);
-      const moneyLog = {
-        bookingId: this.state.registration.BookingID,
-        amount,
-        details: [{
-          item: `New registration - ${this.state.registration.TicketType}`,
-          quantity: 1,
-          price: amount,
-        }],
-      };
-      api.updateMoneyLog(moneyLog);
 
       const object = {
         HasPaid: checked,
@@ -118,6 +119,13 @@ export class EditRegistration extends React.Component {
 
       this.saved();
       api.updateRegistration(this.props.params.id, object);
+      api.updateMoneyLog(this.state.pendingMoneyLog);
+      this.setState({
+        pendingMoneyLog: {
+          amount: 0,
+          details: [],
+        },
+      });
     }
   }
 
@@ -125,13 +133,13 @@ export class EditRegistration extends React.Component {
     window.location('/');
   }
 
-  updateMoneyLogComment = (comment) => {
-    let newComment = comment;
-    if (parseInt(this.state.registration['Amount Owed'], 10) > 0) {
-      newComment = this.state.moneyLogComment + ', ' + comment
-    }
+  updatePendingMoneyLog = (details, amount) => {
     this.setState({
-      moneyLogComment: newComment,
+      pendingMoneyLog: {
+        bookingId: this.state.registration.BookingID,
+        amount,
+        details,
+      },
     });
   }
 
@@ -160,6 +168,9 @@ export class EditRegistration extends React.Component {
       });
     }, 2000);
   }
+
+  toggleAddComps = () => this.setState({ showAddComps: !this.state.showAddComps });
+
   render() {
     const { registration, partner, comps } = this.state;
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
@@ -192,13 +203,8 @@ export class EditRegistration extends React.Component {
               hasLevelCheck={registration.HasLevelCheck}
             />
             <Comps
-              comps={registration.Comps}
-              allComps={this.props.allComps}
-              partner={partner}
-              saved={this.saved}
-              id={this.props.params.id}
-              registration={registration}
-              updateMoneyLogComment={this.updateMoneyLogComment}
+              comps={registration['Comps']}
+              toggleAddComps={this.toggleAddComps}
             />
             <Payment
               saved={this.saved}
@@ -227,7 +233,18 @@ export class EditRegistration extends React.Component {
               registration={registration}
             />
           </div>
-
+          {
+          this.state.showAddComps &&
+            <CompsPurchase
+              toggleAddComps={this.toggleAddComps}
+              allComps={this.props.allComps}
+              id={this.props.params.id}     
+              amountOwed={this.state.registration['Amount Owed']}         
+              registrationComps={this.state.registrationComps}
+              pendingMoneyLog={this.state.pendingMoneyLog}
+              updatePendingMoneyLog={this.updatePendingMoneyLog}
+            />
+          }
         </div>
       );
     };
