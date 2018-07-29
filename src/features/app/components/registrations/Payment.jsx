@@ -22,7 +22,7 @@ export const Payment = props => {
     if (parseInt(props.amountOwed, 10) < 0) {
       return (
         <span className="full-width"><strong>Refunded: </strong>
-          <input type="checkbox" checked={parseInt(props.amountOwed, 10) === 0} onChange={props.togglePaid} />
+          <input type="checkbox" checked={props.amountOwed === 0} onChange={props.togglePaid} />
         </span>
       );
     }
@@ -33,7 +33,7 @@ export const Payment = props => {
       <div className="level-container">
         <h3><strong><u>Payment Information</u></strong></h3>
         <div className="info-container">
-          <p className="full-width"><strong>Amount Owed: </strong><span style={style}>${props.amountOwed}</span></p>
+          <p className="full-width"><strong>Amount Owed: </strong><span style={style}>${props.amountOwed.toFixed(2)}</span></p>
           {renderPay()}
           {renderRefund()}
         </div>
@@ -44,7 +44,7 @@ export const Payment = props => {
 };
 
 Payment.propTypes = {
-  amountOwed: PropTypes.string,
+  amountOwed: PropTypes.number,
   fullyPaid: PropTypes.boolean,
   togglePaid: PropTypes.function,
 };

@@ -30,7 +30,7 @@ export class RegistrationBox extends React.Component {
         <span className="col-xs-2">{registration['First Name']}</span>
         <span className="col-xs-2">{registration.Level}</span>
         <span className="col-xs-1">{this.props.hasLevelCheck ? 'Yes' : 'No'}</span>
-        <span className="col-xs-1" style={style}>${registration['Amount Owed']}</span>
+        <span className="col-xs-1" style={style}>${registration['Amount Owed'].toFixed(2)}</span>
         <span className="col-xs-1">{hasMerchandise}</span>
         <span className="col-xs-1 text-center">
           <input

@@ -112,7 +112,8 @@ export class AddParticipant extends React.Component {
 
   createSelectLevelItems() {
     let items = [];
-    let tracks = helpers.sortTracks(this.props.tracks);    
+    let tracksArray = Object.keys(this.props.tracks).map(key => this.props.tracks[key]);
+    let tracks = helpers.sortTracks(tracksArray);    
     _.forIn(tracks, (t, index) => {
       items.push(<option key={index} value={t.name}>{t.name}</option>);
     });
