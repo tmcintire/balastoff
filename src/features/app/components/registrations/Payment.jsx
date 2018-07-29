@@ -19,7 +19,7 @@ export const Payment = props => {
   };
 
   const renderRefund = () => {
-    if (parseInt(props.amountOwed, 10) < 0) {
+    if (props.amountOwed < 0) {
       return (
         <span className="full-width"><strong>Refunded: </strong>
           <input type="checkbox" checked={props.amountOwed === 0} onChange={props.togglePaid} />
