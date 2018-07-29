@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-import moment from 'moment';
 import Datetime from 'react-datetime';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';

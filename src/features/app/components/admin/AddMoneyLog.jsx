@@ -25,7 +25,7 @@ export class AddMoneyLog extends React.Component {
     const object = {
       bookingId: this.state.bookingId ? this.state.bookingId : null,
       amount: this.state.amount,
-      details: this.state.entries,
+      details: _.compact(this.state.entries),
     };
 
     api.updateTotalCollected(this.state.amount);

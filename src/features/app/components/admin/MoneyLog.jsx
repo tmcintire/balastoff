@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
 import { Column, Table, AutoSizer } from "react-virtualized";
+import moment from 'moment';
 import * as api from "../../../data/api";
 // This only needs to be done once; probably during your application's bootstrapping process.
 
@@ -59,7 +60,7 @@ export class MoneyLog extends React.Component {
         {
           rowData.details && rowData.details.map(d => {
             return (
-              <span>({d.quantity}) {d.item} @ ${d.price.toFixed(2)}/ea</span>
+              <span className="ellipsis">({d.quantity}) {d.item} @ ${d.price.toFixed(2)}/ea</span>
             );
           })
         }
@@ -96,6 +97,14 @@ export class MoneyLog extends React.Component {
     return <Link to={`editregistration/${rowData.bookingId}`}>{rowData.bookingId}</Link>;
   }
 
+  renderDate = ({ rowData }) => {
+    if (rowData.date) {
+      const date = moment(rowData.date).format('L, h:mm:ss a');
+      return <span>{date}</span>;
+    }
+    return null;
+  }
+
   render() {
     const renderVoidTransaction = () => {
       if (this.state.showVoidConfirmation) {
@@ -127,9 +136,15 @@ export class MoneyLog extends React.Component {
                   cellRenderer={this.renderBookingId}
                 />
                 <Column
+                  width={250}
+                  label="Date"
+                  dataKey="date"
+                  cellRenderer={this.renderDate}
+                />
+                <Column
                   label="Details"
                   dataKey="details"
-                  width={500}
+                  width={300}
                   cellRenderer={this.renderDetails}
                 />
                 <Column

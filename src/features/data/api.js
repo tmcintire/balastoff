@@ -316,6 +316,8 @@ export function updateTotalCollected(amount) {
 
 export function updateMoneyLog(log) {
   const key = firebaseRef.child('moneyLog').push().key;
+  const date = new Date();
+  log.date = date;
   firebaseRef.child('moneyLog').child(key).update(log);
 
   this.updateTotalCollected(log.amount);
