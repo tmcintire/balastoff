@@ -46,10 +46,16 @@ export class EditConfig extends React.Component {
 
   handleChange = (e) => {
     const target = e.target.name;
+    let value = e.target.value;
+    if (e.target.value === 'true') {
+      value = true;
+    } else if (e.target.value === 'false') {
+      value = false;
+    }
 
     this.setState({
       editedObject: {
-        [target]: e.target.value,
+        [target]: value,
       },
     });
   }
