@@ -45,6 +45,7 @@ export class EditParticipant extends React.Component {
       }
 
       if (field.key === 'Amount Owed') {
+        value = parseInt(value, 10);
         if (value > 0) {
           object.HasPaid = false;
         }
