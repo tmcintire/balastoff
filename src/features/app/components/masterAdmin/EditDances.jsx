@@ -111,17 +111,19 @@ export class EditDances extends React.Component {
           <Loading />
         );
       }
-      return this.props.dances.map((dance, index) => (
-        <tr key={index} onClick={() => this.addEdit(index, true)}>
-          <td>{dance.key}</td>
-          <td>{dance.name}</td>
-          <td>{dance.price}</td>
-          <td>{dance.startDate}</td>
-          <td>{dance.endDate}</td>
-          <td>{dance.count}</td>
-        </tr>
-
-      ));
+      return Object.keys(this.props.dances).map((key, index) => {
+        const dance = this.props.dance(key);
+        return (
+          <tr key={index} onClick={() => this.addEdit(index, true)}>
+            <td>{dance.key}</td>
+            <td>{dance.name}</td>
+            <td>{dance.price}</td>
+            <td>{dance.startDate}</td>
+            <td>{dance.endDate}</td>
+            <td>{dance.count}</td>
+          </tr>
+        );
+      });
     };
 
     const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
