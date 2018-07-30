@@ -70,7 +70,7 @@ export class LevelCheckBox extends React.Component {
           <option value="Gemini">Gemini</option>
           <option value="Apollo">Apollo</option>
           <option value="Skylab">Skylab</option>
-          <option value="Space-X">Space-X</option>
+          <option value="SpaceX">Space-X</option>
         </select>
 
         <i className="fa fa-check accept-level" aria-hidden="true" onClick={() => this.acceptLevel()} />
