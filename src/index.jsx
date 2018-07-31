@@ -34,7 +34,8 @@ const {
   EditStore,
   EditAdminFields,
   StoreContainer,
-  CompsTablesContainer } = app.components;
+  CompsTablesContainer,
+  DashboardContainer } = app.components;
 
 /* Define routes for administrators */
 const adminUserRoutes = () => (
@@ -53,6 +54,7 @@ const adminUserRoutes = () => (
     <Route path="/comps" component={CompRegistrationsContainer} />
     <Route path="/admin/missiongearissues" component={MissionGearIssuesContainer} />
     <Route path="/instructions" component={Instructions} />
+    <Route path="/dashboard" component={DashboardContainer} />
     <Route path="administrator" component={MasterAdminContainer} >
       <IndexRoute component={EditTracks} />
       <Route path="edittracks" component={EditTracks} />

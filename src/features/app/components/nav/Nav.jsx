@@ -48,7 +48,6 @@ export class Nav extends React.Component {
             <li className="navbar-brand nav-title" href="#">
               <span className="balast">BALAST</span>
               <span className="off">OFF! </span>
-              <span>Check-In</span>
             </li>
           </div>
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

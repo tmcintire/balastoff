@@ -25,3 +25,4 @@ export { EditConfig } from './masterAdmin/EditConfig';
 export { EditStore } from './masterAdmin/EditStore';
 export { EditAdminFields } from './masterAdmin/EditAdminFields';
 export { StoreContainer } from './store/StoreContainer';
+export { DashboardContainer } from './dashboard/DashboardContainer';
