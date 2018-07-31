@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { PurchaseItem } from './PurchaseItem';
 import { Checkout } from './Checkout';
 import * as api from '../../../data/api';
 

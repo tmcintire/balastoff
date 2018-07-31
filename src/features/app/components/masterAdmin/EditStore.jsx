@@ -48,10 +48,19 @@ export class EditStore extends React.Component {
   handleChange = (e) => {
     const target = e.target.name;
 
+    let value = e.target.value;
+
+    if (target === 'price') {
+      value = parseInt(value, 10);
+    } else if (target === 'count') {
+      value = parseInt(value, 10);
+    }
+
+
     this.setState({
       editedObject: {
         ...this.state.editedObject,
-        [target]: target === 'price' ? parseInt(e.target.value, 10) : e.target.value,
+        [target]: value,
       },
     });
   }
