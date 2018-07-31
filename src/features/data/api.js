@@ -146,6 +146,12 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
     // Reset these values under development only
     firebaseRef.child('totalCollected').set(0);
     firebaseRef.child('moneyLog').remove();
+    firebaseRef.child('Store').once('value').then((snapshot) => {
+      const storeItem = snapshot.val();
+      _.forEach(storeItem, (item, key) => {
+        firebaseRef.child('Store').child(key).update({ count: 0 });
+      });
+    });
   }
 });
 
