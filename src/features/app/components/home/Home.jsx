@@ -16,6 +16,10 @@ export class Home extends React.Component {
     };
   }
 
+  componentDidMount() {
+    window.scrollTo(0, 1);
+  }
+
   componentWillReceiveProps(nextProps) {
     const registrations = this.state.filterText !== '' ? this.state.filteredRegistrations : nextProps.registrations;
     if (registrations) {
