@@ -156,9 +156,9 @@ export class LevelCheck extends React.Component {
           <Link to="/admin"><button className="btn btn-primary">Back</button></Link>
         </div>
         <div className="level-check-filters">
-          <span onClick={() => this.toggleLeadFollow()}>Lead/Follow</span>
-          <span>|</span>
           <span onClick={() => this.changeFilter()}>Level</span>
+          <span>|</span>
+          <span onClick={() => this.toggleLeadFollow()}>Lead/Follow</span>
         </div>
         <div className="level-check-title text-center">{this.state.title} <span className="capitalize">{leadFollow}</span></div>
         <hr />
