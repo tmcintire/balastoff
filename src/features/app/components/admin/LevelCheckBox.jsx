@@ -55,26 +55,28 @@ export class LevelCheckBox extends React.Component {
 
   render() {
     return (
-      <div className={`container level-check-form flex-row ${this.state.highlighted ? 'highlighted' : ''}`}>
-        <div className="flex-col" onClick={() => this.highlight()}>
+      <div className={`container level-check-form flex-col ${this.state.highlighted ? 'highlighted' : ''}`}>
+        <div className="flex-row flex-align-center" onClick={() => this.highlight()}>
           <span className="levelcheck-box-id">{this.props.registration.BookingID}</span>
           <span className="levelcheck-box-name">{this.props.registration['First Name']} {this.props.registration['Last Name']}</span>
         </div>
-        <select
-          className="level-check-dropdown form-control"
-          value={this.state.level}
-          onChange={e => this.handleChange(e)}
-        >
-          <option value="Beginner">Beginner</option>
-          <option value="Mercury">Mercury</option>
-          <option value="Gemini">Gemini</option>
-          <option value="Apollo">Apollo</option>
-          <option value="Skylab">Skylab</option>
-          <option value="SpaceX">Space-X</option>
-        </select>
+        <div className="flex-row">
+          <select
+            className="level-check-dropdown form-control"
+            value={this.state.level}
+            onChange={e => this.handleChange(e)}
+          >
+            <option value="Beginner">Beginner</option>
+            <option value="Mercury">Mercury</option>
+            <option value="Gemini">Gemini</option>
+            <option value="Apollo">Apollo</option>
+            <option value="Skylab">Skylab</option>
+            <option value="SpaceX">Space-X</option>
+          </select>
 
-        <i className="fa fa-check accept-level" aria-hidden="true" onClick={() => this.acceptLevel()} />
-        <i className="fa fa-times no-level-check" aria-hidden="true" onClick={() => this.missedLevelCheck()} />
+          <i className="fa fa-check accept-level" aria-hidden="true" onClick={() => this.acceptLevel()} />
+          <i className="fa fa-times no-level-check" aria-hidden="true" onClick={() => this.missedLevelCheck()} />
+        </div>
       </div>
     );
   }

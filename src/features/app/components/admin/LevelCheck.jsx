@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import _ from 'lodash';
 import { LevelCheckBox } from './LevelCheckBox';
+import * as api from '../../../data/api';
 
 const Loading = require('react-loading-animation');
 
@@ -47,7 +48,9 @@ export class LevelCheck extends React.Component {
     };
   }
 
-  changeFilter = (filter) => {
+  changeFilter = () => {
+    const filter = _.includes(this.state.currentFilter, 'Gemini') ? this.state.apolloSkylabFilter : this.state.geminiFilter;
+
     const filteredLeads = this.props.registrations.filter(r => {
       return (
         _.includes(filter, r.OriginalLevel) &&
@@ -69,12 +72,14 @@ export class LevelCheck extends React.Component {
         r.CheckedIn === true
       );
     });
+    
+    const title = filter === this.state.geminiFilter ? 'Gemini' : 'Apollo/Skylab';
 
     this.setState({
       filteredLeads,
       filteredFollows,
       currentFilter: filter,
-      title: filter[0],
+      title,
     });
   }
 
@@ -84,7 +89,39 @@ export class LevelCheck extends React.Component {
     });
   }
 
+  acceptAllLevels = () => {
+    const level = _.includes(this.state.currentFilter, 'Apollo') ? 'Apollo' : 'Gemini';
+    const confirm = window.confirm(`Place ALL remaining ${this.state.showLeads ? 'leads' : 'follows'} into ${level} ?`);
+
+    if (confirm === true) {
+      const reallyConfirm = window.confirm('Are you really sure?');
+
+      if (reallyConfirm === true) {
+        if (this.state.showLeads) {
+          _.forEach(this.state.filteredLeads, (lead) => {
+            api.updateRegistration(lead.BookingID, {
+              LevelChecked: true,
+              MissedLevelCheck: false,
+              Level: level,
+            });
+          });
+        } else {
+          _.forEach(this.state.filteredFollows, (follow) => {
+            api.updateRegistration(follow.BookingID, {
+              LevelChecked: true,
+              MissedLevelCheck: false,
+              Level: level,
+            });
+          });
+        }
+      }
+    }
+  }
+
   render() {
+    const level = _.includes(this.state.currentFilter, 'Apollo') ? 'Apollo' : 'Gemini';
+    const leadFollow = this.state.showLeads ? 'leads' : 'follows';
+    
     const renderLeads = () => {
       if (Object.keys(this.state.loading === false && this.state.filteredLeads).length > 0) {
         return this.state.filteredLeads.map((registration) => {
@@ -96,7 +133,7 @@ export class LevelCheck extends React.Component {
         });
       }
       return (
-        <Loading />
+        <h3>No Leads to show</h3>
       );
     };
     const renderFollows = () => {
@@ -110,32 +147,31 @@ export class LevelCheck extends React.Component {
         });
       }
       return (
-        <Loading />
+        <h3>No Follows to show</h3>
       );
     };
     return (
       <div className="container form-container">
-        <h1 className="text-center">{this.state.title} Level Check</h1>
         <div className="header-links">
-          <Link to="/admin"><button className="btn btn-primary">Back to Admin</button></Link>
-          <Link to="/admin/levelcheckupdates">View Completed Level Checks</Link>
+          <Link to="/admin"><button className="btn btn-primary">Back</button></Link>
         </div>
         <div className="level-check-filters">
-          <span onClick={() => this.toggleLeadFollow()}>Toggle Lead/Follow</span>
-          <span onClick={() => this.changeFilter(this.state.geminiFilter)}>Gemini</span>
-          <span onClick={() => this.changeFilter(this.state.apolloSkylabFilter)}>Apollo/Skylab</span>
-
+          <span onClick={() => this.toggleLeadFollow()}>Lead/Follow</span>
+          <span>|</span>
+          <span onClick={() => this.changeFilter()}>Level</span>
         </div>
+        <div className="level-check-title text-center">{this.state.title} <span className="capitalize">{leadFollow}</span></div>
         <hr />
         <div className="level-check-container flex-row flex-justify-space-between">
           <div className={`leads-container ${!this.state.showLeads ? 'hidden' : ''}`}>
-            <h3 className="text-center">Leads</h3>
             {renderLeads()}
           </div>
           <div className={`follows-container ${this.state.showLeads ? 'hidden' : ''}`}>
-            <h3 className="text-center">Follows</h3>
             {renderFollows()}
           </div>
+        </div>
+        <div className="accept-all-btn  flex-row flex-justify-center">
+          <div className="btn btn-danger" onClick={this.acceptAllLevels}>Place ALL remaining {leadFollow} in {level}</div>
         </div>
       </div>
     );
