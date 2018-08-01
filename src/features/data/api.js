@@ -372,3 +372,14 @@ export function unvoidTransaction(id, initials) {
 export function updateStoreItemCount(newStoreCounts) {
   firebaseRef.child('Store').update(newStoreCounts);
 }
+
+export function backupRegistrations(level, leadFollow) {
+  firebaseRef.child('registrations').once('value').then((res) => {
+    const registrations = res.val();
+    const string = `${level} ${leadFollow}`;
+    const key = firebaseRef.child('backupRegistrations').push().key;
+    registrations.label = string;
+    registrations.date = new Date().toString();
+    firebaseRef.child('backupRegistrations').child(key).set(registrations);
+  });
+}

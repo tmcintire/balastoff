@@ -91,10 +91,14 @@ export class LevelCheck extends React.Component {
 
   acceptAllLevels = () => {
     const level = _.includes(this.state.currentFilter, 'Apollo') ? 'Apollo' : 'Gemini';
+    const leadFollow = this.state.showLeads ? 'leads' : 'follows';
     const confirm = window.confirm(`Place ALL remaining ${this.state.showLeads ? 'leads' : 'follows'} into ${level} ?`);
 
     if (confirm === true) {
       const reallyConfirm = window.confirm('Are you really sure?');
+
+      // panic time, make a backup of the current registrations when anyone hits this button
+      api.backupRegistrations(level, leadFollow);
 
       if (reallyConfirm === true) {
         if (this.state.showLeads) {
