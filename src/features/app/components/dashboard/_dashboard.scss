@@ -17,6 +17,8 @@
 }
 
 .dashboard-store-item {
+  border-top: 1px solid lightgray;
+
   .item {
     width: 200px;
     text-overflow: ellipsis;
@@ -29,10 +31,12 @@
   }
 }
 
-.dashboard-levels-container {
+.dashboard-dropdown {
   margin-left: 30px;
   margin-top: 15px;
+}
 
+.dashboard-levels-container {
   .level-numbers-row {
     margin-bottom: 20px;
     padding-bottom: 5px;
@@ -63,5 +67,17 @@
       background: #6251a2;
       color: white;
     }
+  }
+}
+
+.store-total {
+  margin-top: 10px;
+  font-weight: bold;
+  color: green;
+}
+
+@media (max-width: 500px) {
+  .section-header {
+    font-size: 1.2em!important;
   }
 }
