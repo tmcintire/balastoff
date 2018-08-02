@@ -57,3 +57,15 @@
 .registration-box-link {
   color: black;
 }
+
+@media (max-width: 1024px) {
+  .registrations-body {
+    height: 500px;
+  }
+}
+
+@media (max-width: 768x) {
+  .registrations-body {
+    height: 750px;
+  }
+}
