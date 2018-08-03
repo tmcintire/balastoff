@@ -57,3 +57,31 @@
 .registration-box-link {
   color: black;
 }
+
+/** 
+ * iPad with portrait orientation.
+ */
+ @media all and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait){
+  .registrations-body {
+    height: 750px;
+  }
+}
+
+/** 
+ * iPad with landscape orientation.
+ */
+@media all and (device-width: 768px) and (device-height: 1024px) and (orientation:landscape){
+  .registrations-body {
+    height: 500px;
+  }
+}
+
+/**
+ * iPhone 5
+ * You can also target devices with aspect ratio.
+ */
+@media screen and (device-aspect-ratio: 40/71) {
+  .registrations-body {
+    height: 400px;
+  }
+}
