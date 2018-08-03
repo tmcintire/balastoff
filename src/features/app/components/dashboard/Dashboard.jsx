@@ -144,7 +144,7 @@ export class Dashboard extends React.Component {
 
   Levels = () => (
     <div className="dashboard-dropdown dashboard-levels-container flex-col">
-      <this.LevelNumbers registrations={this.state.beginner} level="Beginner" />    
+      <this.LevelNumbers registrations={this.state.beginner} level="Beginner" />
       <this.LevelNumbers registrations={this.state.mercury} level="Mercury" />
       <this.LevelNumbers registrations={this.state.gemini} level="Gemini" />
       <this.LevelNumbers registrations={this.state.apollo} level="Apollo" />
