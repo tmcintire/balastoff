@@ -19,6 +19,7 @@ export class Dashboard extends React.Component {
       skylab: [],
       spacex: [],
       mercury: [],
+      beginner: [],
       showLevels: false,
       showStore: false,
       showComps: false,
@@ -38,6 +39,7 @@ export class Dashboard extends React.Component {
       const skylab = nextProps.registrations.filter(r => r.Level === 'Skylab' && r.LevelChecked);
       const spacex = nextProps.registrations.filter(r => r.Level === 'SpaceX' && r.CheckedIn);
       const mercury = nextProps.registrations.filter(r => r.Level === 'Mercury' && r.CheckedIn);
+      const beginner = nextProps.registrations.filter(r => r.Level === 'Beginner' && r.CheckedIn);
 
       let openCouples = 0;
       let amateurCouples = 0;
@@ -93,6 +95,7 @@ export class Dashboard extends React.Component {
         skylab,
         spacex,
         mercury,
+        beginner,
         openCouples,
         amateurCouples,
         adNovLeads,
@@ -141,6 +144,7 @@ export class Dashboard extends React.Component {
 
   Levels = () => (
     <div className="dashboard-dropdown dashboard-levels-container flex-col">
+      <this.LevelNumbers registrations={this.state.beginner} level="Beginner" />    
       <this.LevelNumbers registrations={this.state.mercury} level="Mercury" />
       <this.LevelNumbers registrations={this.state.gemini} level="Gemini" />
       <this.LevelNumbers registrations={this.state.apollo} level="Apollo" />
