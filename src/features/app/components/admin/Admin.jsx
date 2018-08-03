@@ -58,6 +58,7 @@ export class Admin extends React.Component {
           <Link to="/admin/levelcheckupdates">Completed Level Checks</Link>
           <Link to="/admin/missedlevelcheck">Missed Level Checks</Link>
           <Link to="/admin/missiongearissues">Mission Gear Issues</Link>
+          <Link to="/admin/comments">Comments</Link>
           <Link to="/admin/levelcheckdashboard">Level Check Dashboard</Link>
         </div>
         <label htmlFor="name">Search</label>
