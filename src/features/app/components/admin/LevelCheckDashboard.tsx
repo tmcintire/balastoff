@@ -1,17 +1,32 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
 import { LevelGraph } from './LevelGraph';
+import { IRegistration } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class LevelCheckDashboard extends React.Component {
+interface LevelCheckDashboardProps {
+  registrations: IRegistration[],
+  loading: boolean,
+}
+
+interface LevelCheckDashboardState {
+  filter: string,
+  loading: boolean,
+  apollo: IRegistration[],
+  gemini: IRegistration[],
+  skylab: IRegistration[],
+  spacex: IRegistration[],
+  mercury: IRegistration[],
+}
+
+
+export class LevelCheckDashboard extends React.Component<LevelCheckDashboardProps, LevelCheckDashboardState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      filteredLeads: {},
-      filteredFollows: {},
       filter: '',
       loading: true,
       apollo: [],
@@ -22,7 +37,7 @@ export class LevelCheckDashboard extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: LevelCheckDashboardProps) {
     if (nextProps.registrations) {
       const apollo = nextProps.registrations.filter(r => r.Level === 'Apollo' && r.LevelChecked);
       const gemini = nextProps.registrations.filter(r => r.Level === 'Gemini' && r.LevelChecked);

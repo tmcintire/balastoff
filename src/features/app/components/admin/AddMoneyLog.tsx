@@ -1,28 +1,50 @@
-import React from "react";
-import PropTypes from "prop-types";
+import * as React from "react";
 import * as api from "../../../data/api";
+import * as _ from 'lodash';
+import { IMoneyLogEntryItem, IMoneyLogEntry } from '../../../data/interfaces';
 
-export class AddMoneyLog extends React.Component {
-  constructor() {
-    super();
+interface AddMoneyLogProps {
+  showMoneyLog: () => void;
+  registrations: any;
+}
+
+interface AddMoneyLogState {
+  showVoidConfirmation: boolean;
+  entries: IMoneyLogEntryItem[];
+  amount: number;
+  bookingId: number;
+}
+
+export class AddMoneyLog extends React.Component<AddMoneyLogProps, AddMoneyLogState> {
+  constructor(props) {
+    super(props);
 
     this.state = {
       showVoidConfirmation: false,
-      transactionToVoid: null,
-      entries: [''],
+      entries: [{
+        item: null,
+        price: null,
+        quantity: null
+      }],
+      amount: 0,
+      bookingId: null
     };
   }
 
   addEntry = (e) => {
     e.preventDefault();
     this.setState({
-      entries: this.state.entries.concat(['']),
+      entries: this.state.entries.concat([{
+        item: null,
+        price: null,
+        quantity: null
+      }]),
     });
   }
 
   submitForm = (e) => {
     e.preventDefault();
-    const object = {
+    const object: IMoneyLogEntry = {
       bookingId: this.state.bookingId ? this.state.bookingId : null,
       amount: this.state.amount,
       details: _.compact(this.state.entries),
@@ -38,19 +60,16 @@ export class AddMoneyLog extends React.Component {
     this.setState({ bookingId });
   }
 
-  handleEntryChange = (key, index, value) => {
+  handleEntryChange = (key: string, index: number, value: any) => {
     const entries = this.state.entries;
     let newValue = value;
 
-    if (key === 'price' || key === 'quantity') {
-      newValue = parseInt(value, 10);
-    }
     entries[index] = {
       ...entries[index],
       [key]: newValue,
     };
 
-    const amount = _.sumBy(entries, (entry) => {
+    const amount = _.sumBy(entries, (entry: IMoneyLogEntryItem) => {
       let total = 0;
       if (entry.price && entry.quantity) {
         total = entry.price * entry.quantity;
@@ -65,12 +84,12 @@ export class AddMoneyLog extends React.Component {
   }
 
   renderEntries = () => {
-    return this.state.entries.map((entry, index) => {
+    return this.state.entries.map((entry: IMoneyLogEntryItem, index) => {
       return (
         <div className="row custom-form-div">
           <input className="col-xs-8 form-control-override" placeholder="Description" type="text" defaultValue={entry.item} onChange={e => this.handleEntryChange('item', index, e.target.value)} />
-          <input className="col-xs-2 form-control-override" placeholder="Price" type="text" defaultValue={entry.price} onChange={e => this.handleEntryChange('price', index, e.target.value)} />
-          <input className="col-xs-2 form-control-override" placeholder="Quantity" type="number" defaultValue={entry.quantity} onChange={e => this.handleEntryChange('quantity', index, e.target.value)} />
+          <input className="col-xs-2 form-control-override" placeholder="Price" type="number" defaultValue={entry.price.toString()} onChange={e => this.handleEntryChange('price', index, parseFloat(e.target.value))} />
+          <input className="col-xs-2 form-control-override" placeholder="Quantity" type="number" defaultValue={entry.quantity.toString()} onChange={e => this.handleEntryChange('quantity', index, parseInt(e.target.value, 10))} />
         </div>
       );
     });
@@ -79,7 +98,7 @@ export class AddMoneyLog extends React.Component {
   renderRegistrationsDropdown = () => {
     return this.props.registrations.map(reg => {
       return (
-        <option value={reg.BookingID}>{reg.BookingID}-{reg['First Name']} {reg['Last Name']}</option>
+        <option value={reg.BookingID}>{reg.BookingID}-{reg.FirstName} {reg.LastName}</option>
       );
     });
   }
@@ -95,7 +114,9 @@ export class AddMoneyLog extends React.Component {
           </select>
 
           <label htmlFor="text">Details</label>
-          {this.renderEntries()}
+          {
+            this.renderEntries()
+          }
           <button onClick={(e) => this.addEntry(e)}>Add Entry</button>
 
           <div>
@@ -108,8 +129,3 @@ export class AddMoneyLog extends React.Component {
     );
   }
 }
-
-AddMoneyLog.propTypes = {
-  log: PropTypes.object,
-  totalCollected: PropTypes.number,
-};

@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import * as _ from 'lodash';
+import { ILevels } from './interfaces';
 
 export function sortRegistrations(registrations, filter) {
   return registrations.sort((a, b) => {
@@ -40,4 +41,9 @@ export function sortTracks(data) {
 
 export function checkMobile() {
   return window.innerWidth < 400 ? 'mobile-view' : '';
+}
+
+export function hasLevelCheck(level: string, levels: ILevels[]) {
+  const lev = _.find(levels, t => t.name === level);
+  return lev.levelCheck;
 }

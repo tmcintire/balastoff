@@ -1,9 +1,19 @@
-import React from 'react';
-import _ from 'lodash';
+import * as React from 'react';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import { Participant } from './Participant';
+import { IRegistration } from '../../../data/interfaces';
 
-export class Admin extends React.Component {
+interface AdminProps {
+  registrations: IRegistration[],
+  loading: boolean,
+}
+
+interface AdminState {
+  filteredRegistrations: IRegistration[],
+}
+
+export class Admin extends React.Component<AdminProps, AdminState> {
   constructor(props) {
     super(props);
 
@@ -26,8 +36,8 @@ export class Admin extends React.Component {
     const { registrations } = this.props;
 
     const filteredRegistrations = registrations.filter(reg => (
-      _.includes(reg['First Name'].toLowerCase(), target.toLowerCase()) ||
-      _.includes(reg['Last Name'].toLowerCase(), target.toLowerCase()) ||
+      _.includes(reg.FirstName.toLowerCase(), target.toLowerCase()) ||
+      _.includes(reg.LastName.toLowerCase(), target.toLowerCase()) ||
       _.includes(reg.Level.toLowerCase(), target.toLowerCase()) ||
       _.isEqual(reg.BookingID, target)));
 
@@ -37,7 +47,7 @@ export class Admin extends React.Component {
   }
 
   render() {
-    const { registrations, tracks, loading } = this.props;
+    const { registrations, loading } = this.props;
 
     const renderRegistrations = () => {
       if (loading === false && this.state.filteredRegistrations !== undefined) {

@@ -1,17 +1,30 @@
-import React from "react";
-import PropTypes from "prop-types";
+import * as React from "react";
 import { Link } from "react-router";
 import { Column, Table, AutoSizer } from "react-virtualized";
-import moment from 'moment';
+import * as moment from 'moment';
 import * as api from "../../../data/api";
 // This only needs to be done once; probably during your application's bootstrapping process.
 
 import { VoidTransaction } from './VoidTransaction';
 import { AddMoneyLog } from './AddMoneyLog';
+import { IMoneyLogEntry, IConfig, IRegistration } from "../../../data/interfaces";
 
-export class MoneyLog extends React.Component {
-  constructor() {
-    super();
+interface MoneyLogProps {
+  log: IMoneyLogEntry[],
+  config: IConfig,
+  totalCollected: number,
+  registrations: IRegistration[]
+}
+
+interface MoneyLogState {
+  showMoneyLog: boolean,
+  showVoidConfirmation: boolean,
+  transactionToVoid: IMoneyLogEntry,
+}
+
+export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
+  constructor(props) {
+    super(props);
 
     this.state = {
       showMoneyLog: false,
@@ -35,10 +48,7 @@ export class MoneyLog extends React.Component {
   toggleVoid = (transactionId) => {
     this.setState({
       showVoidConfirmation: true,
-      transactionToVoid: {
-        id: transactionId,
-        data: this.props.log[transactionId],
-      },
+      transactionToVoid: this.props.log[transactionId],
     });
   }
 
@@ -187,8 +197,3 @@ export class MoneyLog extends React.Component {
     );
   }
 }
-
-MoneyLog.propTypes = {
-  log: PropTypes.object,
-  totalCollected: PropTypes.number,
-};

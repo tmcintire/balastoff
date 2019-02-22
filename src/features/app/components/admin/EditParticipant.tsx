@@ -1,12 +1,25 @@
-import React from 'react';
-import { Link } from 'react-router';
+import * as React from 'react';
+import { Link, RouteInfo } from 'react-router';
 import * as _ from 'lodash';
 import * as api from '../../../data/api';
+import { IAdminFields, IRegistration } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class EditParticipant extends React.Component {
-  static getDerivedStateFromProps(nextProps, prevState) {
+interface EditParticipantProps {
+  fields: IAdminFields[],
+  params: RouteInfo,
+  registrations: IRegistration[],
+  loading: boolean
+}
+
+interface EditParticipantState {
+  sortedFields: IAdminFields[],
+  fieldsLoaded: boolean,
+}
+
+export class EditParticipant extends React.Component<EditParticipantProps, EditParticipantState> {
+  static getDerivedStateFromProps(nextProps: EditParticipantProps, prevState: EditParticipantState) {
     if (nextProps.fields) {
       let sortedFields = _.orderBy(nextProps.fields, 'sortOrder');
       return { sortedFields, fieldsLoaded: true };
@@ -19,23 +32,15 @@ export class EditParticipant extends React.Component {
     super(props);
 
     this.state = {
-      sortedFields: {},
+      sortedFields: [],
       fieldsLoaded: false,
     };
-  }
-  
-
-  handleValueChange = (e) => {
-    e.preventDefault();
-    this.setState({
-      track: e.target.value,
-    });
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const object = {};
+    const object: IRegistration = {};
 
     _.forEach(this.state.sortedFields, (field) => {
       let value = this[field.key].value;
@@ -54,7 +59,7 @@ export class EditParticipant extends React.Component {
     });
 
     api.updateRegistration(this.props.params.id, object);
-    window.location = ('#/admin');
+    window.location.href = ('#/admin');
   }
 
   renderSelectOptions = (options) => {
@@ -89,14 +94,14 @@ export class EditParticipant extends React.Component {
 
   render() {
     const renderForm = () => {
-      if (this.state.loading === true || this.state.fieldsLoaded === false) {
+      if (this.props.loading === true || this.state.fieldsLoaded === false) {
         return (
           <Loading />
         );
       }
       if (this.props.loading === false && this.state.fieldsLoaded === true) {
         const participant = this.props.registrations.filter((reg) => {
-          return reg.BookingID === this.props.params.id;
+          return reg.BookingID.toString() === this.props.params.id;
         })[0];
 
         // const { name, type, time, fee, max_fee, band_minimum, cash } = this.props.event;
@@ -106,7 +111,7 @@ export class EditParticipant extends React.Component {
             <div className="form-container">
               <Link to={'admin'}><button className="btn btn-primary custom-buttons">Back to Participants</button></Link>
               <h1 className="text-center">Modify Participant</h1>
-              <h4 className="text-center">{participant['First Name']} {participant['Last Name']}</h4>
+              <h4 className="text-center">{participant.FirstName} {participant.LastName}</h4>
               <div className="form-group">
                 <form>
                   {this.renderDynamicForm(participant)}

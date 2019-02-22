@@ -24,7 +24,7 @@ export class CompRegistrations extends React.Component {
       const amateurDraw = [];
       _.forEach(nextProps.registrations, (reg) => {
         if (reg) {
-          const name = `${reg['First Name']} ${reg['Last Name']}`;
+          const name = `${reg.FirstName} ${reg.LastName}`;
           if (reg.Comps && reg.Comps.length > 0) {
             _.forEach(reg.Comps, (comp) => {
               if (comp.Key === 'Open') {

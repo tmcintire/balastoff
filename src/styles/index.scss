@@ -1,11 +1,17 @@
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
+
 @import "~bootstrap/dist/css/bootstrap.min.css";
 @import '~react-virtualized/styles.css';
 @import './react-datetime.css';
 @import './resets';
 @import './shared';
 @import url('https://fonts.googleapis.com/css?family=Quattrocento+Sans');
-@import '~foundation-icons/foundation-icons.scss';
-@import '~font-awesome/scss/font-awesome.scss';
+// @import '~foundation-sites/scss/util/util';
+// @import '~foundation-sites/scss/settings/settings';
+// @import '~foundation-sites/scss/foundation';
+// // @import '~foundation-sites/scss/motioncd -ui';
+// @include foundation-everything;
 @import '~fixed-data-table/dist/fixed-data-table.css';
 @import '../features/app/components/nav/nav';
 @import '../features/app/components/admin/admin';

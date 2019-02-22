@@ -7,14 +7,14 @@ export class RegistrationBox extends React.Component {
     super(props);
 
     this.state = {
-      oldAmount: props.registration['Amount Owed']
+      oldAmount: props.registration.AmountOwed
     };
   }
 
   render() {
     const { registration } = this.props;
     let style = {};
-    if (!registration.HasPaid || registration['Amount Owed'] > 0) {
+    if (!registration.HasPaid || registration.AmountOwed > 0) {
       style = {
         color: 'red',
       };
@@ -26,11 +26,11 @@ export class RegistrationBox extends React.Component {
         <span className="col-xs-1">
           {registration.BookingID}
         </span>
-        <span className="col-xs-2">{registration['Last Name']}</span>
-        <span className="col-xs-2">{registration['First Name']}</span>
+        <span className="col-xs-2">{registration.LastName}</span>
+        <span className="col-xs-2">{registration.FirstName}</span>
         <span className="col-xs-2">{registration.Level}</span>
         <span className="col-xs-1">{this.props.hasLevelCheck ? 'Yes' : 'No'}</span>
-        <span className="col-xs-1" style={style}>${registration['Amount Owed'].toFixed(2)}</span>
+        <span className="col-xs-1" style={style}>${registration.AmountOwed.toFixed(2)}</span>
         <span className="col-xs-1">{hasMerchandise}</span>
         <span className="col-xs-1 text-center">
           <input

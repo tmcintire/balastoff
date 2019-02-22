@@ -33,8 +33,8 @@ export class RegComments extends React.Component {
             const object = {
               index,
               BookingID: r.BookingID,
-              'First Name': r['First Name'],
-              'Last Name': r['Last Name'],
+              'First Name': r.FirstName,
+              'Last Name': r.LastName,
               Comment: c,
             };
 
@@ -55,8 +55,8 @@ export class RegComments extends React.Component {
         return this.state.comments.map((comment, index) =>
           <div key={index} className="flex-row">
             <span className="col-xs-1"><Link to={`editregistration/${comment.BookingID}`}>{comment.BookingID}</Link></span>
-            <span className="col-xs-2">{comment['First Name']}</span>
-            <span className="col-xs-2">{comment['Last Name']}</span>
+            <span className="col-xs-2">{comment.FirstName}</span>
+            <span className="col-xs-2">{comment.LastName}</span>
             <span className="col-xs-5">{comment.Comment}</span>
           </div>
         );

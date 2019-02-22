@@ -1,10 +1,26 @@
-import React from 'react';
+import * as React from 'react';
+import * as _ from 'lodash';
+import { IRegistration, IPartnerComp, IRoleComp } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class CompsTables extends React.Component {
-  constructor() {
-    super();
+interface CompsTablesProps {
+  registrations: IRegistration[],
+  loading: boolean;
+}
+
+interface CompsTablesState {
+  registration: IRegistration,
+  open: IPartnerComp[],
+  amateurCouples: IPartnerComp[],
+  adNov: IRoleComp[],
+  amateurDraw: IRoleComp[],
+  loading: boolean;
+}
+
+export class CompsTables extends React.Component<CompsTablesProps, CompsTablesState> {
+  constructor(props) {
+    super(props);
     this.state = {
       registration: {},
       open: [],
@@ -14,7 +30,7 @@ export class CompsTables extends React.Component {
       loading: true,
     };
   }
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: CompsTablesProps) {
     if (nextProps.registrations) {
       const open = [];
       const amateurCouples = [];
@@ -22,29 +38,29 @@ export class CompsTables extends React.Component {
       const amateurDraw = [];
       _.forEach(nextProps.registrations, (reg) => {
         if (reg) {
-          const name = `${reg['First Name']} ${reg['Last Name']}`;
+          const name = `${reg.FirstName} ${reg.LastName}`;
           if (reg.Comps && reg.Comps.length > 0) {
             _.forEach(reg.Comps, (comp) => {
-              if (comp.Key === 'Open') {
+              if (comp.key === 'Open') {
                 // get open comps
-                const partner = comp.Partner;
+                const partner = comp.partner;
                 const exists = this.compAlreadyInArray(open, partner);
         
                 if (!exists) {
                   open.push({ name, partner });
                 }
-              } else if (comp.Key === 'AmateurCouples') {
+              } else if (comp.key === 'AmateurCouples') {
                 // Get the amateur couples comps
-                const partner = comp.Partner;
-                const exists = this.compAlreadyInArray(partner);
+                const partner = comp.partner;
+                const exists = this.compAlreadyInArray(amateurCouples, partner);
   
                 if (!exists) {
                   amateurCouples.push({ name, partner });
                 }
-              } else if (comp.Key === 'AdNov') {
-                adNov.push({ name, role: comp.Role });
-              } else if (comp.Key === 'AmateurDraw') {
-                amateurDraw.push({ name, role: comp.Role });
+              } else if (comp.key === 'AdNov') {
+                adNov.push({ name, role: comp.role });
+              } else if (comp.key === 'AmateurDraw') {
+                amateurDraw.push({ name, role: comp.role });
               }
             });
           }
@@ -62,7 +78,7 @@ export class CompsTables extends React.Component {
   }
 
   // check if this entry is alredy in the array
-  compAlreadyInArray = (array, partner) => {
+  compAlreadyInArray = (array: any[], partner: string) => {
     const exists = _.some(array, (o) => {
       if (name === o.name && partner === o.partner) {
         return true;

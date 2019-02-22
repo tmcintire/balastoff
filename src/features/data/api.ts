@@ -1,8 +1,9 @@
 import axios from 'axios';
-import _ from 'lodash';
+import * as _ from "lodash";
 import firebase, { firebaseRef } from '../../../firebase';
 import * as actions from '../data/actions';
 import store from '../../store';
+import { IRegistration, Registration, IMoneyLogEntry } from './interfaces';
 
 /* Firebase References */
 let headers;
@@ -29,86 +30,131 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
     
         const object = {};
         _.forEach(rawData, (data) => {
-          object[data[1]] = {};
-          object[data[1]].Comps = [];
+          let registration = new Registration();
+          registration.Comps = [];
           _.forEach(headers, (header, headerIndex) => {
-            if (header === 'Amount Owed') {
-              object[data[1]][header] = parseInt(data[headerIndex], 10);
-            } else {
-              object[data[1]][header] = data[headerIndex];
+            switch (header) {
+              case 'BookingID':
+                registration.BookingID = parseInt(data[headerIndex], 10);
+                break;
+              case 'First Name':
+                registration.FirstName = data[headerIndex];
+                break;
+              case 'Last Name':
+                registration.LastName = data[headerIndex];
+                break;
+              case 'US State':
+                registration.USState = data[headerIndex];
+                break;
+              case 'Amount Owed':
+                registration.AmountOwed = parseInt(data[headerIndex], 10);
+                break;
+              case 'Full Mission Passes':
+                registration.FullMissionPasses = data[headerIndex];
+                break;
+              case 'Beginner Pass':
+                registration.BeginnerPass = data[headerIndex];
+                break;
+              case 'Limited Edition Patch':
+                registration.LimitedEditionPatch = data[headerIndex];
+                break;
+              case 'Limited Edition Patch__quantity:':
+                registration.LimitedEditionPatch__quantity = parseInt(data[headerIndex], 10);
+                break;
+              case 'Original Amount Owed':
+                registration.OriginalAmountOwed = parseFloat(data[headerIndex]);
+                break;
+              case 'Total Cost':
+                registration.TotalCost = parseFloat(data[headerIndex]);
+                break;
+              case 'Paid':
+                registration.Paid = parseFloat(data[headerIndex]);
+                break;
+              default:
+                registration[header] = data[headerIndex];
+                break;
             }
 
-            object[data[1]].CheckedIn = false;
-            object[data[1]].HasComments = false;
-            object[data[1]].Shirt1 = false;
-            object[data[1]].Shirt2 = false;
-            object[data[1]].Patch = false;
-            object[data[1]].LevelChecked = false;
-            object[data[1]].BadgeUpdated = false;
-            object[data[1]].MissedLevelCheck = false;
-            object[data[1]].MissionGearIssues = [];
-            object[data[1]].Comments = [];
-            object[data[1]]['Original Amount Owed'] = parseInt(data[5], 10);
-            object[data[1]].OriginalLevel = data[18];
-            object[data[1]].WalkIn = false;
+            registration.CheckedIn = false;
+            registration.HasComments = false;
+            registration.Shirt1 = false;
+            registration.Shirt2 = false;
+            registration.Patch = false;
+            registration.LevelChecked = false;
+            registration.BadgeUpdated = false;
+            registration.MissedLevelCheck = false;
+            registration.MissionGearIssues = [];
+            registration.Comments = [];
+            registration['Original Amount Owed'] = parseInt(data[5], 10);
+            registration.OriginalLevel = data[18];
+            registration.WalkIn = false;
+            
+            // Fix names with spaces
     
             // Setup Comps Object
             if (header === 'AdNov' && data[32] === 'Yes') {
-              object[data[1]].Comps.push({
-                Name: 'AdNov Draw',
-                Key: header,
-                Role: data[33],
-                Partner: null,
+              registration.Comps.push({
+                name: 'AdNov Draw',
+                key: header,
+                role: data[33],
+                partner: null,
               });
             } else if (header === 'Open' && data[34] === 'Yes') {
-              object[data[1]].Comps.push({
-                Name: 'Open',
-                Key: header,
-                Role: null,
-                Partner: data[35],
+              registration.Comps.push({
+                name: 'Open',
+                key: header,
+                role: null,
+                partner: data[35],
               });
             } else if (header === 'Amateur Couples' && data[36] === 'Yes') {
-              object[data[1]].Comps.push({
-                Name: 'Amateur Couples',
-                Key: 'AmateurCouples',
-                Role: null,
-                Partner: data[37],
+              registration.Comps.push({
+                name: 'Amateur Couples',
+                key: 'AmateurCouples',
+                role: null,
+                partner: data[37],
               });
             } else if (header === 'AmateurDraw' && data[38] === 'Yes') {
-              object[data[1]].Comps.push({
-                Name: 'Amateur Draw',
-                Key: header,
-                Role: data[39],
-                Partner: null,
+              registration.Comps.push({
+                name: 'Amateur Draw',
+                key: header,
+                role: data[39],
+                partner: null,
               });
             }
     
             // Handle Paid entries -- Need to remove this and handle it just by checking the amount
             if (parseInt(data[5], 10) <= 0) {
-              object[data[1]].HasPaid = true;
+              registration.HasPaid = true;
             } else {
-              object[data[1]].HasPaid = false;
+              registration.HasPaid = false;
             }
     
             // Handle Level Check
             const foundTrack = _.find(tracks, track => track.name === data[18]);
-            object[data[1]].HasLevelCheck = foundTrack ? foundTrack.levelCheck : false;
+            registration.HasLevelCheck = foundTrack ? foundTrack.levelCheck : false;
     
             // check for gear
-            object[data[1]].HasGear = (data[45] || data[48]) ? 'Yes' : 'No';
+            registration.HasGear = data[45] || data[48];
+
+            // Handle all yes/no values
+            if (data[headerIndex] === 'Yes' || data[headerIndex] === 'No') {
+              registration[header] = data[headerIndex] === 'Yes';
+            }
           });
+
+          object[data[1]] = registration; // set the registration
         });
     
         // Setup partners
-        _.forEach(object, (r) => {
+        _.forEach(object, (r: any) => {
           if (r) {
-            let registrationToUpdate = [];
+            let registrationToUpdate: any = [];
             let first;
             let last;
             if (r.Open === 'Yes' && r.Partner !== '') {
               first = r.Partner.split(' ')[0].toLowerCase() || 'TBD';
               last = r.Partner.split(' ')[1].toLowerCase() || 'TBD';
-              registrationToUpdate = _.find(object, reg =>
+              registrationToUpdate = _.find(object, (reg: any) =>
                 reg['First Name'].toLowerCase() === first && reg['Last Name'].toLowerCase() === last);
     
               if (!_.isEmpty(registrationToUpdate)) {
@@ -119,7 +165,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
             if (r['Amateur Couples'] === 'Yes' && r['Amateur Partner'] !== '') {
               first = r['Amateur Partner'].split(' ')[0];
               last = r['Amateur Partner'].split(' ')[1];
-              registrationToUpdate = _.find(object, (reg) => {
+              registrationToUpdate = _.find(object, (reg: any) => {
                 if (!first) {
                   first = 'TBD';
                 }
@@ -168,7 +214,7 @@ export function fetchRegistrations() {
 
     _.forEach(registrations, (r) => {
       if (r) {
-        if (parseInt(r.BookingID, 10) > parseInt(lastBookingId, 10)) {
+        if (parseInt(r.BookingID, 10) > lastBookingId) {
           lastBookingId = r.BookingID;
         }
       }
@@ -176,42 +222,6 @@ export function fetchRegistrations() {
     // const sortedRegistrations = helpers.sortRegistrations(registrations);
     store.dispatch(actions.registrationsReceived(registrations));
   });
-}
-
-function getPartners(registrations) {
-  const updatedRegistrations = [];
-  _.forEach(registrations, (r) => {
-    if (r) {
-      const first = r.Partner.split(' ')[0];
-      const last = r.Partner.split(' ')[1];
-
-      if (r.Open && r.Partner) {
-        const registrationToUpdate = registrations.filter((reg) => {
-          return reg['First Name'] === first && reg['Last Name'] === last;
-        });
-
-        registrationToUpdate.Open = 'Yes';
-        registrationToUpdate.Partner = `${r['First Name']} ${r['Last Name']}`;
-      }
-      if (r['Amateur Couples'] && r['Amateur Partner']) {
-        const registrationToUpdate = registrations.filter((reg) => {
-          return reg['First Name'] === first && reg['Last Name'] === last;
-        });
-
-        const update = {
-          'Amateur Couples': 'Yes',
-          'Amateur Partner': `${r['First Name']} ${r['Last Name']}`,
-        };
-
-        if (registrationToUpdate.length !== 0) {
-          updateRegistration(registrationToUpdate[0].BookingID, update);
-        }
-      }
-
-      updatedRegistrations.push(registrationToUpdate);
-    }
-  });
-  store.dispatch(actions.partnersReceived(partners));
 }
 
 export function fetchConfig() {
@@ -297,9 +307,9 @@ export function getTotalCollected() {
 
 // Updates to registrations
 
-export function updateRegistration(bookingID, object) {
+export function updateRegistration(bookingID: number, object: IRegistration) {
   return new Promise((resolve) => {
-    regRef.child(bookingID).update(object).then(() => {
+    regRef.child(bookingID.toString()).update(object).then(() => {
       resolve();
     });
   });
@@ -329,7 +339,7 @@ export function updateTotalCollected(amount) {
   });
 }
 
-export function updateMoneyLog(log) {
+export function updateMoneyLog(log: IMoneyLogEntry) {
   const key = firebaseRef.child('moneyLog').push().key;
   const date = new Date();
   log.date = date;
@@ -338,7 +348,7 @@ export function updateMoneyLog(log) {
   this.updateTotalCollected(log.amount);
 }
 
-export const getLastBookingId = () => lastBookingId;
+export const getLastBookingId = (): number => lastBookingId;
 
 export function update(child, index, data, isUpdate) {
   if (isUpdate) {

@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 
 try {
   const config = {
@@ -7,8 +7,11 @@ try {
     databaseURL: process.env.DATABASE_URL,
   };
   firebase.initializeApp(config);
+  // firebase.initializeApp({
+  //   databaseURL: `ws://localhost:5000`,
+  // });
 } catch (e) {
-  console.log(e);
+  console.log(e); 
 }
 
 export const firebaseRef = firebase.database().ref();

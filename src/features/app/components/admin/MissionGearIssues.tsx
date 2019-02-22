@@ -1,11 +1,22 @@
-import React from 'react';
-import _ from 'lodash';
+import * as React from 'react';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
+import { IMissionGearIssue, IRegistration } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class MissionGearIssues extends React.Component {
+interface MissionGearIssuesProps {
+  registrations: IRegistration[],
+}
+
+interface MissionGearIssuesState {
+  issues: IMissionGearIssue[],
+  resolvedIssues: IMissionGearIssue[],
+  showSaved: boolean,
+}
+
+export class MissionGearIssues extends React.Component<MissionGearIssuesProps, MissionGearIssuesState> {
   constructor(props) {
     super(props);
 
@@ -20,31 +31,31 @@ export class MissionGearIssues extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.registrations) {
+  componentDidUpdate(nextProps) {
+    if (!_.isEqual(nextProps.registrations, this.props.registrations)) {
       this.setupState(nextProps.registrations);
     }
   }
 
-  setupState(registrations) {
+  setupState(registrations: IRegistration[]) {
     const issues = [];
-    const resolvedIssues = [];
+    const resolvedIssues: IMissionGearIssue[] = [];
     _.forEach(registrations, (r) => {
       if (r) {
         if (r.MissionGearIssues) {
           _.forEach(r.MissionGearIssues, (i, index) => {
-            const object = {
-              index,
+            const issue: IMissionGearIssue = {
+              IssueId: i.IssueId,
               BookingID: r.BookingID,
-              'First Name': r['First Name'],
-              'Last Name': r['Last Name'],
+              FirstName: r.FirstName,
+              LastName: r.LastName,
               Issue: i.Issue,
               Resolved: i.Resolved,
             };
             if (i.Resolved === false) {
-              issues.push(object);
+              issues.push(issue);
             } else if (i.Resolved === true) {
-              resolvedIssues.push(object);
+              resolvedIssues.push(issue);
             }
           });
         }
@@ -69,35 +80,36 @@ export class MissionGearIssues extends React.Component {
     }, 2000);
   }
 
-  toggleResolved = (e, id, index) => {
-    const issue = this.props.registrations.filter(r => r.BookingID === id)[0].MissionGearIssues[index];
-    const object = {
-      MissionGearIssues: {
-        [index]: {
-          Issue: issue.Issue,
-          Resolved: !issue.Resolved,
-        },
-      },
-    };
+  toggleResolved = (bookingId: number, issueId: string) => {
+    const registration = _.find(this.props.registrations, r => r && r.BookingID === bookingId);
 
-    api.updateRegistration(id, object);
-    this.saved();
+    if (registration) {
+      let updatedReg = {
+        ...registration,
+        MissionGearIssues: registration.MissionGearIssues.map(i => {
+          return i.IssueId === issueId ? {...i, Resolved: !i.Resolved } : i;
+        })
+      }
+  
+      api.updateRegistration(bookingId, updatedReg);
+      this.saved();
+    }
   }
 
   render() {
     const renderIssues = () => {
       if (this.state.issues) {
-        return this.state.issues.map((issue, index) =>
-          <div key={index} className="flex-row">
+        return this.state.issues.map((issue) =>
+          <div key={issue.IssueId} className="flex-row">
             <span className="col-xs-1">{issue.BookingID}</span>
-            <span className="col-xs-2">{issue['First Name']}</span>
-            <span className="col-xs-2">{issue['Last Name']}</span>
+            <span className="col-xs-2">{issue.FirstName}</span>
+            <span className="col-xs-2">{issue.LastName}</span>
             <span className="col-xs-5">{issue.Issue}</span>
             <span className="col-xs-2">
               <input
                 type="checkbox"
                 checked={issue.Resolved}
-                onChange={e => this.toggleResolved(e, issue.BookingID, issue.index)}
+                onChange={e => this.toggleResolved(issue.BookingID, issue.IssueId)}
               />
             </span>
           </div>
@@ -110,17 +122,17 @@ export class MissionGearIssues extends React.Component {
 
     const renderResolvedIssues = () => {
       if (this.state.resolvedIssues) {
-        return this.state.resolvedIssues.map((issue, index) =>
-          <div key={index} className="flex-row resolved-class">
+        return this.state.resolvedIssues.map((issue) =>
+          <div key={issue.IssueId} className="flex-row resolved-class">
             <span className="col-xs-1">{issue.BookingID}</span>
-            <span className="col-xs-2">{issue['First Name']}</span>
-            <span className="col-xs-2">{issue['Last Name']}</span>
+            <span className="col-xs-2">{issue.FirstName}</span>
+            <span className="col-xs-2">{issue.LastName}</span>
             <span className="col-xs-5">{issue.Issue}</span>
             <span className="col-xs-2">
               <input
                 type="checkbox"
                 checked={issue.Resolved}
-                onChange={e => this.toggleResolved(e, issue.BookingID, issue.index)}
+                onChange={e => this.toggleResolved(issue.BookingID, issue.IssueId)}
               />
             </span>
           </div>

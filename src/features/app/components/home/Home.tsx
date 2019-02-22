@@ -1,17 +1,30 @@
-import React from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as _ from 'lodash';
 import { RegistrationBox } from './RegistrationBox';
 import * as helpers from '../../../data/helpers';
-import * as api from '../../../data/api';
+import { IRegistration } from '../../../data/interfaces';
 
-export class Home extends React.Component {
+interface HomeProps {
+  registrations: IRegistration[],
+  loading: boolean,
+  totalCollected: number,
+  tracks: []
+}
+
+interface HomeState {
+  filteredRegistrations: IRegistration[],
+  filter: string,
+  filterText: string,
+}
+
+
+export class Home extends React.Component<HomeProps, HomeState> {
   constructor(props) {
     super(props);
 
     this.state = {
       filteredRegistrations: props.registrations,
-      filter: 'Last Name',
+      filter: 'LastName',
       filterText: '',
     };
   }
@@ -48,8 +61,8 @@ export class Home extends React.Component {
     const filteredRegistrations = registrations.filter(reg => {
       if (reg) {
         return (
-          _.includes(reg['First Name'].toLowerCase(), target.toLowerCase()) ||
-          _.includes(reg['Last Name'].toLowerCase(), target.toLowerCase()) ||
+          _.includes(reg.FirstName.toLowerCase(), target.toLowerCase()) ||
+          _.includes(reg.LastName.toLowerCase(), target.toLowerCase()) ||
           _.includes(reg.Level.toLowerCase(), target.toLowerCase()) ||
           _.isEqual(reg.BookingID, target)
         );
@@ -68,7 +81,7 @@ export class Home extends React.Component {
     let filteredRegistrations = [];
 
     if (checked) {
-      filteredRegistrations = registrations.filter(reg => reg['Amount Owed'] > 0);
+      filteredRegistrations = registrations.filter(reg => reg.AmountOwed > 0);
     } else {
       filteredRegistrations = registrations;
     }
@@ -83,7 +96,7 @@ export class Home extends React.Component {
     let filteredRegistrations = [];
 
     if (checked) {
-      filteredRegistrations = registrations.filter(reg => reg.CheckedIn === false);
+      filteredRegistrations = registrations.filter(reg => !reg.CheckedIn);
     } else {
       filteredRegistrations = registrations;
     }
@@ -98,7 +111,7 @@ export class Home extends React.Component {
     let filteredRegistrations = [];
 
     if (checked) {
-      filteredRegistrations = registrations.filter(reg => reg.HasGear === 'Yes');
+      filteredRegistrations = registrations.filter(reg => reg.HasGear);
     } else {
       filteredRegistrations = registrations;
     }
@@ -174,9 +187,3 @@ export class Home extends React.Component {
     );
   }
 }
-
-Home.propTypes = {
-  registrations: PropTypes.array,
-  loading: PropTypes.boolean,
-  totalCollected: PropTypes.number,
-};

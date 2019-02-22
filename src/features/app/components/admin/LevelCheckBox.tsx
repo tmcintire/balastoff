@@ -1,7 +1,17 @@
-import React from 'react';
+import * as React from 'react';
 import * as api from '../../../data/api';
+import { ILevels, IRegistration } from '../../../data/interfaces';
 
-export class LevelCheckBox extends React.Component {
+interface LevelCheckBoxProps {
+  registration: IRegistration,
+}
+
+interface LevelCheckBoxState {
+  level: string,
+  highlighted: boolean,
+}
+
+export class LevelCheckBox extends React.Component<LevelCheckBoxProps, LevelCheckBoxState> {
   constructor(props) {
     super(props);
 
@@ -58,7 +68,7 @@ export class LevelCheckBox extends React.Component {
       <div className={`container level-check-form flex-col ${this.state.highlighted ? 'highlighted' : ''}`}>
         <div className="flex-row flex-align-center" onClick={() => this.highlight()}>
           <span className="levelcheck-box-id">{this.props.registration.BookingID}</span>
-          <span className="levelcheck-box-name">{this.props.registration['First Name']} {this.props.registration['Last Name']}</span>
+          <span className="levelcheck-box-name">{this.props.registration.FirstName} {this.props.registration.LastName}</span>
         </div>
         <div className="flex-row">
           <select

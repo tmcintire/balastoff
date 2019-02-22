@@ -1,16 +1,32 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 import * as api from '../../../data/api';
+import { IRegistration, IMissionGearIssue } from '../../../data/interfaces';
+const uuidv1 = require('uuid/v1');
 
-export class MissionGear extends React.Component {
-  constructor() {
-    super();
+interface MissionGearProps {
+  id: number,
+  saved: () => void,
+  registration: IRegistration
+}
+
+interface MissionGearState {
+  showReportMissionGearIssue: boolean,
+  issue: string,
+}
+
+export class MissionGear extends React.Component<MissionGearProps, MissionGearState> {
+  constructor(props) {
+    super(props);
     this.state = {
-      showReportMissioneGearIssue: false,
+      showReportMissionGearIssue: false,
+      issue: null
     };
   }
+
+  public issue: HTMLTextAreaElement;
+
   updateMerchCheckbox(e, type) {
-    const object = {
+    const object: IRegistration = {
       [type]: e.target.checked,
     };
     api.updateRegistration(this.props.id, object);
@@ -19,28 +35,34 @@ export class MissionGear extends React.Component {
 
   showMissionGearIssues = () => {
     this.setState({
-      showReportMissioneGearIssue: !this.state.showReportMissioneGearIssue,
+      showReportMissionGearIssue: !this.state.showReportMissionGearIssue,
     });
   }
 
   reportMissionGearIssue = (e) => {
     e.preventDefault();
-    let object = {};
+    let registration: IRegistration;
+    const { FirstName, LastName, BookingID } = this.props.registration;
+
+    const newIssue: IMissionGearIssue = {
+      IssueId: uuidv1(),
+      Issue: this.state.issue,
+      Resolved: false,
+      BookingID: BookingID,
+      FirstName,
+      LastName
+    }
+
     if (this.props.registration.MissionGearIssues) {
-      object = {
-        MissionGearIssues: [...this.props.registration.MissionGearIssues, {
-          Issue: this.state.issue,
-          Resolved: false,
-        }],
+      registration = {
+        MissionGearIssues: [...this.props.registration.MissionGearIssues, newIssue],
       };
     } else {
-      object = {
-        MissionGearIssues: [{
-          Issue: this.state.issue,
-          Resolved: false }],
+      registration = {
+        MissionGearIssues: [newIssue],
       };
     }
-    api.updateRegistration(this.props.id, object);
+    api.updateRegistration(this.props.id, registration);
     this.setState({
       issue: null,
     });
@@ -119,7 +141,7 @@ export class MissionGear extends React.Component {
     };
 
     const renderReportMissionGearIssue = () => {
-      if (this.state.showReportMissioneGearIssue) {
+      if (this.state.showReportMissionGearIssue) {
         return (
           <div className="flex-col">
             <textarea
@@ -171,10 +193,3 @@ export class MissionGear extends React.Component {
     );
   }
 }
-
-MissionGear.propTypes = {
-  registration: PropTypes.array,
-  params: {
-    id: PropTypes.string,
-  },
-};

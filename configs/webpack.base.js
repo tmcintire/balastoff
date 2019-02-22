@@ -17,33 +17,95 @@ try {
 }
 
 module.exports = {
+  mode: process.env.NODE_ENV,
   entry: {
     app: [
       './src/index.jsx',
     ],
     vendor: [
-      'script!jquery/dist/jquery.min.js',
-      'script!bootstrap/dist/js/bootstrap.min.js',
+      'script-loader!jquery/dist/jquery.min.js',
+      'script-loader!bootstrap/dist/js/bootstrap.min.js',
       './src/vendor.js',
     ],
   },
   externals: {
     jquery: 'jQuery',
+    'foundation-sites': 'foundation-sites',
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.tsx', '.ts'],
     alias: {
       applicationStyles: '../src/styles/index.scss',
     },
   },
   module: {
-    loaders: [
+    rules: [
       // Files
-      { test: /\.svg$/, loader: 'url?limit=65000&mimetype=image/svg+xml&name=fonts/[name].[hash].[ext]' },
-      { test: /\.woff$/, loader: 'url?limit=65000&mimetype=application/font-woff&name=fonts/[name].[hash].[ext]' },
-      { test: /\.woff2$/, loader: 'url?limit=65000&mimetype=application/font-woff2&name=fonts/[name].[hash].[ext]' },
-      { test: /\.[ot]tf$/, loader: 'url?limit=65000&mimetype=application/octet-stream&name=fonts/[name].[hash].[ext]' },
-      { test: /\.eot$/, loader: 'url?limit=65000&mimetype=application/vnd.ms-fontobject&name=fonts/[name].[hash].[ext]' },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 65000,
+              mimetype: 'image',
+              name: 'svg+xml&name=fonts/[name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.woff$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 65000,
+              mimetype: 'application',
+              name: 'font-woff&name=fonts/[name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.woff2$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 65000,
+              mimetype: 'application',
+              name: 'font-woff2&name=fonts/[name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.[ot]tf$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 65000,
+              mimetype: 'application',
+              name: 'octet-stream&name=fonts/[name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.eot$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 65000,
+              mimetype: 'application',
+              name: 'vnd.ms-fontobject&name=fonts/[name].[hash].[ext]',
+            },
+          },
+        ],
+      },
       {
         test: /\.json$/,
         loader: 'json',
@@ -52,17 +114,37 @@ module.exports = {
       // Styles
       {
         test: /\.css$/,
-        loader: 'style!css',
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.scss$/,
-        loader: 'style!css!postcss!resolve-url!sass?sourceMap',
+        use: [
+          'style-loader', // creates style nodes from JS strings
+          'css-loader', {
+            loader: 'sass-loader',
+            query: {
+              includePaths: [path.resolve(__dirname, 'node_modules')]
+            },
+          },
+        ],
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'awesome-typescript-loader',
       },
       {
         test: /\.js|\.jsx$/,
-        loader: 'babel',
-        exclude: /node_modules/,
-        query: babelConfig,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: [
+              '@babel/plugin-proposal-class-properties',
+              'react-hot-loader/babel',
+              '@babel/plugin-transform-runtime'],
+          },
+        },
       },
     ],
   },
@@ -71,11 +153,11 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
     }),
-    new webpack.optimize.OccurenceOrderPlugin(true),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: ['app', 'vendor'],
-      minChunks: Infinity,
-    }),
+    // new webpack.optimize.OccurenceOrderPlugin(true),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: ['app', 'vendor'],
+    //   minChunks: Infinity,
+    // }),
     new HtmlWebpackPlugin({
       template: 'src/index.html',
     }),
@@ -89,7 +171,11 @@ module.exports = {
       },
     }),
   ],
-  postcss() {
-    return [autoprefixer];
-  },
+  // postcss() {
+  //   return [autoprefixer];
+  // },
+  // externals: {
+  //     "react": "React",
+  //     "react-dom": "ReactDOM"
+  // }
 };

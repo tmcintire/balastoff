@@ -1,16 +1,27 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
 import { LevelCheckBox } from './LevelCheckBox';
+import { IRegistration } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class MissedLevelCheck extends React.Component {
-  constructor() {
-    super();
+interface MissedLevelCheckProps {
+  registrations: IRegistration[],
+}
+
+interface MissedLevelCheckState {
+  filteredLeads: IRegistration[],
+  filteredFollows: IRegistration[],
+  loading: boolean,
+}
+
+export class MissedLevelCheck extends React.Component<MissedLevelCheckProps, MissedLevelCheckState> {
+  constructor(props) {
+    super(props);
     this.state = {
-      filteredLeads: {},
-      filteredFollows: {},
+      filteredLeads: [],
+      filteredFollows: [],
       loading: true,
     };
   }
@@ -31,7 +42,7 @@ export class MissedLevelCheck extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: MissedLevelCheckProps) {
     if (nextProps.registrations) {
       const filteredLeads = nextProps.registrations.filter(r =>
         r.HasLevelCheck && r.LeadFollow === 'Lead' && !r.LevelChecked && r.MissedLevelCheck);

@@ -1,45 +1,86 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import * as api from '../../../data/api';
 import * as helpers from '../../../data/helpers';
+import { IAdminMissionPasses, Registration, IRegistration, ILevels, } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class AddParticipant extends React.Component {
-  constructor() {
-    super();
+interface AddParticipantProps {
+  tracks: ILevels[],
+  passes: IAdminMissionPasses[],
+  tracksLoading: boolean,
+  passesLoading: boolean
+}
+
+interface AddParticipantState {
+  bookingId: number,
+  firstName: string,
+  lastName: string,
+  leadFollow: string,
+  price: number,
+  pass: IAdminMissionPasses,
+  level: string,
+  displayMessage: false,
+  errors: {
+    firstName: boolean,
+    lastName: boolean,
+    leadFollow: boolean,
+    price: boolean,
+    pass: boolean,
+    email: boolean,
+    level: boolean
+  },
+  email: string,
+  hasErrors: boolean,
+  hasPaid: boolean
+}
+
+export class AddParticipant extends React.Component<AddParticipantProps, AddParticipantState> {
+  constructor(props) {
+    super(props);
 
     this.state = {
-      bookingId: parseInt(api.getLastBookingId(), 10) + 1,
+      bookingId: api.getLastBookingId() + 1,
       firstName: '',
       lastName: '',
       leadFollow: '',
-      price: '',
-      pass: '',
+      price: 0,
+      pass: null,
       level: '',
       displayMessage: false,
-      errors: {},
+      errors: {
+        firstName: false,
+        lastName: false,
+        leadFollow: false,
+        price: false,
+        pass: false,
+        email: false,
+        level: false
+      },
       email: '',
+      hasErrors: false,
+      hasPaid: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.prices) {
-      const price = this.lookupPrice(this.state.level, nextProps.prices);
+    // if (nextProps.prices) {
+    //   const price = this.lookupPrice(this.state.level, nextProps.prices);
 
-      this.setState({
-        price,
-      });
-    }
+    //   this.setState({
+    //     price,
+    //   });
+    // }
     if (nextProps.registrations) {
       this.setState({
-        bookingId: parseInt(api.getLastBookingId(), 10) + 1,
+        bookingId: api.getLastBookingId() + 1,
       });
     }
   }
 
-  validate = (firstName, lastName, leadFollow, price, pass, hasPaid) => {
+  validate = (firstName, lastName, leadFollow, price, pass, hasPaid, level, email) => {
     // true means invalid, so our conditions got reversed
     return {
       firstName: firstName.length === 0,
@@ -47,6 +88,9 @@ export class AddParticipant extends React.Component {
       leadFollow: leadFollow.length === 0,
       price: price.length === 0,
       pass: pass.length === 0,
+      hasPaid: hasPaid === true,
+      level: level === null || level === '',
+      email: email === '' || email === null
     };
   }
 
@@ -57,7 +101,10 @@ export class AddParticipant extends React.Component {
       this.state.lastName,
       this.state.leadFollow,
       this.state.price,
-      this.state.pass);
+      this.state.pass,
+      this.state.hasPaid,
+      this.state.level,
+      this.state.email);
 
     this.setState({ errors, hasErrors: false }); // set state as false for now
 
@@ -66,39 +113,29 @@ export class AddParticipant extends React.Component {
       return;
     }
 
-    const object = {
-      'First Name': this.state.firstName,
-      BookingID: JSON.stringify(this.state.bookingId),
-      'Last Name': this.state.lastName,
-      Level: this.state.level || { level: 'NA', name: 'NA' },
-      HasLevelCheck: this.state.level === 'Gemini' || this.state.level === 'Apollo' || this.state.level === 'Skylab',
-      LevelChecked: false,
-      LevelUpdated: false,
-      BadgeUpdated: false,
-      Email: this.state.email,
-      MissedLevelCheck: false,
-      OriginalLevel: this.state.level || 'NA',
-      HasPaid: false,
-      LeadFollow: this.state.leadFollow,
-      Open: 'No',
-      AdNov: 'No',
-      'Amount Owed': this.state.hasPaid ? '0.00' : this.state.price,
-      'Original Amount Owed': this.state.price,
-      CheckedIn: false,
-      WalkIn: true,
-      TicketType: this.state.pass.name,
-    };
+    const registration = new Registration(); 
+    registration.FirstName = this.state.firstName,
+    registration.BookingID = this.state.bookingId,
+    registration.LastName = this.state.lastName,
+    registration.Level = this.state.level || 'NA',
+    registration.HasLevelCheck = helpers.hasLevelCheck(this.state.level, this.props.tracks),
+    registration.LevelChecked = false,
+    registration.LevelUpdated = false,
+    registration.BadgeUpdated = false,
+    registration.Email = this.state.email,
+    registration.MissedLevelCheck = false,
+    registration.OriginalLevel = this.state.level || 'NA',
+    registration.HasPaid = false,
+    registration.LeadFollow = this.state.leadFollow,
+    registration.Open = false,
+    registration.AdNov = false,
+    registration.AmountOwed = this.state.hasPaid ? 0 : this.state.price,
+    registration.OriginalAmountOwed = this.state.price,
+    registration.CheckedIn = false,
+    registration.WalkIn = true,
 
-    api.addRegistration(id, object);
-    window.location = `#/editregistration/${id}`;
-  }
-
-  clearValues = () => {
-    this['First Name'].value = '';
-    this['Last Name'].value = '';
-    this.Level.value = '';
-    this.Paid.value = '0.00';
-    this.BookingID = this.BookingID + 1;
+    api.addRegistration(id, registration);
+    window.location.href = `#/editregistration/${id}`;
   }
 
   createSelectPassItems() {
@@ -122,23 +159,26 @@ export class AddParticipant extends React.Component {
   }
 
   handleChange = (e) => {
-    let pass;
+    let pass: IAdminMissionPasses;
     let level;
-    const target = e.target.name;
-    switch (target) {
+    const name = e.target.name;
+    switch (name) {
       case 'pass':
         pass = _.filter(this.props.passes, p => p.name === e.target.value)[0];
-        this.setState({ [target]: pass, price: pass ? pass.price: '' });
+        this.setState({
+          [name]: pass,
+          price: pass.price
+        } as Pick<AddParticipantState, keyof AddParticipantState>);
         break;
       case 'level':
         level = _.filter(this.props.tracks, t => t.name === e.target.value)[0];
-        this.setState({ [target]: level.name });
+        this.setState({ [name]: level.name } as Pick<AddParticipantState, keyof AddParticipantState>);
         break;
       case 'hasPaid':
-        this.setState({ [target]: e.target.checked });
+        this.setState({ [name]: e.target.checked } as Pick<AddParticipantState, keyof AddParticipantState>);
         break;
       default:
-        this.setState({ [target]: e.target.value });
+        this.setState({ [name]: e.target.value } as Pick<AddParticipantState, keyof AddParticipantState>);
         break;
     }
 
@@ -147,7 +187,11 @@ export class AddParticipant extends React.Component {
         this.state.firstName,
         this.state.lastName,
         this.state.leadFollow,
-        this.state.price);
+        this.state.price,
+        this.state.pass,
+        this.state.hasPaid,
+        this.state.level,
+        this.state.email);
 
       if (errors) {
         this.setState({
@@ -162,7 +206,7 @@ export class AddParticipant extends React.Component {
   handleCancel = (e) => {
     e.preventDefault();
 
-    window.location = '#/';
+    window.location.href = '#/';
   }
   render() {
     const  { displayMessage } = this.state;

@@ -1,11 +1,24 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
 import { LevelCheckInfo } from './LevelCheckInfo';
+import { IRegistration } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class LevelCheckUpdates extends React.Component {
-  static getDerivedStateFromProps(nextProps, prevState) {
+interface LevelCheckUpdatesProps {
+  registrations: IRegistration[],
+}
+
+interface LevelCheckUpdatesState {
+  updatedRegistrations: IRegistration[],
+  pendingRegistrations: IRegistration[],
+  loading: boolean,
+  filter: string[],
+  title: string,
+}
+
+export class LevelCheckUpdates extends React.Component<LevelCheckUpdatesProps, LevelCheckUpdatesState> {
+  static getDerivedStateFromProps(nextProps: LevelCheckUpdatesProps, prevState: LevelCheckUpdatesState) {
     if (nextProps.registrations) {
       const updatedRegistrations = nextProps.registrations.filter(r =>
         r.LevelChecked === true &&
@@ -31,8 +44,8 @@ export class LevelCheckUpdates extends React.Component {
     super(props);
 
     this.state = {
-      updatedRegistrations: {},
-      pendingRegistrations: {},
+      updatedRegistrations: [],
+      pendingRegistrations: [],
       loading: true,
       filter: ['Gemini'],
       title: 'Complete Gemini Level Checks',

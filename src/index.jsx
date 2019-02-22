@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -74,7 +74,7 @@ const adminUserRoutes = () => (
 
 /* Render application using react router */
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider compiler="TypeScript" framework="React" store={store}>
     <Router history={hashHistory}>
       {adminUserRoutes()}
     </Router>

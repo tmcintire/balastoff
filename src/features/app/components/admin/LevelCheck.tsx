@@ -1,13 +1,30 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { LevelCheckBox } from './LevelCheckBox';
 import * as api from '../../../data/api';
+import { IRegistration } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class LevelCheck extends React.Component {
-  static getDerivedStateFromProps(nextProps, prevState) {
+interface LevelCheckProps {
+  registrations: IRegistration[],
+}
+
+interface LevelCheckState {
+  filteredLeads: IRegistration[],
+  filteredFollows: IRegistration[],
+  geminiFilter: string[],
+  apolloSkylabFilter: string[],
+  mercuryFilter: string[],
+  currentFilter: string[],
+  showLeads: boolean,
+  title: string,
+  loading: boolean,
+}
+
+export class LevelCheck extends React.Component<LevelCheckProps, LevelCheckState> {
+  static getDerivedStateFromProps(nextProps: LevelCheckProps, prevState: LevelCheckState) {
     if (nextProps.registrations) {
       const filteredLeads = nextProps.registrations.filter(r =>
         r.HasLevelCheck &&
@@ -36,8 +53,8 @@ export class LevelCheck extends React.Component {
     super(props);
 
     this.state = {
-      filteredLeads: {},
-      filteredFollows: {},
+      filteredLeads: [],
+      filteredFollows: [],
       geminiFilter: ['Gemini'],
       apolloSkylabFilter: ['Apollo', 'Skylab'],
       mercuryFilter: ['Mercury'],
