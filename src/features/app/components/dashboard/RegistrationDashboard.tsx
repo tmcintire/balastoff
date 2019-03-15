@@ -81,7 +81,7 @@ export class RegistrationDashboard extends PureComponent<RegistrationDashboardPr
     let rawData;
     axios({
       method: 'get',
-      url: 'https://cors-anywhere.herokuapp.com/http://balastoff.dancecamps.org/api.php?token=990a673570ef&format=json&report=Dashboard',
+      url: 'https://evening-headland-93756.herokuapp.com/http://balastoff.dancecamps.org/api.php?token=990a673570ef&format=json&report=Dashboard',
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
     }).then((response) => {
       headers = response.data.header;
@@ -185,7 +185,7 @@ export class RegistrationDashboard extends PureComponent<RegistrationDashboardPr
   handleIntervalChange = (e) => {
     const newInterval = parseInt(e.target.value, 10);
     this.setState({
-      processInterval: newInterval
+      processInterval: !!newInterval ? newInterval : 0,
     }, () => {
       clearInterval(this.interval);
       this.interval = setInterval(() => {
@@ -193,7 +193,7 @@ export class RegistrationDashboard extends PureComponent<RegistrationDashboardPr
           console.log('Processing Registrations at interval', newInterval);
           this.setRegistrations();
         }
-      }, newInterval);
+      }, !!newInterval ? newInterval : 0);
     });
   }
 

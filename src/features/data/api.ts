@@ -22,7 +22,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
     
       axios({
         method: 'get',
-        url: 'https://cors-anywhere.herokuapp.com/http://balastoff.dancecamps.org/api.php?token=990a673570ef&format=json&report=RegistrationApp',
+        url: 'https://evening-headland-93756.herokuapp.com/http://balastoff.dancecamps.org/api.php?token=990a673570ef&format=json&report=RegistrationApp',
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
       }).then((response) => {
         headers = response.data.header;
