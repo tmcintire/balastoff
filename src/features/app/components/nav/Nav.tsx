@@ -1,12 +1,20 @@
-import React from 'react';
+import * as React from 'react';
 import { Link, IndexLink } from 'react-router';
 import firebase from '../../../../../firebase';
 import * as actions from '../../../data/actions';
 import store from '../../../../store';
 
-export class Nav extends React.Component {
-  constructor() {
-    super();
+interface NavProps {
+  connection: boolean,
+}
+
+interface NavState {
+  userStatus: string
+}
+
+export class Nav extends React.Component<NavProps, NavState> {
+  constructor(props) {
+    super(props);
     this.state = {
       userStatus: '',
     };
@@ -45,7 +53,7 @@ export class Nav extends React.Component {
               <span className="icon-bar" />
               <span className="icon-bar" />
             </button>
-            <li className="navbar-brand nav-title" href="#">
+            <li className="navbar-brand nav-title">
               <span className="balast">BALAST</span>
               <span className="off">OFF! </span>
             </li>

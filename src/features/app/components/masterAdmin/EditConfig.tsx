@@ -1,11 +1,25 @@
-import React from 'react';
-import _ from 'lodash';
+import * as React from 'react';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
+import { IConfig } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class EditConfig extends React.Component {
+interface EditConfigProps {
+  config: IConfig
+}
+
+interface EditConfigState {
+  loading: boolean,
+  showForm: boolean,
+  isEditing: boolean,
+  editedObject: IConfig,
+  editedIndex: string,
+  showSaved: boolean,
+}
+
+export class EditConfig extends React.Component<EditConfigProps, EditConfigState> {
   constructor(props) {
     super(props);
 
@@ -13,7 +27,7 @@ export class EditConfig extends React.Component {
       loading: true,
       showForm: false,
       isEditing: false,
-      editedObject: {},
+      editedObject: null,
       editedIndex: null,
       showSaved: false,
     };
@@ -35,11 +49,11 @@ export class EditConfig extends React.Component {
     }
   }
 
-  addEdit = (index, addEdit) => {
+  addEdit = (key: string, addEdit) => {
     this.setState({
       showForm: true,
       isEditing: addEdit,
-      editedIndex: index,
+      editedIndex: key,
       editedObject: addEdit ? this.props.config : {},
     });
   }
@@ -96,10 +110,10 @@ export class EditConfig extends React.Component {
           <Loading />
         );
       }
-      return Object.keys(this.props.config).map((index) => (
-        <tr key={index} onClick={() => this.addEdit(index, true)}>
-          <td>{index}</td>
-          <td>{`${this.props.config[index]}`}</td>
+      return Object.keys(this.props.config).map((key) => (
+        <tr key={key} onClick={() => this.addEdit(key, true)}>
+          <td>{key}</td>
+          <td>{`${this.props.config[key]}`}</td>
         </tr>
 
       ));

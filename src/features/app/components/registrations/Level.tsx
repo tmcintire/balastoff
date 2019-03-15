@@ -1,7 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import { FunctionComponent } from 'react';
 
-export const Level = (props) => {
+interface LevelProps {
+  level: string,
+  hasLevelCheck: boolean,
+}
+
+export const Level: FunctionComponent<LevelProps> = (props) => {
   const { level, hasLevelCheck } = props;
 
   const renderLevel = () => (
@@ -20,9 +25,4 @@ export const Level = (props) => {
       {renderLevel()}
     </div>
   );
-};
-
-Level.propTypes = {
-  level: PropTypes.string,
-  hasLevelCheck: PropTypes.boolean,
-};
+}

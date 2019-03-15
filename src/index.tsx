@@ -36,7 +36,8 @@ const {
   StoreContainer,
   CompsTablesContainer,
   DashboardContainer,
-  RegCommentsContainer } = app.components;
+  RegCommentsContainer,
+  RegistrationDashboardContainer} = app.components;
 
 /* Define routes for administrators */
 const adminUserRoutes = () => (
@@ -57,6 +58,7 @@ const adminUserRoutes = () => (
     <Route path="/admin/missiongearissues" component={MissionGearIssuesContainer} />
     <Route path="/instructions" component={Instructions} />
     <Route path="/dashboard" component={DashboardContainer} />
+    <Route path="/regdashboard" component={RegistrationDashboardContainer} />
     <Route path="administrator" component={MasterAdminContainer} >
       <IndexRoute component={EditTracks} />
       <Route path="edittracks" component={EditTracks} />

@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 import { Link } from 'react-router';
 
 export const MasterAdmin = props => (
@@ -16,7 +15,3 @@ export const MasterAdmin = props => (
     {React.cloneElement(props.children, { ...props })}
   </div>
 );
-
-MasterAdmin.propTypes = {
-  children: PropTypes.node,
-};

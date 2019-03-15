@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 import { NavContainer } from '../nav/NavContainer';
 import '../../../../styles/index.scss';
 
@@ -11,7 +10,3 @@ export const App = props => (
     </div>
   </div>
 );
-
-App.propTypes = {
-  children: PropTypes.node,
-};

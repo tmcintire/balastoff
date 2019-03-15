@@ -1,17 +1,31 @@
-import React from 'react';
-import _ from 'lodash';
-import { Link } from 'react-router';
+import * as React from 'react';
+import * as _ from 'lodash';
 import * as api from '../../../data/api';
+import { ILevels } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class EditTracks extends React.Component {
+interface EditTracksProps {
+  tracks: ILevels
+}
+
+interface EditTracksState {
+  loading: boolean,
+  showForm: boolean,
+  isEditing: boolean,
+  editedObject: ILevels,
+  editedIndex: string,
+  showSaved: boolean,
+}
+
+export class EditTracks extends React.Component<EditTracksProps, EditTracksState> {
   constructor(props) {
     super(props);
 
     this.state = {
       loading: true,
       showForm: false,
+      editedIndex: null,
       isEditing: false,
       editedObject: null,
       showSaved: false,
@@ -61,8 +75,7 @@ export class EditTracks extends React.Component {
   saveChanges = (e) => {
     e.preventDefault();
     const isUpdate = this.state.isEditing;
-    const nextTrackIndex = this.props.tracks ? this.props.tracks.length : 0;
-    api.update('Tracks', this.state.editedIndex, this.state.editedObject, isUpdate, nextTrackIndex);
+    api.update('Tracks', this.state.editedIndex, this.state.editedObject, isUpdate);
     this.saved();
     this.setState({ showForm: false });
   }
@@ -123,12 +136,12 @@ export class EditTracks extends React.Component {
                 <label htmlFor="type">Level</label>
                 <input className="form-control" name="level" defaultValue={this.state.isEditing ? this.state.editedObject.level : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Level Check?</label>
-                <select className="form-control" name="levelCheck" defaultValue={this.state.isEditing ? this.state.editedObject.levelCheck : ''} onChange={this.handleChange}>
+                <select className="form-control" name="levelCheck" defaultValue={this.state.isEditing ? this.state.editedObject.levelCheck.toString() : ''} onChange={this.handleChange}>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
                 </select>
                 <label htmlFor="type">Sort By</label>
-                <input className="form-control" name="sortBy" defaultValue={this.state.isEditing ? this.state.editedObject.sortBy : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="sortBy" defaultValue={this.state.isEditing ? this.state.editedObject.sortBy.toString() : ''} onChange={this.handleChange} type="text" />
                 <br />
 
                 <div className="form-submit-buttons flex-row flex-justify-space-between">

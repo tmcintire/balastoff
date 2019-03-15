@@ -1,8 +1,18 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
+import { IRegistration } from '../../../data/interfaces';
 
-export class RegistrationBox extends React.Component {
+interface RegistrationBoxProps {
+  registration: IRegistration,
+  hasLevelCheck: boolean
+}
+
+interface RegistrationBoxState {
+  oldAmount: number
+}
+
+export class RegistrationBox extends React.Component<RegistrationBoxProps, RegistrationBoxState> {
   constructor(props) {
     super(props);
 

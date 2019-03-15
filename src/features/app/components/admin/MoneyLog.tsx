@@ -20,6 +20,7 @@ interface MoneyLogState {
   showMoneyLog: boolean,
   showVoidConfirmation: boolean,
   transactionToVoid: IMoneyLogEntry,
+  transactionToVoidId: string,
 }
 
 export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
@@ -30,6 +31,7 @@ export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
       showMoneyLog: false,
       showVoidConfirmation: false,
       transactionToVoid: null,
+      transactionToVoidId: null
     };
   }
 
@@ -49,6 +51,7 @@ export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
     this.setState({
       showVoidConfirmation: true,
       transactionToVoid: this.props.log[transactionId],
+      transactionToVoidId: transactionId
     });
   }
 
@@ -119,7 +122,11 @@ export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
     const renderVoidTransaction = () => {
       if (this.state.showVoidConfirmation) {
         return (
-          <VoidTransaction closePopup={this.closePopup} transaction={this.state.transactionToVoid} pw={this.props.config.voidPassword} />
+          <VoidTransaction 
+            closePopup={this.closePopup}
+            transaction={this.state.transactionToVoid}
+            id={this.state.transactionToVoidId}
+            pw={this.props.config.voidPassword} />
         );
       }
       return null;

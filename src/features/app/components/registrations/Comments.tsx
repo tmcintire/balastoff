@@ -1,10 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 import * as api from '../../../data/api';
+import { IRegistration } from '../../../data/interfaces';
 
-export class Comments extends React.Component {
-  constructor() {
-    super();
+interface CommentsProps {
+  registration: IRegistration,
+  saved: () => void,
+  id: number,
+}
+
+interface CommentsState {
+  comment: string,
+}
+
+export class Comments extends React.Component<CommentsProps, CommentsState> {
+  constructor(props) {
+    super(props);
 
     this.state = {
       comment: null,
@@ -32,9 +42,8 @@ export class Comments extends React.Component {
 
     api.updateRegistration(this.props.id, object);
     this.setState({
-      comment: null,
+      comment: '',
     });
-    this.comment.value = null;
     this.props.saved();
   }
   handleChange = (e) => {
@@ -60,7 +69,7 @@ export class Comments extends React.Component {
         <h3><strong>Add Comments</strong></h3>
         <div className="flex-row">
           <div className="add-comments-container flex-col">
-            <textarea onKeyDown={e => this.onKeyDown(e)} className="comments" ref={(ref) => { this.comment = ref; }}  onChange={e => this.handleChange(e)} />
+            <textarea onKeyDown={e => this.onKeyDown(e)} value={this.state.comment} className="comments" onChange={e => this.handleChange(e)} />
             <button className="btn btn-primary" disabled={!this.state.comment} onClick={() => this.handleSubmitComment()}>Add Comment</button>
           </div>
           <div className="display-comments-container flex-col">
@@ -71,8 +80,3 @@ export class Comments extends React.Component {
     );
   }
 }
-
-Comments.propTypes = {
-  saved: PropTypes.function,
-  id: PropTypes.string,
-};

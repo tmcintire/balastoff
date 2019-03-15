@@ -16,7 +16,7 @@ const Loading = require('react-loading-animation');
 
 interface EditRegistrationProps {
   registrations: IRegistration[],
-  tracks: ILevels[],
+  tracks: ILevels,
   passes: IAdminMissionPasses[],
   params: RouteInfo
   allComps: IComps[]
@@ -152,8 +152,8 @@ export class EditRegistration extends React.Component<EditRegistrationProps, Edi
     });
   }
 
-  toggleResolved = (bookingId: number, issueId: string) => {
-    const registration = _.find(this.props.registrations, r => r && r.BookingID === bookingId);
+  toggleResolved = (bookingId: string, issueId: string) => {
+    const registration = _.find(this.props.registrations, r => r && r.BookingID === parseInt(bookingId, 10));
 
     if (registration) {
       let updatedReg = {
@@ -163,7 +163,7 @@ export class EditRegistration extends React.Component<EditRegistrationProps, Edi
         })
       }
   
-      api.updateRegistration(bookingId, updatedReg);
+      api.updateRegistration(parseInt(bookingId, 10), updatedReg);
       this.saved();
     }
   }
@@ -207,8 +207,6 @@ export class EditRegistration extends React.Component<EditRegistrationProps, Edi
           <hr />
           <div className="flex-row flex-wrap flex-justify-space-between">
             <Level
-              saved={this.saved}
-              id={this.props.params.id}
               level={registration.Level}
               hasLevelCheck={registration.HasLevelCheck}
             />
@@ -217,7 +215,6 @@ export class EditRegistration extends React.Component<EditRegistrationProps, Edi
               toggleAddComps={this.toggleAddComps}
             />
             <Payment
-              saved={this.saved}
               amountOwed={registration.AmountOwed}
               fullyPaid={registration.HasPaid}
               togglePaid={this.changePaidCheckBox}
@@ -247,8 +244,7 @@ export class EditRegistration extends React.Component<EditRegistrationProps, Edi
             <CompsPurchase
               toggleAddComps={this.toggleAddComps}
               allComps={this.props.allComps}
-              id={this.props.params.id}     
-              amountOwed={this.state.registration.AmountOwed}         
+              id={this.props.params.id}        
               registrationComps={this.state.registrationComps}
               pendingMoneyLog={this.state.pendingMoneyLog}
               updatePendingMoneyLog={this.updatePendingMoneyLog}

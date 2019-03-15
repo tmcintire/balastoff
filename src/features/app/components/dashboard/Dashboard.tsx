@@ -1,19 +1,48 @@
-import React from 'react';
+import * as React from 'react';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
 import { LevelGraph } from '../admin/LevelGraph';
+import { IRegistration, IStore } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class Dashboard extends React.Component {
+interface DashboardProps {
+  registrations: IRegistration[],
+  loading: boolean,
+  store: { [key: string]: IStore},
+  totalCollected: number
+}
+
+interface DashboardState {
+  filteredLeads: IRegistration[],
+  filteredFollows: IRegistration[],
+  filter: string,
+  apollo: IRegistration[],
+  gemini: IRegistration[],
+  skylab: IRegistration[],
+  spacex: IRegistration[],
+  mercury: IRegistration[],
+  beginner: IRegistration[],
+  showLevels: boolean,
+  showStore: boolean,
+  showComps: boolean,
+  openCouples: number,
+  amateurCouples: number,
+  adNovLeads: number,
+  adNovFollows: number,
+  amateurDrawLeads: number,
+  amateurDrawFollows: number,
+}
+
+export class Dashboard extends React.Component<DashboardProps, DashboardState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      filteredLeads: {},
-      filteredFollows: {},
+      filteredLeads: [],
+      filteredFollows: [],
       filter: '',
-      loading: true,
       apollo: [],
       gemini: [],
       skylab: [],
@@ -32,7 +61,7 @@ export class Dashboard extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: DashboardProps) {
     if (nextProps.registrations) {
       const apollo = nextProps.registrations.filter(r => r.Level === 'Apollo' && r.LevelChecked);
       const gemini = nextProps.registrations.filter(r => r.Level === 'Gemini' && r.LevelChecked);
@@ -52,29 +81,29 @@ export class Dashboard extends React.Component {
         if (reg) {
           if (reg.Comps && reg.Comps.length > 0) {
             _.forEach(reg.Comps, (comp) => {
-              if (comp.Key === 'Open') {
+              if (comp.key === 'Open') {
                 // get open comps
-                const partner = comp.Partner;
+                const partner = comp.partner;
                 const exists = this.compAlreadyInArray(open, partner);
         
                 if (!exists) {
                   openCouples += 1;
                 }
-              } else if (comp.Key === 'AmateurCouples') {
+              } else if (comp.key === 'AmateurCouples') {
                 // Get the amateur couples comps
-                const partner = comp.Partner;
-                const exists = this.compAlreadyInArray(partner);
+                const partner = comp.partner;
+                const exists = this.compAlreadyInArray(amateurCouples, partner);
   
                 if (!exists) {
                   amateurCouples += 1;
                 }
-              } else if (comp.Key === 'AdNov' && reg.AdNovDrawRole === 'Lead') {
+              } else if (comp.key === 'AdNov' && reg.AdNovDrawRole === 'Lead') {
                 adNovLeads += 1;
-              } else if (comp.Key === 'AdNov' && reg.AdNovDrawRole === 'Follow') {
+              } else if (comp.key === 'AdNov' && reg.AdNovDrawRole === 'Follow') {
                 adNovFollows += 1;
-              } else if (comp.Key === 'AmateurDraw' && reg.AmateurDrawRole === 'Lead') {
+              } else if (comp.key === 'AmateurDraw' && reg.AmateurDrawRole === 'Lead') {
                 amateurDrawLeads += 1;
-              } else if (comp.Key === 'AmateurDraw' && reg.AmateurDrawRole === 'Follow') {
+              } else if (comp.key === 'AmateurDraw' && reg.AmateurDrawRole === 'Follow') {
                 amateurDrawFollows += 1;
               }
             });
@@ -156,7 +185,7 @@ export class Dashboard extends React.Component {
   Store = () => {
     let total = 0;
     _.forEach(this.props.store, i => {
-      total += i.count * i.price;
+      total += i.quantity * i.price;
     });
     return (
       <div className="dashboard-dropdown flex-col">
@@ -166,7 +195,7 @@ export class Dashboard extends React.Component {
             return (
               <div className="dashboard-store-item flex-row">
                 <span className="item">{item.name}</span>
-                <span className="item-count">{item.count}</span>
+                <span className="item-count">{item.quantity}</span>
               </div>
             );
           })

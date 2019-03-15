@@ -1,12 +1,24 @@
-import React from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as _ from 'lodash';
 import { Checkout } from './Checkout';
 import * as api from '../../../data/api';
+import { IStore } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class Store extends React.Component {
+interface StoreProps {
+  store: IStore[],
+}
+
+interface StoreState {
+  pendingItems: IStore[],
+  loading: boolean,
+  cartTotal: number,
+  showCheckout: boolean,
+  showToastMessage: boolean
+}
+
+export class Store extends React.Component<StoreProps, StoreState> {
   constructor(props) {
     super(props);
 
@@ -51,7 +63,7 @@ export class Store extends React.Component {
     const details = this.state.pendingItems.map(item => {
       return {
         item: item.name,
-        quantity: item.cartQuantity,
+        quantity: item.quantity,
         price: item.price,
       };
     });
@@ -75,7 +87,7 @@ export class Store extends React.Component {
       const pendingItem = _.find(this.state.pendingItems, i => i.name === item.name);
 
       if (pendingItem) {
-        storeObject[key].count = storeObject[key].count + pendingItem.cartQuantity;
+        storeObject[key].quantity = storeObject[key].quantity + pendingItem.quantity;
       }
     });
 
@@ -83,13 +95,13 @@ export class Store extends React.Component {
   }
   
   removeItem = (storeItem) => {
-    const cartQuantity = _.find(this.state.pendingItems, item => item.name === storeItem.name).cartQuantity - 1;
+    const cartQuantity = _.find(this.state.pendingItems, item => item.name === storeItem.name).quantity - 1;
     let pendingItems;
     if (cartQuantity === 0) {
       pendingItems = this.state.pendingItems.filter(item => item.name !== storeItem.name);
     } else {
       pendingItems = this.state.pendingItems.map(item => item.name === storeItem.name ? {
-        ...item, cartQuantity } : item
+        ...item, quantity: cartQuantity } : item
       );
     }
 
@@ -100,20 +112,20 @@ export class Store extends React.Component {
   }
 
   addItem = (storeItem) => {
-    let pendingItems;
+    let pendingItems: IStore[];
     if (_.find(this.state.pendingItems, p => p.name === storeItem.name)) {
       // the item is already in the cart, update the quantity only
       pendingItems = this.state.pendingItems.map((item, index) => {
         if (item.name === storeItem.name) {
           return {
             ...this.state.pendingItems[index],
-            cartQuantity: this.state.pendingItems[index].cartQuantity + 1,
+            quantity: this.state.pendingItems[index].quantity + 1,
           };
         }
         return { ...this.state.pendingItems[index] };
       });
     } else {
-      const newItem = { ...storeItem, cartQuantity: 1 };
+      const newItem: IStore = { ...storeItem, quantity: 1 };
       pendingItems = this.state.pendingItems.concat([newItem]);
     }
 
@@ -124,10 +136,10 @@ export class Store extends React.Component {
   };
 
   getCartTotal = (pendingItems) => {
-    const cartTotal = _.sumBy(pendingItems, (item) => {
+    const cartTotal = _.sumBy(pendingItems, (item: IStore) => {
       let total = 0;
-      if (item.price && item.cartQuantity) {
-        total = item.price * item.cartQuantity;
+      if (item.price && item.quantity) {
+        total = item.price * item.quantity;
       }
       return total;
     });
@@ -181,7 +193,7 @@ export class Store extends React.Component {
   renderCart = () => {
     return this.state.pendingItems.map(item => {
       return (
-        <p>{item.name} - {item.cartQuantity}</p>
+        <p>{item.name} - {item.quantity}</p>
       );
     });
   }
@@ -199,7 +211,7 @@ export class Store extends React.Component {
       <div className="container">
         <h1 className="text-center">BalastOff! Store</h1>
         <div className="flex-wrap flex-row flex-justify-space-between">
-          <this.Store />
+          {this.Store()}
         </div>
         <div className="cart">
           <div className="flex-row">
@@ -228,7 +240,3 @@ export class Store extends React.Component {
   }
 
 }
-
-Store.propTypes = {
-  children: PropTypes.node,
-};

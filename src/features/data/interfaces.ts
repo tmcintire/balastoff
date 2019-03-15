@@ -1,7 +1,16 @@
 export interface IConfig {
-  voidPassword: string,
-  overrideDanceRestriction: string,
-  development: boolean
+  voidPassword?: string,
+  overrideDanceRestriction?: string,
+  development?: boolean
+}
+
+export interface IDance {
+  count: number,
+  startDate: string
+  endDate: string,
+  key: string,
+  name: string,
+  price: number
 }
 
 export interface ILevels {
@@ -11,11 +20,18 @@ export interface ILevels {
   sortBy: number
 }
 
+export interface IStore {
+  quantity: number,
+  name: string,
+  price: number
+}
+
 export interface IComps {
   key: string,
   name: string,
   role: string,
-  partner?: string
+  partner?: string,
+  price?: number
 }
 
 export interface IMoneyLogEntryItem {
@@ -28,7 +44,10 @@ export interface IMoneyLogEntry {
   bookingId: number,
   amount: number,
   date?: Date,
-  details: IMoneyLogEntryItem[]
+  details: IMoneyLogEntryItem[],
+  void?: boolean,
+  initials?: string,
+  reason?: string,
 }
 
 export interface IMissionGearIssue {
@@ -57,6 +76,7 @@ export class Registration implements IRegistration {
   Comments?:  string[];
   Comps?: IComps[];
   Country?:  string;
+  CreationDate?: string;
   DancePass?:  string;
   Email?:  string;
   FirstName?:  string;
@@ -98,6 +118,8 @@ export class Registration implements IRegistration {
 
 export interface IRegistration {
   AdNov?:  boolean,
+  AdNovDrawRole?: string,
+  AmateurDrawRole?: string,
   AdditionalTShirts?:  string,
   Address?:  string,
   AdvNovVolunteer?:  boolean,
@@ -113,6 +135,7 @@ export interface IRegistration {
   Comments?:  string[],
   Comps?: IComps[],
   Country?:  string,
+  CreationDate?: string,
   DancePass?:  string,
   Email?:  string,
   FirstName?:  string,
@@ -172,7 +195,7 @@ export interface IRoleComp {
   role: string
 }
 
-export interface IAdminFields {
+export interface IAdminField {
   key: string,
   label: string,
   sortOrder: number,

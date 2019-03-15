@@ -4,8 +4,8 @@ import { IMissionGearIssue } from '../../../data/interfaces';
 
 interface EditMissionGearIssuesProps {
   issues: IMissionGearIssue[],
-  toggleResolved: (id: number, issueId: string) => void,
-  id: number
+  toggleResolved: (id: string, issueId: string) => void,
+  id: string
 }
 
 export const EditMissionGearIssues: FunctionComponent<EditMissionGearIssuesProps> = (props) => {

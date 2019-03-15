@@ -1,17 +1,24 @@
-import React from 'react';
-import _ from 'lodash';
+import * as React from 'react';
+import { FunctionComponent } from 'react';
+import * as _ from 'lodash';
+import { IComps } from '../../../data/interfaces';
 
-export const Comps = (props) => {
+interface CompsProps {
+  comps: IComps[],
+  toggleAddComps: () => void,
+}
+
+export const Comps: FunctionComponent<CompsProps> = (props) => {
   /* Components */
-  const CompsList = () => {
+  const CompsList = (props) => {
     if (!_.isEmpty(props.comps)) {
       return props.comps.map(c => (
         <div className="info-container">
           {
-            c.Key === 'AdNov' || c.Key === 'AmateurDraw' ?
-              <span>{c.Name} - {c.Role}</span>
+            c.key === 'AdNov' || c.key === 'AmateurDraw' ?
+              <span>{c.name} - {c.role}</span>
             :
-              <span>{c.Name} - {c.Partner}</span>
+              <span>{c.name} - {c.partner}</span>
           }
         </div>
       ));

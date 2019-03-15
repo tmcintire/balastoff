@@ -1,6 +1,17 @@
-import React from 'react';
+import * as React from 'react';
+import { FunctionComponent } from 'react';
+import { IStore } from '../../../data/interfaces';
 
-export const Checkout = props => {
+interface CheckoutProps {
+  pendingItems: IStore[],
+  addItem: (item: IStore) => void,
+  removeItem: (item: IStore) => void,
+  toggleCheckout: () => void,
+  confirmPurchase: () => void,
+  cartTotal: number
+}
+
+export const Checkout: FunctionComponent<CheckoutProps> = (props) => {
   const Cart = () => {
     if (props.pendingItems.length > 0) {
       return props.pendingItems.map(item => {
@@ -8,7 +19,7 @@ export const Checkout = props => {
           <div className="row">
             <span className="col-xs-4">{item.name}</span>
             <span className="col-xs-2">${item.price.toFixed(2)}</span>
-            <span className="col-xs-2">{item.cartQuantity}</span>
+            <span className="col-xs-2">{item.quantity}</span>
             <div onClick={() => props.addItem(item)} className="col-xs-2 flex-row flex-align-center flex-justify-content-center">
               <i className="fa fa-2x fa-plus" />
             </div>
@@ -42,7 +53,7 @@ export const Checkout = props => {
             <span className="col-xs-2 flex-row flex-align-center flex-justify-content-center">Add</span>
             <span className="col-xs-2 flex-row flex-align-center flex-justify-content-center">Remove</span>
           </div>
-          <Cart />
+          {Cart()}
         </div>
         <div className="cart-total">
         <h2>${props.cartTotal.toFixed(2)}</h2>

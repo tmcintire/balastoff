@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as api from '../../../data/api';
-import { ILevels, IRegistration } from '../../../data/interfaces';
+import { IRegistration } from '../../../data/interfaces';
 
 interface LevelCheckBoxProps {
   registration: IRegistration,

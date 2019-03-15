@@ -1,22 +1,32 @@
-import React from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import * as _ from 'lodash';
+import { IRegistration, IPartnerComp, IRoleComp } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class CompRegistrations extends React.Component {
-  constructor() {
-    super();
+interface CompRegistrationsProps {
+  registrations: IRegistration[],
+  loading: boolean
+}
+
+interface CompRegistrationsState {
+  open: IPartnerComp[],
+  amateurCouples: IPartnerComp[],
+  adNov: IRoleComp[],
+  amateurDraw: IRoleComp[]
+}
+
+export class CompRegistrations extends React.Component<CompRegistrationsProps, CompRegistrationsState> {
+  constructor(props) {
+    super(props);
     this.state = {
-      registration: {},
       open: [],
       amateurCouples: [],
       adNov: [],
       amateurDraw: [],
-      loading: true,
     };
   }
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: CompRegistrationsProps) {
     if (nextProps.registrations) {
       const open = [];
       const amateurCouples = [];
@@ -27,26 +37,26 @@ export class CompRegistrations extends React.Component {
           const name = `${reg.FirstName} ${reg.LastName}`;
           if (reg.Comps && reg.Comps.length > 0) {
             _.forEach(reg.Comps, (comp) => {
-              if (comp.Key === 'Open') {
+              if (comp.key === 'Open') {
                 // get open comps
-                const partner = comp.Partner;
+                const partner = comp.partner;
                 const exists = this.compAlreadyInArray(open, partner);
         
                 if (!exists) {
                   open.push({ name, partner });
                 }
-              } else if (comp.Key === 'AmateurCouples') {
+              } else if (comp.key === 'AmateurCouples') {
                 // Get the amateur couples comps
-                const partner = comp.Partner;
-                const exists = this.compAlreadyInArray(partner);
+                const partner = comp.partner;
+                const exists = this.compAlreadyInArray(amateurCouples, partner);
   
                 if (!exists) {
                   amateurCouples.push({ name, partner });
                 }
-              } else if (comp.Key === 'AdNov') {
-                adNov.push({ name, role: comp.Role });
-              } else if (comp.Key === 'AmateurDraw') {
-                amateurDraw.push({ name, role: comp.Role });
+              } else if (comp.key === 'AdNov') {
+                adNov.push({ name, role: comp.role });
+              } else if (comp.key === 'AmateurDraw') {
+                amateurDraw.push({ name, role: comp.role });
               }
             });
           }
@@ -57,8 +67,7 @@ export class CompRegistrations extends React.Component {
         open,
         amateurCouples,
         adNov,
-        amateurDraw,
-        loading: nextProps.loading,
+        amateurDraw
       });
     }
   }
@@ -80,7 +89,7 @@ export class CompRegistrations extends React.Component {
   }
 
   renderOpen = () => {
-    if (!this.state.loading) {
+    if (!this.props.loading) {
       return this.state.open.map((o, index) => (
         <tr key={index}>
           <td>{o.name}</td>
@@ -92,7 +101,7 @@ export class CompRegistrations extends React.Component {
   };
 
   renderAmateur = () => {
-    if (!this.state.loading) {
+    if (!this.props.loading) {
       return this.state.amateurCouples.map((o, index) => (
         <tr key={index}>
           <td>{o.name}</td>
@@ -104,7 +113,7 @@ export class CompRegistrations extends React.Component {
   };
 
   renderAdNov = () => {
-    if (!this.state.loading) {
+    if (!this.props.loading) {
       const sorted = _.orderBy(this.state.adNov, 'role');
       return sorted.map((o, index) => (
         <tr key={index}>
@@ -117,7 +126,7 @@ export class CompRegistrations extends React.Component {
   };
 
   renderAmateurDraw = () => {
-    if (!this.state.loading) {
+    if (!this.props.loading) {
       const sorted = _.orderBy(this.state.amateurDraw, 'role');
       return sorted.map((o, index) => (
         <tr key={index}>
@@ -131,7 +140,7 @@ export class CompRegistrations extends React.Component {
 
   render() {
     const renderRegistration = () => {
-      if (this.state.loading) {
+      if (this.props.loading) {
         return (
           <Loading />
         );
@@ -213,7 +222,3 @@ export class CompRegistrations extends React.Component {
     );
   }
 }
-
-CompRegistrations.PropTypes = {
-  loading: PropTypes.boolean,
-};

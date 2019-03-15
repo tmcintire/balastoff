@@ -1,7 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
+import { FunctionComponent } from 'react';
 
-export const Payment = props => {
+interface PaymentProps {
+  amountOwed: number,
+  fullyPaid: boolean,
+  togglePaid: (e) => void
+}
+
+export const Payment: FunctionComponent<PaymentProps> = (props) => {
   let style = {};
   if (props.amountOwed > 0) {
     style = {
@@ -41,10 +47,4 @@ export const Payment = props => {
       </div>
     </div>
   );
-};
-
-Payment.propTypes = {
-  amountOwed: PropTypes.number,
-  fullyPaid: PropTypes.boolean,
-  togglePaid: PropTypes.function,
 };

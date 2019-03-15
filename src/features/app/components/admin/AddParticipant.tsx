@@ -8,7 +8,7 @@ import { IAdminMissionPasses, Registration, IRegistration, ILevels, } from '../.
 const Loading = require('react-loading-animation');
 
 interface AddParticipantProps {
-  tracks: ILevels[],
+  tracks: { [key: string]: ILevels },
   passes: IAdminMissionPasses[],
   tracksLoading: boolean,
   passesLoading: boolean

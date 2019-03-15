@@ -1,22 +1,59 @@
-import React from 'react';
+import * as React from 'react';
+import * as _ from 'lodash';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as api from '../../../data/api';
+import { IAdminField, IAdminFieldOptions } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
+interface EditAdminFieldsProps {
+  fields: { [key: string]: IAdminField },
+}
+
+interface EditAdminFieldsState {
+  showForm: boolean,
+  isEditing: boolean,
+  editedKey: string,
+  editedObject: IAdminField,
+  options: IAdminFieldOptions[],
+  loading: boolean,
+  showSaved: boolean,
+  sortedFields: [],
+}
+
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
-  const newSortOrder = endIndex + 1;
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  const newList = result.map((r, index) => {
-    return {
-      ...r,
-      sortOrder: index + 1,
-    };
+  // create a temporary array out of the objects so we can reorder
+  const tempArrayList = [];
+  _.forEach(list, (l, k) => {
+    tempArrayList.push({...l, id: k })
   });
+
+  const newSortOrder = endIndex + 1;
+  const [removed] = tempArrayList.splice(startIndex, 1);
+  tempArrayList.splice(endIndex, 0, removed);
+
+  const newList = {};
+  
+  _.forEach(tempArrayList, (l, index) => {
+    newList[l.id] = {
+      key: l.key,
+      label: l.label,
+      sortOrder: index + 1,
+      type: l.type
+    }
+
+    if (l.options) {
+      newList[l.id].options = l.options;
+    }
+  });
+
+  // const newList = result.map((r, index) => {
+  //   return {
+  //     ...r,
+  //     sortOrder: index + 1,
+  //   };
+  // });
 
   return newList;
 };
@@ -41,7 +78,7 @@ const getListStyle = isDraggingOver => ({
   padding: grid,
 });
 
-export class EditAdminFields extends React.Component {
+export class EditAdminFields extends React.Component<EditAdminFieldsProps, EditAdminFieldsState> {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.fields) {
       return {
@@ -59,16 +96,16 @@ export class EditAdminFields extends React.Component {
       loading: true,
       showForm: false,
       isEditing: false,
-      editedObject: {},
+      editedObject: null,
       editedKey: null,
       showSaved: false,
-      options: null,
+      options: [{ label: '', value: '' }],
       sortedFields: [],
     };
   }
 
-  addEdit = (key, addEdit) => {
-    let options = [];
+  addEdit = (key: string, addEdit) => {
+    let options: IAdminFieldOptions[];
     if (key && this.props.fields[key].options && this.props.fields[key].options.length > 0) {
       options = this.props.fields[key].options;
     }
@@ -77,7 +114,7 @@ export class EditAdminFields extends React.Component {
       showForm: true,
       isEditing: addEdit,
       editedKey: key,
-      editedObject: addEdit ? this.props.fields[key] : {},
+      editedObject: addEdit ? this.props.fields[key] : null,
       options,
     });
   }
@@ -98,10 +135,10 @@ export class EditAdminFields extends React.Component {
 
   handleOptionChange = (e, index, key) => {
     const target = e.target.name;
-    let option = {};
+    let option: IAdminFieldOptions;
     if (!this.state.editedObject.options) {
       // if the edited object does not have options already on it
-      option = { [key]: e.target.value };
+      option = { [key]: e.target.value } as IAdminFieldOptions;
     } else if (this.state.editedObject.options[index]) {
       option = {
         ...this.state.editedObject.options[index],
@@ -152,7 +189,7 @@ export class EditAdminFields extends React.Component {
 
   addOption = () => {
     this.setState({
-      options: this.state.options.concat({ key: '', label: '' }),
+      options: this.state.options.concat({ label: '', value: '' }),
     });
   }
 
@@ -238,7 +275,7 @@ export class EditAdminFields extends React.Component {
 
     const renderForm = () => {
       if (this.state.showForm) {
-        let sortOrders = this.props.fields.map(f => {
+        let sortOrders = _.map(this.props.fields, f => {
           return f.sortOrder;
         });
         const sortOrderValue = this.state.isEditing ? this.props.fields[this.state.editedKey] : _.last(sortOrders) + 1;
@@ -255,7 +292,7 @@ export class EditAdminFields extends React.Component {
                 <input className="form-control" name="label" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].label : ''} onChange={this.handleChange} type="text" />
                 
                 <label htmlFor="type">Sort Order</label>
-                <input className="form-control" type="number" name="sortOrder" defaultValue={sortOrderValue} onChange={this.handleChange} />
+                <input className="form-control" type="number" name="sortOrder" defaultValue={sortOrderValue.toString()} onChange={this.handleChange} />
 
                 <label htmlFor="type">Type</label>
                 <input className="form-control" name="type" defaultValue={this.state.isEditing ? this.props.fields[this.state.editedKey].type : ''} onChange={this.handleChange} type="text" />

@@ -76,6 +76,14 @@
   color: green;
 }
 
+.table-container {
+  height: 300px;
+  overflow: scroll;
+  border: 1px solid gray;
+  padding: 5px;
+  box-shadow: 2px 2px 7px 3px lightgrey;
+}
+
 @media (max-width: 500px) {
   .section-header {
     font-size: 1.2em!important;

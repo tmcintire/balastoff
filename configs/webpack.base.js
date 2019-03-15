@@ -1,7 +1,4 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const autoprefixer = require('autoprefixer');
-const babelConfig = require('./babelrc.js');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const webpack = require('webpack');
@@ -20,7 +17,7 @@ module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
     app: [
-      './src/index.jsx',
+      './src/index.tsx',
     ],
     vendor: [
       'script-loader!jquery/dist/jquery.min.js',
@@ -123,7 +120,7 @@ module.exports = {
           'css-loader', {
             loader: 'sass-loader',
             query: {
-              includePaths: [path.resolve(__dirname, 'node_modules')]
+              includePaths: [path.resolve(__dirname, 'node_modules')],
             },
           },
         ],

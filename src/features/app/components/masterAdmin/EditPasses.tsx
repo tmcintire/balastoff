@@ -1,12 +1,25 @@
-import React from 'react';
-import _ from 'lodash';
-import Datetime from 'react-datetime';
+import * as React from 'react';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
+import { IAdminMissionPasses } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class EditStore extends React.Component {
+interface EditPassesProps {
+  passes: IAdminMissionPasses
+}
+
+interface EditPassesState {
+  loading: boolean,
+  showForm: boolean,
+  isEditing: boolean,
+  editedObject: IAdminMissionPasses,
+  editedIndex: string,
+  showSaved: boolean,
+}
+
+export class EditPasses extends React.Component<EditPassesProps, EditPassesState> {
   constructor(props) {
     super(props);
 
@@ -14,14 +27,14 @@ export class EditStore extends React.Component {
       loading: true,
       showForm: false,
       isEditing: false,
-      editedObject: {},
+      editedObject: null,
       editedIndex: null,
       showSaved: false,
     };
   }
 
   componentWillMount() {
-    if (this.props.store) {
+    if (this.props.passes) {
       this.setState({
         loading: false,
       });
@@ -29,7 +42,7 @@ export class EditStore extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.store) {
+    if (nextProps.passes) {
       this.setState({
         loading: false,
       });
@@ -41,26 +54,17 @@ export class EditStore extends React.Component {
       showForm: true,
       isEditing: addEdit,
       editedIndex: index,
-      editedObject: addEdit ? this.props.store[index] : {},
+      editedObject: addEdit ? this.props.passes[index] : {},
     });
   }
 
   handleChange = (e) => {
     const target = e.target.name;
 
-    let value = e.target.value;
-
-    if (target === 'price') {
-      value = parseInt(value, 10);
-    } else if (target === 'count') {
-      value = parseInt(value, 10);
-    }
-
-
     this.setState({
       editedObject: {
         ...this.state.editedObject,
-        [target]: value,
+        [target]: target === 'price' ? parseInt(e.target.value, 10) : e.target.value,
       },
     });
   }
@@ -68,19 +72,14 @@ export class EditStore extends React.Component {
   saveChanges = (e) => {
     e.preventDefault();
     const isUpdate = this.state.isEditing;
-    const nextItemIndex = this.props.store ? this.props.store.length : 0;
-    const editedObject = this.state.editedObject;
-    if (!isUpdate) {
-      editedObject.count = 0;
-    }
-    api.update('Store', this.state.editedIndex, editedObject, isUpdate, nextItemIndex);
+    api.update('Passes', this.state.editedIndex, this.state.editedObject, isUpdate);
     this.saved();
     this.setState({ showForm: false });
   }
 
   delete = (e) => {
     e.preventDefault();
-    api.deleteRef('Store', this.state.editedIndex);
+    api.deleteRef('Passes', this.state.editedIndex);
     this.setState({ showForm: false });
   }
 
@@ -100,19 +99,19 @@ export class EditStore extends React.Component {
     }, 2000);
   }
   render() {
-    const renderStore = () => {
+    const renderPasses = () => {
       if (this.state.loading) {
         return (
           <Loading />
         );
       }
-      return Object.keys(this.props.store).map((key) => {
-        const item = this.props.store[key];
+      return Object.keys(this.props.passes).map((key, index) => {
+        const pass = this.props.passes[key];
         return (
-          <tr key={key} onClick={() => this.addEdit(key, true)}>
-            <td>{item.name}</td>
-            <td>${item.price.toFixed(2)}</td>
-            <td>{item.count}</td>
+          <tr key={index} onClick={() => this.addEdit(index, true)}>
+            <td>{pass.name}</td>
+            <td>{pass.price}</td>
+            <td>{pass.sortBy}</td>
           </tr>
         );
       });
@@ -124,16 +123,16 @@ export class EditStore extends React.Component {
       if (this.state.showForm) {
         return (
           <div>
-            <h1 className="text-center">{this.state.isEditing ? 'Edit Store Item' : 'Add Store Item'}</h1>
-            {this.state.isEditing ? <button className="btn btn-danger" onClick={e => this.delete(e)}>Delete Dance</button> : ''}
+            <h1 className="text-center">{this.state.isEditing ? 'Edit Pass' : 'Add Pass'}</h1>
+            {this.state.isEditing ? <button className="btn btn-danger" onClick={e => this.delete(e)}>Delete Pass</button> : ''}
             <div className="form-group">
               <form>
                 <label htmlFor="type">Name</label>
                 <input className="form-control" name="name" defaultValue={this.state.isEditing ? this.state.editedObject.name : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Price</label>
-                <input className="form-control" name="price" defaultValue={this.state.isEditing ? this.state.editedObject.price : ''} onChange={this.handleChange} type="text" />
-                <label htmlFor="type">Amount Sold</label>
-                <input className="form-control" name="count" defaultValue={this.state.isEditing ? this.state.editedObject.count : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="price" defaultValue={this.state.isEditing ? this.state.editedObject.price.toString() : ''} onChange={this.handleChange} type="text" />
+                <label htmlFor="type">Sort By</label>
+                <input className="form-control" name="sortBy" defaultValue={this.state.isEditing ? this.state.editedObject.sortBy.toString() : ''} onChange={this.handleChange} type="text" />
                 <br />
 
                 <div className="form-submit-buttons flex-row flex-justify-space-between">
@@ -152,21 +151,21 @@ export class EditStore extends React.Component {
 
     return (
       <div className="container">
-        <h1 className="text-center">Store Items</h1>
+        <h1 className="text-center">Passes</h1>
         {renderSaved()}
-        <table className="table">
+        <table className="table table-responsive">
           <thead>
             <tr>
               <th>Name</th>
               <th>Price</th>
-              <th>Amount Sold</th>
+              <th>Sort By</th>
             </tr>
           </thead>
           <tbody>
-            {renderStore()}
+            {renderPasses()}
           </tbody>
         </table>
-        <button className="btn btn-primary" onClick={() => this.addEdit(null, false)}>Add New Item</button>
+        <button className="btn btn-primary" onClick={() => this.addEdit(null, false)}>Add New Pass</button>
         {renderForm()}
       </div>
     );

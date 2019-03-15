@@ -1,12 +1,26 @@
-import React from 'react';
-import _ from 'lodash';
-import Datetime from 'react-datetime';
+import * as React from 'react';
+import * as _ from 'lodash';
+//import Datetime from 'react-datetime';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
+import { IDance } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
-export class EditDances extends React.Component {
+interface EditDancesProps {
+  dances: IDance
+}
+
+interface EditDancesState {
+  loading: boolean,
+  showForm: boolean,
+  isEditing: boolean,
+  editedObject: IDance,
+  editedIndex: string,
+  showSaved: boolean,
+}
+
+export class EditDances extends React.Component<EditDancesProps, EditDancesState> {
   constructor(props) {
     super(props);
 
@@ -14,7 +28,7 @@ export class EditDances extends React.Component {
       loading: true,
       showForm: false,
       isEditing: false,
-      editedObject: {},
+      editedObject: null,
       editedIndex: null,
       showSaved: false,
     };
@@ -68,8 +82,7 @@ export class EditDances extends React.Component {
   saveChanges = (e) => {
     e.preventDefault();
     const isUpdate = this.state.isEditing;
-    const nextDanceIndex = this.props.dances ? this.props.dances.length : 0;
-    api.update('Dances', this.state.editedIndex, this.state.editedObject, isUpdate, nextDanceIndex);
+    api.update('Dances', this.state.editedIndex, this.state.editedObject, isUpdate);
     this.saved();
     this.setState({ showForm: false });
   }
@@ -150,9 +163,9 @@ export class EditDances extends React.Component {
                 <label htmlFor="type">Name</label>
                 <input className="form-control" name="name" defaultValue={this.state.isEditing ? this.state.editedObject.name : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Price</label>
-                <input className="form-control" name="price" defaultValue={this.state.isEditing ? this.state.editedObject.price : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="price" defaultValue={this.state.isEditing ? this.state.editedObject.price.toString() : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Start</label>
-                <Datetime
+                {/*<Datetime
                   defaultValue={this.state.editedObject.startDate}
                   id="date-picker"
                   onChange={e => this.handleStartDateChange(e)}
@@ -162,9 +175,9 @@ export class EditDances extends React.Component {
                   defaultValue={this.state.editedObject.endDate}
                   id="date-picker"
                   onChange={e => this.handleEndDateChange(e)}
-                />
+                /> */}
                 <label htmlFor="type">Count</label>
-                <input className="form-control" name="count" defaultValue={this.state.isEditing ? this.state.editedObject.count : ''} onChange={this.handleChange} type="number" />
+                <input className="form-control" name="count" defaultValue={this.state.isEditing ? this.state.editedObject.count.toString() : ''} onChange={this.handleChange} type="number" />
                 <br />
 
                 <div className="form-submit-buttons flex-row flex-justify-space-between">

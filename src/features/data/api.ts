@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import firebase, { firebaseRef } from '../../../firebase';
 import * as actions from '../data/actions';
 import store from '../../store';
-import { IRegistration, Registration, IMoneyLogEntry } from './interfaces';
+import { IRegistration, Registration, IMoneyLogEntry, IStore } from './interfaces';
 
 /* Firebase References */
 let headers;
@@ -275,12 +275,9 @@ export function fetchPrices() {
 }
 
 export function fetchAdminFields() {
-  firebaseRef.child('Fields').on('value', (snapshot) => {
+  firebaseRef.child('Fields').orderByChild('sortOrder').on('value', snapshot => {
     const fields = snapshot.val();
-
-    let orderedFields = _.orderBy(fields, 'sortOrder');
-
-    store.dispatch(actions.fieldsReceived(orderedFields));
+    store.dispatch(actions.fieldsReceived(fields));
   });
 }
 
@@ -371,15 +368,15 @@ export function deleteRef(child, index) {
   firebaseRef.child(child).child(index).remove();
 }
 
-export function voidTransaction(id, initials) {
-  firebaseRef.child('moneyLog').child(id).update({ void: true, initials });
+export function voidTransaction(id, initials, reason) {
+  firebaseRef.child('moneyLog').child(id).update({ void: true, initials, reason });
 }
 
-export function unvoidTransaction(id, initials) {
-  firebaseRef.child('moneyLog').child(id).update({ void: false, initials });
+export function unvoidTransaction(id, initials, reason) {
+  firebaseRef.child('moneyLog').child(id).update({ void: false, initials, reason });
 }
 
-export function updateStoreItemCount(newStoreCounts) {
+export function updateStoreItemCount(newStoreCounts: IStore[]) {
   firebaseRef.child('Store').update(newStoreCounts);
 }
 

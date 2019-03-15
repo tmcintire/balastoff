@@ -1,18 +1,36 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import * as React from 'react';
+import * as _ from 'lodash';
 import * as api from '../../../data/api';
+import { IMoneyLogEntry, IComps } from '../../../data/interfaces';
 
-class NewComp {
+class NewComp implements IComps {
   constructor(key, name, partner, role) {
-    this.Key = key;
-    this.Name = name;
-    this.Partner = partner;
-    this.Role = role;
+    this.key = key;
+    this.name = name;
+    this.partner = partner;
+    this.role = role;
   }
+
+  public key: string;
+  public name: string;
+  public partner: string;
+  public role: string;
 }
 
-export class CompsPurchase extends React.Component {
+interface CompsPurchaseProps {
+  pendingMoneyLog: IMoneyLogEntry,
+  registrationComps: IComps[],
+  updatePendingMoneyLog: (pendingMoneyLog: IMoneyLogEntry[], purchaseAmount: number ) => void,
+  id: number,
+  allComps: IComps[],
+  toggleAddComps: () => void,
+}
+
+interface CompsPurchaseState {
+  pendingMoneyLogDetails: IMoneyLogEntry[]
+}
+
+export class CompsPurchase extends React.Component<CompsPurchaseProps, CompsPurchaseState> {
   constructor(props) {
     super(props);
 
@@ -37,9 +55,10 @@ export class CompsPurchase extends React.Component {
       pendingMoneyLogDetails = this.props.pendingMoneyLog.details.concat([{
         item: `Added Comp - ${comp.Name}`,
         price: comp.Price,
+        quantity: 1
       }]);
     } else {
-      comps = this.props.registrationComps.filter(c => c.Key !== newComp.Key);
+      comps = this.props.registrationComps.filter(c => c.key !== newComp.key);
 
       // if this comp was pending to go in then we need to remove it from pending, otherwise itw as already paid
       // for and the money log needs to be modified
@@ -51,6 +70,7 @@ export class CompsPurchase extends React.Component {
         pendingMoneyLogDetails = this.props.pendingMoneyLog.details.concat([{
           item: `Removed Comp - ${comp.Name}`,
           price: -(comp.Price),
+          quantity: 1
         }]);
       }
 
@@ -58,18 +78,18 @@ export class CompsPurchase extends React.Component {
     }
 
     this.props.updatePendingMoneyLog(pendingMoneyLogDetails, purchaseAmount);
-    api.updateRegistration(this.props.id, { 'Amount Owed': purchaseAmount, HasPaid: purchaseAmount <= 0 });
+    api.updateRegistration(this.props.id, { AmountOwed: purchaseAmount, HasPaid: purchaseAmount <= 0 });
 
     api.updateRegistrationComps(this.props.id, comps);
   }
 
   handlePartnerChange = (Partner, key) => {
-    const updatedComps = this.props.registrationComps.map(comp => comp.Key === key ? { ...comp, Partner } : comp);
+    const updatedComps = this.props.registrationComps.map(comp => comp.key === key ? { ...comp, Partner } : comp);
     api.updateRegistrationComps(this.props.id, updatedComps);
   }
 
   handleRoleChange = (Role, key) => {
-    const updatedComps = this.props.registrationComps.map(comp => comp.Key === key ? { ...comp, Role } : comp);
+    const updatedComps = this.props.registrationComps.map(comp => comp.key === key ? { ...comp, Role } : comp);
     api.updateRegistrationComps(this.props.id, updatedComps);
   }
 
@@ -77,17 +97,17 @@ export class CompsPurchase extends React.Component {
     this.props.toggleAddComps();
   }
 
-  findCompPrice = comp => _.find(this.props.allComps, c => c.Key === comp).Price;
+  findCompPrice = comp => _.find(this.props.allComps, c => c.key === comp).price;
 
   CompsList = () => this.props.allComps.map((comp, index) => {
-    const isSelected = _.some(this.props.registrationComps, rc => rc.Key === comp.Key);
+    const isSelected = _.some(this.props.registrationComps, rc => rc.key === comp.key);
 
     return (
       <div key={index} className="info-container">
         <div className="comp-info flex-align-center flex-row flex-justify-space-between">
           <div className="flex-row">
             <input type="checkbox" checked={isSelected} onChange={e => this.compSelectionChange(e, comp)} />
-            <span>{comp.Name}(${comp.Price}): </span>
+            <span>{comp.name}(${comp.price}): </span>
           </div>
           <div className="partner-role-container">
             <this.PartnerOrRole comp={comp} />
@@ -98,16 +118,16 @@ export class CompsPurchase extends React.Component {
   });
 
   PartnerOrRole = ({ comp }) => {
-    const compData = _.find(this.props.allComps, c => c.Key === comp.Key);
-    const found = _.find(this.props.registrationComps, c => c.Key === comp.Key);
+    const compData = _.find(this.props.allComps, c => c.key === comp.Key);
+    const found = _.find(this.props.registrationComps, c => c.key === comp.Key);
     if (found) {
-      if (compData.Partner) {
+      if (compData.partner) {
         return (
-          <input type="text" value={found.Partner} onChange={e => this.handlePartnerChange(e.target.value, comp.Key)} />
+          <input type="text" value={found.partner} onChange={e => this.handlePartnerChange(e.target.value, comp.Key)} />
         );
-      } else if (compData.Role) {
+      } else if (compData.role) {
         return (
-          <select value={found.Role} onChange={e => this.handleRoleChange(e.target.value, comp.Key)}>
+          <select value={found.role} onChange={e => this.handleRoleChange(e.target.value, comp.Key)}>
             <option value=""></option>
             <option value="Lead">Lead</option>
             <option value="Follow">Follow</option>
@@ -127,7 +147,7 @@ export class CompsPurchase extends React.Component {
           </div>
           <h1>Confirm Purchase</h1>
           <div className="flex-col flex-align-start full-width">
-            <this.CompsList />
+            { this.CompsList() }
           </div>
 
           <button
@@ -142,9 +162,3 @@ export class CompsPurchase extends React.Component {
     );
   }
 }
-
-CompsPurchase.propTypes = {
-  confirmPurchase: PropTypes.func,
-  closePopup: PropTypes.func,
-  purchaseAmount: PropTypes.number,
-};

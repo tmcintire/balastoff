@@ -43,7 +43,7 @@ export function checkMobile() {
   return window.innerWidth < 400 ? 'mobile-view' : '';
 }
 
-export function hasLevelCheck(level: string, levels: ILevels[]) {
-  const lev = _.find(levels, t => t.name === level);
+export function hasLevelCheck(level: string, levels: { [key: string]: ILevels }): boolean {
+  const lev = _.find(levels, l => l.name === level);
   return lev.levelCheck;
 }

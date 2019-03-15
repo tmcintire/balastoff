@@ -22,9 +22,9 @@ export class AddMoneyLog extends React.Component<AddMoneyLogProps, AddMoneyLogSt
     this.state = {
       showVoidConfirmation: false,
       entries: [{
-        item: null,
-        price: null,
-        quantity: null
+        item: '',
+        price: 0,
+        quantity: 1
       }],
       amount: 0,
       bookingId: null
@@ -35,9 +35,9 @@ export class AddMoneyLog extends React.Component<AddMoneyLogProps, AddMoneyLogSt
     e.preventDefault();
     this.setState({
       entries: this.state.entries.concat([{
-        item: null,
-        price: null,
-        quantity: null
+        item: '',
+        price: 0,
+        quantity: 1
       }]),
     });
   }
