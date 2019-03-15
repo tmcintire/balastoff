@@ -170,8 +170,8 @@ export class Home extends React.Component<HomeProps, HomeState> {
         <div className="registrations-wrapper flex-col">
           <div className="registrations-header">
             <span className="col-xs-1" onClick={e => this.filterRegistrations(e, 'BookingID')}>ID</span>
-            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'Last Name')}>Last Name</span>
-            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'First Name')}>First Name</span>
+            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'LastName')}>Last Name</span>
+            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'FirstName')}>First Name</span>
             <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'Level')}>Track</span>
             <span className="col-xs-1" onClick={e => this.filterRegistrations(e, 'HasLevelCheck')}>Level Check</span>
             <span className="col-xs-1">Amount Owed</span>
