@@ -177,6 +177,8 @@ export class RegistrationDashboard extends PureComponent<RegistrationDashboardPr
   handleSelectChange = (e) => {
     this.setState({
       selectedOption: e.target.value
+    }, () => {
+      this.setRegistrations();
     });
   }
 
