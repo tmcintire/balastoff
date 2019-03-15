@@ -205,7 +205,7 @@ export class RegistrationDashboard extends PureComponent<RegistrationDashboardPr
         this.state.err 
         &&
         <div className="error-container">
-          {this.state.err}
+          <h3>Too Many Requests</h3>
         </div>
       }
       
