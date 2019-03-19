@@ -17,7 +17,7 @@ export class Comments extends React.Component<CommentsProps, CommentsState> {
     super(props);
 
     this.state = {
-      comment: null,
+      comment: "",
     };
   }
 

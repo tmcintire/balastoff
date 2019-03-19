@@ -20,9 +20,8 @@ export const LevelCheckUpdates: FunctionComponent<LevelCheckUpdatesProps> = (pro
   const [pendingRegistrations, setPendingRegistrations] = useState<IRegistration[]>([]);
 
   useEffect(() => {
-    getUpdatedRegistrations();
-    getPendingRegistrations();
-  }, registrations);
+    updateBadges();
+  }, [registrations, filter, title]);
 
   const changeFilter = (filter) => {
     let newFilter = [];
@@ -41,24 +40,25 @@ export const LevelCheckUpdates: FunctionComponent<LevelCheckUpdatesProps> = (pro
 
     setFilter(newFilter);
     setTitle(title);
-    getUpdatedRegistrations();
-    getPendingRegistrations();
   }
 
-  const getUpdatedRegistrations = () => {
-    const newUpdatedRegistrations = _.filter(registrations, r => {
-      return r && (r.OriginalLevel === filter[0] || r.OriginalLevel === filter[1]) && r.HasLevelCheck && r.LevelChecked && r.BadgeUpdated && !r.MissedLevelCheck;
+  const updateBadges = () => {
+    let updatedPendingBadges = [];
+    let updatedCompletedBadges = [];
+
+    _.forEach(registrations, r => {
+      if (r && _.includes(filter, r.OriginalLevel) && r.HasLevelCheck && r.LevelChecked && !r.MissedLevelCheck) {
+        // First make sure they pass the initial check to be qualified to be in this list
+        if (r.BadgeUpdated) {
+          updatedCompletedBadges.push(r);
+        } else {
+          updatedPendingBadges.push(r);
+        }
+      }
     });
 
-    setUpdatedRegistrations(newUpdatedRegistrations);
-  }
-
-  const getPendingRegistrations = () => {
-    const newPendingRegistrations =  _.filter(registrations, r => {
-      return r && (r.OriginalLevel === filter[0] || r.OriginalLevel === filter[1]) && r.HasLevelCheck && r.LevelChecked && !r.BadgeUpdated && !r.MissedLevelCheck;
-    });
-
-    setPendingRegistrations(newPendingRegistrations);
+    setUpdatedRegistrations(updatedCompletedBadges);
+    setPendingRegistrations(updatedPendingBadges);
   }
 
   const renderUpdatedRegistrations = () => updatedRegistrations.map((registration, index) =>
