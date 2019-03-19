@@ -105,7 +105,7 @@ export class EditAdminFields extends React.Component<EditAdminFieldsProps, EditA
   }
 
   addEdit = (key: string, addEdit) => {
-    let options: IAdminFieldOptions[];
+    let options: IAdminFieldOptions[] = [{label: '', value: ''}];
     if (key && this.props.fields[key].options && this.props.fields[key].options.length > 0) {
       options = this.props.fields[key].options;
     }

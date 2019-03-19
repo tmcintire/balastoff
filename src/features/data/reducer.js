@@ -63,6 +63,25 @@ export const tracks = (state = [], action) => {
   }
 };
 
+export const issues = (state = [], action) => {
+  switch (action.type) {
+    case 'START_FETCHING_MISSION_GEAR_ISSUES':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECEIVED_MISSION_GEAR_ISSUES':
+      return {
+        ...state,
+        issues: action.issues,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
+
 export const prices = (state = [], action) => {
   switch (action.type) {
     case 'START_FETCHING_PRICES':
@@ -244,4 +263,5 @@ export default combineReducers({
   store,
   comps,
   fields,
+  issues,
 });

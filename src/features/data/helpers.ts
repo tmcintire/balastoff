@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
-import { ILevels } from './interfaces';
+import { ILevels, IMissionGearIssue } from './interfaces';
+import { editMissionGearIssue } from './api';
 
 export function sortRegistrations(registrations, filter) {
   return registrations.sort((a, b) => {
@@ -46,4 +47,11 @@ export function checkMobile() {
 export function hasLevelCheck(level: string, levels: { [key: string]: ILevels }): boolean {
   const lev = _.find(levels, l => l.name === level);
   return lev.levelCheck;
+}
+
+export const toggleResolved = (issues: IMissionGearIssue[], issueId: string) => {
+  const issue: IMissionGearIssue = issues[issueId];
+  const editedIssue: IMissionGearIssue = { ...issue, Resolved: !issue.Resolved};
+
+  editMissionGearIssue(issueId, editedIssue);
 }

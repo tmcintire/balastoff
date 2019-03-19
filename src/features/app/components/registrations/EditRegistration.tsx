@@ -10,7 +10,7 @@ import { Comments } from './Comments';
 import { Payment } from './Payment';
 import { EditMissionGearIssues } from './EditMissionGearIssues';
 import { CompsPurchase } from './CompsPurchase';
-import { IRegistration, ILevels, IAdminMissionPasses, IMoneyLogEntry, IComps } from '../../../data/interfaces';
+import { IRegistration, ILevels, IAdminMissionPasses, IMoneyLogEntry, IComps, IMissionGearIssue } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
@@ -19,7 +19,8 @@ interface EditRegistrationProps {
   tracks: ILevels,
   passes: IAdminMissionPasses[],
   params: RouteInfo
-  allComps: IComps[]
+  allComps: IComps[],
+  issues: IMissionGearIssue[]
 }
 
 interface EditRegistrationState {
@@ -152,22 +153,6 @@ export class EditRegistration extends React.Component<EditRegistrationProps, Edi
     });
   }
 
-  toggleResolved = (bookingId: string, issueId: string) => {
-    const registration = _.find(this.props.registrations, r => r && r.BookingID === parseInt(bookingId, 10));
-
-    if (registration) {
-      let updatedReg = {
-        ...registration,
-        MissionGearIssues: registration.MissionGearIssues.map(i => {
-          return i.IssueId === issueId ? {...i, Resolved: !i.Resolved } : i;
-        })
-      }
-  
-      api.updateRegistration(parseInt(bookingId, 10), updatedReg);
-      this.saved();
-    }
-  }
-
   saved = () => {
     this.setState({
       showSaved: true,
@@ -224,14 +209,15 @@ export class EditRegistration extends React.Component<EditRegistrationProps, Edi
           <hr />
           <div className="flex-row flex-wrap flex-justify-space-between">
             <MissionGear
+              issues={this.props.issues}
               saved={this.saved}
               id={this.props.params.id}
               registration={registration}
             />
             <EditMissionGearIssues
               id={this.props.params.id}
-              issues={registration.MissionGearIssues}
-              toggleResolved={this.toggleResolved}
+              issues={this.props.issues}
+              saved={this.saved}
             />
             <Comments
               saved={this.saved}

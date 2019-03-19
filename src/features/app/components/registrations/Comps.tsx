@@ -32,7 +32,7 @@ export const Comps: FunctionComponent<CompsProps> = (props) => {
     <div>
       <div className="comp-container">
         <h3><strong><u>Comps</u></strong></h3>
-        <CompsList />
+        <CompsList comps={props.comps} />
         <button className="btn btn-primary" onClick={() => props.toggleAddComps()}>Edit Comps</button>
       </div>
     </div>
