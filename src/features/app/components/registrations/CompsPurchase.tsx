@@ -40,21 +40,21 @@ export class CompsPurchase extends React.Component<CompsPurchaseProps, CompsPurc
   }
 
   // Handle whether nor not a comp is selected for purchase
-  compSelectionChange = (e, comp) => {
+  compSelectionChange = (e, comp: IComps) => {
     const isCompeting = e.target.checked;
     let pendingMoneyLogDetails = [];
     let purchaseAmount = this.props.pendingMoneyLog.amount;
     
-    const newComp = new NewComp(comp.Key, comp.Name, '', '');
+    const newComp = new NewComp(comp.key, comp.name, '', '');
     let comps;
     if (isCompeting) {
       comps = this.props.registrationComps.concat(newComp);
-      purchaseAmount = this.props.pendingMoneyLog.amount + comp.Price;
+      purchaseAmount = this.props.pendingMoneyLog.amount + comp.price;
       
       // Handle the money log details. If it's not in the money log we need to add it
       pendingMoneyLogDetails = this.props.pendingMoneyLog.details.concat([{
-        item: `Added Comp - ${comp.Name}`,
-        price: comp.Price,
+        item: `Added Comp - ${comp.name}`,
+        price: comp.price,
         quantity: 1
       }]);
     } else {
@@ -62,19 +62,19 @@ export class CompsPurchase extends React.Component<CompsPurchaseProps, CompsPurc
 
       // if this comp was pending to go in then we need to remove it from pending, otherwise itw as already paid
       // for and the money log needs to be modified
-      const foundInMoneyLog = _.some(this.props.pendingMoneyLog.details, d => d.item === `Added Comp - ${comp.Name}`);
+      const foundInMoneyLog = _.some(this.props.pendingMoneyLog.details, d => d.item === `Added Comp - ${comp.name}`);
 
       if (foundInMoneyLog) {
-        pendingMoneyLogDetails = this.props.pendingMoneyLog.details.filter(d => d.item !== `Added Comp - ${comp.Name}`);
+        pendingMoneyLogDetails = this.props.pendingMoneyLog.details.filter(d => d.item !== `Added Comp - ${comp.name}`);
       } else {
         pendingMoneyLogDetails = this.props.pendingMoneyLog.details.concat([{
-          item: `Removed Comp - ${comp.Name}`,
-          price: -(comp.Price),
+          item: `Removed Comp - ${comp.name}`,
+          price: -(comp.price),
           quantity: 1
         }]);
       }
 
-      purchaseAmount = this.props.pendingMoneyLog.amount - comp.Price; // reduce the price from the pending purchases
+      purchaseAmount = this.props.pendingMoneyLog.amount - comp.price; // reduce the price from the pending purchases
     }
 
     this.props.updatePendingMoneyLog(pendingMoneyLogDetails, purchaseAmount);
@@ -83,13 +83,13 @@ export class CompsPurchase extends React.Component<CompsPurchaseProps, CompsPurc
     api.updateRegistrationComps(this.props.id, comps);
   }
 
-  handlePartnerChange = (Partner, key) => {
-    const updatedComps = this.props.registrationComps.map(comp => comp.key === key ? { ...comp, Partner } : comp);
+  handlePartnerChange = (partner: string, key: string) => {
+    const updatedComps = this.props.registrationComps.map(comp => comp.key === key ? { ...comp, partner } : comp);
     api.updateRegistrationComps(this.props.id, updatedComps);
   }
 
-  handleRoleChange = (Role, key) => {
-    const updatedComps = this.props.registrationComps.map(comp => comp.key === key ? { ...comp, Role } : comp);
+  handleRoleChange = (role: string, key: string) => {
+    const updatedComps = this.props.registrationComps.map(comp => comp.key === key ? { ...comp, role } : comp);
     api.updateRegistrationComps(this.props.id, updatedComps);
   }
 
@@ -117,17 +117,18 @@ export class CompsPurchase extends React.Component<CompsPurchaseProps, CompsPurc
     );
   });
 
-  PartnerOrRole = ({ comp }) => {
-    const compData = _.find(this.props.allComps, c => c.key === comp.Key);
-    const found = _.find(this.props.registrationComps, c => c.key === comp.Key);
+  PartnerOrRole = (props: { comp: IComps }) => {
+    const { comp } = props;
+    const compData = _.find(this.props.allComps, c => c.key === comp.key);
+    const found = _.find(this.props.registrationComps, c => c.key === comp.key);
     if (found) {
       if (compData.partner) {
         return (
-          <input type="text" value={found.partner} onChange={e => this.handlePartnerChange(e.target.value, comp.Key)} />
+          <input type="text" value={found.partner} onChange={e => this.handlePartnerChange(e.target.value, comp.key)} />
         );
       } else if (compData.role) {
         return (
-          <select value={found.role} onChange={e => this.handleRoleChange(e.target.value, comp.Key)}>
+          <select value={found.role} onChange={e => this.handleRoleChange(e.target.value, comp.key)}>
             <option value=""></option>
             <option value="Lead">Lead</option>
             <option value="Follow">Follow</option>

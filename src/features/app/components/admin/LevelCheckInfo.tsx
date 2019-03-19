@@ -1,6 +1,6 @@
 import * as api from '../../../data/api';
 import * as React from 'react';
-import { FunctionComponent, useState, useEffect } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import { IRegistration } from '../../../data/interfaces';
 
 interface LevelCheckInfoProps {
@@ -9,9 +9,11 @@ interface LevelCheckInfoProps {
 }
 
 export const LevelCheckInfo: FunctionComponent<LevelCheckInfoProps> = (props) => {
+  const badgeUpdatedCheckbox = useRef(null);
+
   const handleUpdate = (id) => {
     api.updateRegistration(id, {
-      BadgeUpdated: this.badgeUpdatedCheckbox.checked,
+      BadgeUpdated: badgeUpdatedCheckbox.current.checked,
     })
   }
   const checkUpdated = () => {
@@ -30,7 +32,7 @@ export const LevelCheckInfo: FunctionComponent<LevelCheckInfoProps> = (props) =>
       <input
         type="checkbox"
         checked={registration.BadgeUpdated}
-        ref={(ref) => { this.badgeUpdatedCheckbox = ref; }}
+        ref={badgeUpdatedCheckbox}
         onChange={() => handleUpdate(registration.BookingID)}
       />
     </div>

@@ -12,6 +12,7 @@ function* initialize() {
   yield call(api.fetchConfig, 1);
   yield call(api.fetchStore, 1);
   yield call(api.fetchComps, 1);
+  yield call(api.fetchMissionGearIssues, 1);
   yield call(api.fetchAdminFields, 1);
   yield call(api.getTotalCollected, 1);
   yield call(api.fetchPasses, 1);

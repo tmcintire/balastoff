@@ -35,6 +35,16 @@ export function tracksReceived(tracks) {
   };
 }
 
+export function missionGearIssuesReceived(issues) {
+  return function (dispatch) { // eslint-disable-line
+    dispatch({ type: 'START_FETCHING_MISSION_GEAR_ISSUES' });
+    dispatch({
+      type: 'RECEIVED_MISSION_GEAR_ISSUES',
+      issues,
+    });
+  };
+}
+
 export function configReceived(config) {
   return function (dispatch) { // eslint-disable-line
     dispatch({ type: 'START_FETCHING_CONFIG' });

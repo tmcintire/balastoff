@@ -51,10 +51,7 @@ export interface IMoneyLogEntry {
 }
 
 export interface IMissionGearIssue {
-  IssueId: string,
   BookingID: number,
-  FirstName: string,
-  LastName: string,
   Issue: string,
   Resolved: boolean
 }
@@ -65,6 +62,8 @@ export class Registration implements IRegistration {
   Address?:  string;
   AdvNovVolunteer?:  boolean;
   Agree?:  boolean;
+  AllSizes1?: string;
+  AllSizes2?: string;
   AmateurCouples?:  boolean;
   AmateurPartner?:  string;
   AmountOwed?:  number;
@@ -94,6 +93,8 @@ export class Registration implements IRegistration {
   Level?:  string;
   LevelChecked?:  boolean;
   LevelUpdated?:  boolean;
+  LimitedSizes1?: string;
+  LimitedSizes2?: string;
   LimitedEditionPatch?:  string;
   LimitedEditionPatch__quantity?:  number;
   MissedLevelCheck?:  boolean;
@@ -108,8 +109,6 @@ export class Registration implements IRegistration {
   Promo?:  string
   Shirt1?:  boolean;
   Shirt2?:  boolean;
-  Size?:  string;
-  Size2?:  string;
   TShirts?:  string;
   TotalCost?:  number;
   WalkIn?:  boolean;
@@ -124,6 +123,8 @@ export interface IRegistration {
   Address?:  string,
   AdvNovVolunteer?:  boolean,
   Agree?:  boolean,
+  AllSizes1?: string,
+  AllSizes2?: string,
   AmateurCouples?:  boolean,
   AmateurPartner?:  string,
   AmountOwed?:  number,
@@ -153,10 +154,10 @@ export interface IRegistration {
   Level?:  string,
   LevelChecked?:  boolean,
   LevelUpdated?:  boolean,
+  LimitedSizes1?: string,
+  LimitedSizes2?: string,
   LimitedEditionPatch?:  string,
   LimitedEditionPatch__quantity?:  number,
-  MenSize?: string,
-  MenSize2?: string,
   MissedLevelCheck?:  boolean,
   MissionGearIssues?: IMissionGearIssue[],
   Notes?:  string,
@@ -169,13 +170,9 @@ export interface IRegistration {
   Promo?:  string
   Shirt1?:  boolean,
   Shirt2?:  boolean,
-  Size?:  string,
-  Size2?:  string,
   TShirts?:  string,
   TotalCost?:  number,
   WalkIn?:  boolean,
-  WomenSize?: string,
-  WomenSize2?: string,
   USState?:  string,
 }
 
