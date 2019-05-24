@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import * as _ from 'lodash';
 import { LevelCheckBox } from './LevelCheckBox';
@@ -23,52 +24,46 @@ interface LevelCheckState {
   loading: boolean,
 }
 
-export class LevelCheck extends React.Component<LevelCheckProps, LevelCheckState> {
-  static getDerivedStateFromProps(nextProps: LevelCheckProps, prevState: LevelCheckState) {
-    if (nextProps.registrations) {
-      const filteredLeads = nextProps.registrations.filter(r =>
+export const LevelCheck: FunctionComponent<LevelCheckProps> = (props) => {
+  const { registrations } = props;
+
+  const [filteredLeads, setFilteredLeads] = useState<IRegistration[]>([]);
+  const [filteredFollows, setFilteredFollows] = useState<IRegistration[]>([]);
+  const [geminiFilter, setGeminiFilter] = useState<string[]>(['Gemini']);
+  const [apolloSkylabFilter, setApolloSkylabFilter] = useState<string[]>(['Apollo', 'Skylab']);
+  const [mercuryFilter, setMercuryFilter] = useState<string[]>(['Mercury']);
+  const [currentFilter, setCurrentFilter] = useState<string[]>(['Gemini']);
+  const [showLeads, setShowLeads] = useState<boolean>(true);
+  const [title, setTitle] = useState<string>('Gemini');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (registrations) {
+      const filteredLeads = registrations.filter(r =>
         r.HasLevelCheck &&
         r.LeadFollow.toLowerCase() === 'lead' &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
         r.CheckedIn === true &&
-        _.includes(prevState.currentFilter, r.OriginalLevel));
-      const filteredFollows = nextProps.registrations.filter(r =>
+        _.includes(currentFilter, r.OriginalLevel));
+      const filteredFollows = registrations.filter(r =>
         r.HasLevelCheck &&
         r.LeadFollow.toLowerCase() === 'follow' &&
         r.LevelChecked === false &&
         r.MissedLevelCheck === false &&
         r.CheckedIn === true &&
-        _.includes(prevState.currentFilter, r.OriginalLevel));
-      return {
-        filteredLeads,
-        filteredFollows,
-        loading: false,
-      };
+        _.includes(currentFilter, r.OriginalLevel));
+
+        setFilteredLeads(filteredLeads);
+        setFilteredFollows(filteredFollows);
+        setLoading(false);
     }
+  }, [registrations, currentFilter]);
 
-    return null;
-  }
-  constructor(props) {
-    super(props);
+  const changeFilter = () => {
+    const filter = _.includes(currentFilter, 'Gemini') ? apolloSkylabFilter : geminiFilter;
 
-    this.state = {
-      filteredLeads: [],
-      filteredFollows: [],
-      geminiFilter: ['Gemini'],
-      apolloSkylabFilter: ['Apollo', 'Skylab'],
-      mercuryFilter: ['Mercury'],
-      currentFilter: ['Gemini'],
-      showLeads: true,
-      title: 'Gemini',
-      loading: true,
-    };
-  }
-
-  changeFilter = () => {
-    const filter = _.includes(this.state.currentFilter, 'Gemini') ? this.state.apolloSkylabFilter : this.state.geminiFilter;
-
-    const filteredLeads = this.props.registrations.filter(r => {
+    const filteredLeads = registrations.filter(r => {
       return (
         _.includes(filter, r.OriginalLevel) &&
         r.LeadFollow === 'Lead' &&
@@ -79,7 +74,7 @@ export class LevelCheck extends React.Component<LevelCheckProps, LevelCheckState
       );
     });
 
-    const filteredFollows = this.props.registrations.filter(r => {
+    const filteredFollows = registrations.filter(r => {
       return (
         _.includes(filter, r.OriginalLevel) &&
         r.LeadFollow === 'Follow' &&
@@ -90,26 +85,21 @@ export class LevelCheck extends React.Component<LevelCheckProps, LevelCheckState
       );
     });
     
-    const title = filter === this.state.geminiFilter ? 'Gemini' : 'Apollo/Skylab';
-
-    this.setState({
-      filteredLeads,
-      filteredFollows,
-      currentFilter: filter,
-      title,
-    });
+    const title = filter === geminiFilter ? 'Gemini' : 'Apollo/Skylab';
+    setFilteredLeads(filteredLeads);
+    setFilteredFollows(filteredFollows);
+    setCurrentFilter(filter);
+    setTitle(title);
   }
 
-  toggleLeadFollow = () => {
-    this.setState({
-      showLeads: !this.state.showLeads,
-    });
+  const toggleLeadFollow = () => {
+    setShowLeads(!showLeads);
   }
 
-  acceptAllLevels = () => {
-    const level = _.includes(this.state.currentFilter, 'Apollo') ? 'Apollo' : 'Gemini';
-    const leadFollow = this.state.showLeads ? 'leads' : 'follows';
-    const confirm = window.confirm(`Place ALL remaining ${this.state.showLeads ? 'leads' : 'follows'} into ${level} ?`);
+  const acceptAllLevels = () => {
+    const level = _.includes(currentFilter, 'Apollo') ? 'Apollo' : 'Gemini';
+    const leadFollow = showLeads ? 'leads' : 'follows';
+    const confirm = window.confirm(`Place ALL remaining ${showLeads ? 'leads' : 'follows'} into ${level} ?`);
 
     if (confirm === true) {
       const reallyConfirm = window.confirm('Are you really sure?');
@@ -118,8 +108,8 @@ export class LevelCheck extends React.Component<LevelCheckProps, LevelCheckState
       api.backupRegistrations(level, leadFollow);
 
       if (reallyConfirm === true) {
-        if (this.state.showLeads) {
-          _.forEach(this.state.filteredLeads, (lead) => {
+        if (showLeads) {
+          _.forEach(filteredLeads, (lead) => {
             api.updateRegistration(lead.BookingID, {
               LevelChecked: true,
               MissedLevelCheck: false,
@@ -127,7 +117,7 @@ export class LevelCheck extends React.Component<LevelCheckProps, LevelCheckState
             });
           });
         } else {
-          _.forEach(this.state.filteredFollows, (follow) => {
+          _.forEach(filteredFollows, (follow) => {
             api.updateRegistration(follow.BookingID, {
               LevelChecked: true,
               MissedLevelCheck: false,
@@ -139,62 +129,62 @@ export class LevelCheck extends React.Component<LevelCheckProps, LevelCheckState
     }
   }
 
-  render() {
-    const level = _.includes(this.state.currentFilter, 'Apollo') ? 'Apollo' : 'Gemini';
-    const leadFollow = this.state.showLeads ? 'leads' : 'follows';
-    
-    const renderLeads = () => {
-      if (Object.keys(this.state.loading === false && this.state.filteredLeads).length > 0) {
-        return this.state.filteredLeads.map((registration) => {
-          if (registration) {
-            return (
-              <LevelCheckBox key={registration.BookingID} registration={registration} />
-            );
-          }
-        });
-      }
-      return (
-        <h3>No Leads to show</h3>
-      );
-    };
-    const renderFollows = () => {
-      if (Object.keys(this.state.loading === false && this.state.filteredFollows).length > 0) {
-        return this.state.filteredFollows.map((registration) => {
-          if (registration) {
-            return (
-              <LevelCheckBox key={registration.BookingID} registration={registration} />
-            );
-          }
-        });
-      }
-      return (
-        <h3>No Follows to show</h3>
-      );
-    };
+  const level = _.includes(currentFilter, 'Apollo') ? 'Apollo' : 'Gemini';
+  const leadFollow = showLeads ? 'leads' : 'follows';
+  
+  const renderLeads = () => {
+    if (Object.keys(loading === false && filteredLeads).length > 0) {
+      return filteredLeads.map((registration) => {
+        if (registration) {
+          return (
+            <LevelCheckBox key={registration.BookingID} registration={registration} />
+          );
+        }
+      });
+    }
     return (
-      <div className="container form-container">
-        <div className="header-links">
-          <Link to="/admin"><button className="btn btn-primary">Back</button></Link>
+      <h3>No Leads to show</h3>
+    );
+  };
+  const renderFollows = () => {
+    if (Object.keys(loading === false && filteredFollows).length > 0) {
+      return filteredFollows.map((registration) => {
+        if (registration) {
+          return (
+            <LevelCheckBox key={registration.BookingID} registration={registration} />
+          );
+        }
+      });
+    }
+    return (
+      <h3>No Follows to show</h3>
+    );
+  };
+  return (
+    <div className="container form-container">
+      <div className="header-links flex-row">
+        <Link to="/admin"><button className="btn btn-primary">Back</button></Link>
+        <Link to="/admin/levelcheckupdates"><button className="btn btn-primary">Completed Level Checks</button></Link>
+      </div>
+      <div className="level-check-filters">
+        <span onClick={() => changeFilter()}>Level</span>
+        <span>|</span>
+        <span onClick={() => setShowLeads(!showLeads)}>Lead/Follow</span>
+      </div>
+      <div className="level-check-title text-center">{title} <span className="capitalize">{leadFollow}</span></div>
+      <hr />
+      <div className="level-check-container flex-row flex-justify-space-between">
+        <div className={`leads-container ${!showLeads ? 'hidden' : ''}`}>
+          {renderLeads()}
         </div>
-        <div className="level-check-filters">
-          <span onClick={() => this.changeFilter()}>Level</span>
-          <span>|</span>
-          <span onClick={() => this.toggleLeadFollow()}>Lead/Follow</span>
-        </div>
-        <div className="level-check-title text-center">{this.state.title} <span className="capitalize">{leadFollow}</span></div>
-        <hr />
-        <div className="level-check-container flex-row flex-justify-space-between">
-          <div className={`leads-container ${!this.state.showLeads ? 'hidden' : ''}`}>
-            {renderLeads()}
-          </div>
-          <div className={`follows-container ${this.state.showLeads ? 'hidden' : ''}`}>
-            {renderFollows()}
-          </div>
-        </div>
-        <div className="accept-all-btn  flex-row flex-justify-center">
-          <div className="btn btn-danger" onClick={this.acceptAllLevels}>Place ALL remaining {leadFollow} in {level}</div>
+        <div className={`follows-container ${showLeads ? 'hidden' : ''}`}>
+          {renderFollows()}
         </div>
       </div>
-    );
-  }
-}
+      <div className="accept-all-btn  flex-row flex-justify-center">
+        <div className="btn btn-danger" onClick={acceptAllLevels}>Place ALL remaining {leadFollow} in {level}</div>
+      </div>
+    </div>
+  );
+};
+

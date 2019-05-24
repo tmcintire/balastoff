@@ -236,11 +236,11 @@ export class RegistrationDashboard extends PureComponent<RegistrationDashboardPr
         </div>
         <div className="flex-col">
           <label htmlFor="filter">Paid:</label>
-          <span className="total-registrations">${this.state.paid}</span>
+          <span className="total-registrations">${this.state.paid.toFixed(2)}</span>
         </div>
         <div className="flex-col">
           <label htmlFor="filter">Scholarship Donations:</label>
-          <span className="total-registrations">${this.state.scholarship}</span>
+          <span className="total-registrations">${this.state.scholarship.toFixed(2)}</span>
         </div>
       </div>
         <div>

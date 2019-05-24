@@ -92,32 +92,32 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
             // Fix names with spaces
     
             // Setup Comps Object
-            if (header === 'AdNov' && data[32] === 'Yes') {
+            if (header === 'AdNov' && data[33] === 'Yes') {
               registration.Comps.push({
                 name: 'AdNov Draw',
                 key: header,
-                role: data[33],
+                role: data[34],
                 partner: null,
               });
-            } else if (header === 'Open' && data[34] === 'Yes') {
+            } else if (header === 'Open' && data[35] === 'Yes') {
               registration.Comps.push({
                 name: 'Open',
                 key: header,
                 role: null,
-                partner: data[35],
+                partner: data[36],
               });
-            } else if (header === 'Amateur Couples' && data[36] === 'Yes') {
+            } else if (header === 'ChallengerThrowdown' && data[37] === 'Yes') {
               registration.Comps.push({
-                name: 'Amateur Couples',
-                key: 'AmateurCouples',
+                name: 'Challenger Throwdown',
+                key: 'ChallengerThrowdown',
                 role: null,
-                partner: data[37],
+                partner: data[38],
               });
-            } else if (header === 'AmateurDraw' && data[38] === 'Yes') {
+            } else if (header === 'AmateurDraw' && data[39] === 'Yes') {
               registration.Comps.push({
                 name: 'Amateur Draw',
                 key: header,
-                role: data[39],
+                role: data[40],
                 partner: null,
               });
             }
@@ -134,7 +134,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
             registration.HasLevelCheck = foundTrack ? foundTrack.levelCheck : false;
     
             // check for gear
-            registration.HasGear = data[45] || data[48];
+            registration.HasGear = data[46] || data[49];
 
             // Handle all yes/no values
             if (data[headerIndex] === 'Yes' || data[headerIndex] === 'No') {

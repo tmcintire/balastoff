@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import * as _ from 'lodash';
 import { Link } from 'react-router';
 import * as api from '../../../data/api';
@@ -16,72 +17,51 @@ interface MissionGearIssuesState {
   showSaved: boolean,
 }
 
-export class MissionGearIssues extends React.Component<MissionGearIssuesProps, MissionGearIssuesState> {
-  constructor(props) {
-    super(props);
+export const MissionGearIssues: FunctionComponent<MissionGearIssuesProps> = (props) => {
+  const { registrations } = props;
+  const [issues, setIssues] = useState<IMissionGearIssue[]>([]);
+  const [resolvedIssues, setResolvedIssues] = useState<IMissionGearIssue[]>([]);
+  const [showSaved, setShowSaved] = useState<boolean>(false);
 
-    if (props.registrations) {
-      this.setupState(props.registrations);
-    } else {
-      this.state = {
-        issues: [],
-        resolvedIssues: [],
-        showSaved: false,
-      };
+
+  useEffect(() => {
+    if (registrations && registrations.length > 0) {
+      setupState(registrations);
     }
-  }
+  }, registrations);
 
-  componentDidUpdate(nextProps) {
-    if (!_.isEqual(nextProps.registrations, this.props.registrations)) {
-      this.setupState(nextProps.registrations);
-    }
-  }
-
-  setupState(registrations: IRegistration[]) {
+  const setupState = (registrations: IRegistration[]) => {
     const issues = [];
     const resolvedIssues: IMissionGearIssue[] = [];
     _.forEach(registrations, (r) => {
       if (r) {
         if (r.MissionGearIssues) {
           _.forEach(r.MissionGearIssues, (i, index) => {
-            const issue: IMissionGearIssue = {
-              IssueId: i.IssueId,
-              BookingID: r.BookingID,
-              FirstName: r.FirstName,
-              LastName: r.LastName,
-              Issue: i.Issue,
-              Resolved: i.Resolved,
-            };
             if (i.Resolved === false) {
-              issues.push(issue);
+              issues.push(i);
             } else if (i.Resolved === true) {
-              resolvedIssues.push(issue);
+              resolvedIssues.push(i);
             }
           });
         }
       }
     });
 
-    this.state = {
-      issues,
-      showSaved: false,
-      resolvedIssues,
-    };
-  }
+    setShowSaved(false);    
+    setIssues(issues);
+    setResolvedIssues(resolvedIssues);
+  };
 
-  saved = () => {
-    this.setState({
-      showSaved: true,
-    });
+
+  const saved = () => {
+    setShowSaved(true);
     setTimeout(() => {
-      this.setState({
-        showSaved: false,
-      });
+      setShowSaved(false);
     }, 2000);
-  }
+  };
 
-  toggleResolved = (bookingId: number, issueId: string) => {
-    const registration = _.find(this.props.registrations, r => r && r.BookingID === bookingId);
+  const toggleResolved = (bookingId: number, issueId: string) => {
+    const registration = _.find(registrations, r => r && r.BookingID === bookingId);
 
     if (registration) {
       let updatedReg = {
@@ -92,75 +72,73 @@ export class MissionGearIssues extends React.Component<MissionGearIssuesProps, M
       }
   
       api.updateRegistration(bookingId, updatedReg);
-      this.saved();
+      saved();
     }
-  }
+  };
 
-  render() {
-    const renderIssues = () => {
-      if (this.state.issues) {
-        return this.state.issues.map((issue) =>
-          <div key={issue.IssueId} className="flex-row">
-            <span className="col-xs-1">{issue.BookingID}</span>
-            <span className="col-xs-2">{issue.FirstName}</span>
-            <span className="col-xs-2">{issue.LastName}</span>
-            <span className="col-xs-5">{issue.Issue}</span>
-            <span className="col-xs-2">
-              <input
-                type="checkbox"
-                checked={issue.Resolved}
-                onChange={e => this.toggleResolved(issue.BookingID, issue.IssueId)}
-              />
-            </span>
-          </div>
-        );
-      }
-      return (
-        <h3>No Issues</h3>
+  const renderIssues = () => {
+    if (issues) {
+      return issues.map((issue) =>
+        <div key={issue.IssueId} className="flex-row">
+          <span className="col-xs-1">{issue.BookingID}</span>
+          <span className="col-xs-2">{issue.FirstName}</span>
+          <span className="col-xs-2">{issue.LastName}</span>
+          <span className="col-xs-5">{issue.Issue}</span>
+          <span className="col-xs-2">
+            <input
+              type="checkbox"
+              checked={issue.Resolved}
+              onChange={e => toggleResolved(issue.BookingID, issue.IssueId)}
+            />
+          </span>
+        </div>
       );
-    };
-
-    const renderResolvedIssues = () => {
-      if (this.state.resolvedIssues) {
-        return this.state.resolvedIssues.map((issue) =>
-          <div key={issue.IssueId} className="flex-row resolved-class">
-            <span className="col-xs-1">{issue.BookingID}</span>
-            <span className="col-xs-2">{issue.FirstName}</span>
-            <span className="col-xs-2">{issue.LastName}</span>
-            <span className="col-xs-5">{issue.Issue}</span>
-            <span className="col-xs-2">
-              <input
-                type="checkbox"
-                checked={issue.Resolved}
-                onChange={e => this.toggleResolved(issue.BookingID, issue.IssueId)}
-              />
-            </span>
-          </div>
-        );
-      }
-      return (
-        <h3>No Issues</h3>
-      );
-    };
-
-    const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
+    }
     return (
-      <div className="container mission-gear-issues">
-        {renderSaved()}
-        <h1>Mission Gear Issues</h1>
-        <div className="row issues-table-header">
-          <span className="col-xs-1">ID</span>
-          <span className="col-xs-2">First Name</span>
-          <span className="col-xs-2">Last Name</span>
-          <span className="col-xs-5">Issue</span>
-          <span className="col-xs-2">Resolved</span>
-        </div>
-        <hr />
-        <div className="issues-table row">
-          {renderIssues()}
-          {renderResolvedIssues()}
-        </div>
-      </div>
+      <h3>No Issues</h3>
     );
-  }
-}
+  };
+
+  const renderResolvedIssues = () => {
+    if (resolvedIssues) {
+      return resolvedIssues.map((issue) =>
+        <div key={issue.IssueId} className="flex-row resolved-class">
+          <span className="col-xs-1">{issue.BookingID}</span>
+          <span className="col-xs-2">{issue.FirstName}</span>
+          <span className="col-xs-2">{issue.LastName}</span>
+          <span className="col-xs-5">{issue.Issue}</span>
+          <span className="col-xs-2">
+            <input
+              type="checkbox"
+              checked={issue.Resolved}
+              onChange={e => toggleResolved(issue.BookingID, issue.IssueId)}
+            />
+          </span>
+        </div>
+      );
+    }
+    return (
+      <h3>No Issues</h3>
+    );
+  };
+
+  const renderSaved = () => (showSaved ? <h4 className="saved-message">Saved</h4> : null);
+  return (
+    <div className="container mission-gear-issues">
+      {renderSaved()}
+      <h1>Mission Gear Issues</h1>
+      <div className="row issues-table-header">
+        <span className="col-xs-1">ID</span>
+        <span className="col-xs-2">First Name</span>
+        <span className="col-xs-2">Last Name</span>
+        <span className="col-xs-5">Issue</span>
+        <span className="col-xs-2">Resolved</span>
+      </div>
+      <hr />
+      <div className="issues-table row">
+        {renderIssues()}
+        {renderResolvedIssues()}
+      </div>
+    </div>
+  );
+};

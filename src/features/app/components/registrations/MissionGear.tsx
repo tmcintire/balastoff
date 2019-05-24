@@ -90,7 +90,7 @@ export class MissionGear extends React.Component<MissionGearProps, MissionGearSt
         return (
           <tr>
             <td>{registration.TShirts}</td>
-            <td>{registration.MenSize || registration.WomenSize}</td>
+            <td>{registration.AllSizes1 || registration.LimitedSizes1}</td>
             <td className="text-center">
               <input
                 className="no-outline"
@@ -108,7 +108,7 @@ export class MissionGear extends React.Component<MissionGearProps, MissionGearSt
         return (
           <tr>
             <td>{registration.AdditionalTShirts}</td>
-            <td>{registration.MenSize2 || registration.WomenSize2}</td>
+            <td>{registration.AllSizes2 || registration.LimitedSizes2}</td>
             <td className="text-center">
               <input
                 className="no-outline"

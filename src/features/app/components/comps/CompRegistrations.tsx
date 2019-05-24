@@ -11,7 +11,7 @@ interface CompRegistrationsProps {
 
 interface CompRegistrationsState {
   open: IPartnerComp[],
-  amateurCouples: IPartnerComp[],
+  challengerThrowdown: IPartnerComp[],
   adNov: IRoleComp[],
   amateurDraw: IRoleComp[]
 }
@@ -21,7 +21,7 @@ export class CompRegistrations extends React.Component<CompRegistrationsProps, C
     super(props);
     this.state = {
       open: [],
-      amateurCouples: [],
+      challengerThrowdown: [],
       adNov: [],
       amateurDraw: [],
     };
@@ -29,7 +29,7 @@ export class CompRegistrations extends React.Component<CompRegistrationsProps, C
   componentWillReceiveProps(nextProps: CompRegistrationsProps) {
     if (nextProps.registrations) {
       const open = [];
-      const amateurCouples = [];
+      const challengerThrowdown = [];
       const adNov = [];
       const amateurDraw = [];
       _.forEach(nextProps.registrations, (reg) => {
@@ -45,13 +45,13 @@ export class CompRegistrations extends React.Component<CompRegistrationsProps, C
                 if (!exists) {
                   open.push({ name, partner });
                 }
-              } else if (comp.key === 'AmateurCouples') {
+              } else if (comp.key === 'ChallengerThrowdown') {
                 // Get the amateur couples comps
                 const partner = comp.partner;
-                const exists = this.compAlreadyInArray(amateurCouples, partner);
+                const exists = this.compAlreadyInArray(challengerThrowdown, partner);
   
                 if (!exists) {
-                  amateurCouples.push({ name, partner });
+                  challengerThrowdown.push({ name, partner });
                 }
               } else if (comp.key === 'AdNov') {
                 adNov.push({ name, role: comp.role });
@@ -65,7 +65,7 @@ export class CompRegistrations extends React.Component<CompRegistrationsProps, C
 
       this.setState({
         open,
-        amateurCouples,
+        challengerThrowdown,
         adNov,
         amateurDraw
       });
@@ -100,9 +100,9 @@ export class CompRegistrations extends React.Component<CompRegistrationsProps, C
     return null;
   };
 
-  renderAmateur = () => {
+  renderChallengerThrowdown = () => {
     if (!this.props.loading) {
-      return this.state.amateurCouples.map((o, index) => (
+      return this.state.challengerThrowdown.map((o, index) => (
         <tr key={index}>
           <td>{o.name}</td>
           <td>{o.partner}</td>
@@ -165,7 +165,7 @@ export class CompRegistrations extends React.Component<CompRegistrationsProps, C
               </table>
             </div>
             <div>
-              <h3 className="text-center">Amateur Couples</h3>
+              <h3 className="text-center">Challenger Throwdown</h3>
               <hr />
               <table className="table">
                 <thead>
@@ -175,7 +175,7 @@ export class CompRegistrations extends React.Component<CompRegistrationsProps, C
                   </tr>
                 </thead>
                 <tbody>
-                  {this.renderAmateur()}
+                  {this.renderChallengerThrowdown()}
                 </tbody>
               </table>
             </div>

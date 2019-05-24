@@ -124,6 +124,8 @@ export interface IRegistration {
   Address?:  string,
   AdvNovVolunteer?:  boolean,
   Agree?:  boolean,
+  AllSizes1?: string;
+  AllSizes2?: string;
   AmateurCouples?:  boolean,
   AmateurPartner?:  string,
   AmountOwed?:  number,
@@ -155,8 +157,8 @@ export interface IRegistration {
   LevelUpdated?:  boolean,
   LimitedEditionPatch?:  string,
   LimitedEditionPatch__quantity?:  number,
-  MenSize?: string,
-  MenSize2?: string,
+  LimitedSizes1?: string;
+  LimitedSizes2?: string;
   MissedLevelCheck?:  boolean,
   MissionGearIssues?: IMissionGearIssue[],
   Notes?:  string,
@@ -174,8 +176,6 @@ export interface IRegistration {
   TShirts?:  string,
   TotalCost?:  number,
   WalkIn?:  boolean,
-  WomenSize?: string,
-  WomenSize2?: string,
   USState?:  string,
 }
 
