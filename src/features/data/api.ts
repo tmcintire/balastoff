@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import firebase, { firebaseRef } from '../../../firebase';
 import * as actions from '../data/actions';
 import store from '../../store';
-import { IRegistration, Registration, IMoneyLogEntry, IStore } from './interfaces';
+import { IRegistration, Registration, IMoneyLogEntry, IStore, IMissionGearIssue } from './interfaces';
 
 /* Firebase References */
 let headers;
@@ -37,31 +37,11 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
               case 'BookingID':
                 registration.BookingID = parseInt(data[headerIndex], 10);
                 break;
-              case 'First Name':
-                registration.FirstName = data[headerIndex];
-                break;
-              case 'Last Name':
-                registration.LastName = data[headerIndex];
-                break;
               case 'US State':
                 registration.USState = data[headerIndex];
                 break;
               case 'Amount Owed':
-                registration.AmountOwed = parseInt(data[headerIndex], 10);
-                break;
-              case 'Full Mission Passes':
-                registration.FullMissionPasses = data[headerIndex];
-                break;
-              case 'Beginner Pass':
-                registration.BeginnerPass = data[headerIndex];
-                break;
-              case 'Limited Edition Patch':
-                registration.LimitedEditionPatch = data[headerIndex];
-                break;
-              case 'Limited Edition Patch__quantity:':
-                registration.LimitedEditionPatch__quantity = parseInt(data[headerIndex], 10);
-                break;
-              case 'Original Amount Owed':
+                registration.AmountOwed = parseFloat(data[headerIndex]);
                 registration.OriginalAmountOwed = parseFloat(data[headerIndex]);
                 break;
               case 'Total Cost':
@@ -85,7 +65,6 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
             registration.MissedLevelCheck = false;
             registration.MissionGearIssues = [];
             registration.Comments = [];
-            registration['Original Amount Owed'] = parseInt(data[5], 10);
             registration.OriginalLevel = data[18];
             registration.WalkIn = false;
             
@@ -192,6 +171,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
     // Reset these values under development only
     firebaseRef.child('totalCollected').set(0);
     firebaseRef.child('moneyLog').remove();
+    firebaseRef.child('MissionGearIssues').remove();
     firebaseRef.child('Store').once('value').then((snapshot) => {
       const storeItem = snapshot.val();
       _.forEach(storeItem, (item, key) => {
@@ -237,6 +217,14 @@ export function fetchTracks() {
     store.dispatch(actions.tracksReceived(tracks));
   });
 }
+
+export function fetchMissionGearIssues() {
+  firebaseRef.child('MissionGearIssues').on('value', (snapshot) => {
+    const issues = snapshot.val();
+    store.dispatch(actions.missionGearIssuesReceived(issues));
+  });
+}
+
 
 export function fetchPasses() {
   firebaseRef.child('Passes').on('value', (snapshot) => {
@@ -389,4 +377,13 @@ export function backupRegistrations(level, leadFollow) {
     registrations.date = new Date().toString();
     firebaseRef.child('backupRegistrations').child(key).set(registrations);
   });
+}
+
+export function reportMissionGearIssue(issue: IMissionGearIssue) {
+  const key = firebaseRef.child('MissionGearIssues').push().key;
+  firebaseRef.child('MissionGearIssues').child(key).set(issue);
+}
+
+export function editMissionGearIssue(id: string, issue: IMissionGearIssue) {
+  firebaseRef.child('MissionGearIssues').child(id).update(issue);
 }

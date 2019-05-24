@@ -1,25 +1,31 @@
 import * as React from 'react';
+import * as _ from 'lodash';
 import { FunctionComponent } from 'react';
 import { IMissionGearIssue } from '../../../data/interfaces';
+import { toggleResolved } from '../../../data/helpers';
 
 interface EditMissionGearIssuesProps {
   issues: IMissionGearIssue[],
-  toggleResolved: (id: string, issueId: string) => void,
-  id: string
+  id: string,
+  saved: () => void,
 }
 
 export const EditMissionGearIssues: FunctionComponent<EditMissionGearIssuesProps> = (props) => {
-  const { issues } = props;
+  const { issues, saved, id } = props;
   const renderMissionGearIssues = () => {
-    if (issues) {
-      return issues.map((issue) =>
-        <div key={issue.IssueId} className={`${issue.Resolved ? 'resolved-class' : ''} flex-row`}>
-          <span className="col-xs-10">{issue.Issue}</span>
+    const regIssues = _.pickBy(issues, i => i.BookingID.toString() === id);
+    if (!_.isEmpty(regIssues)) {
+      return Object.keys(regIssues).map(key =>
+        <div key={key} className={`${regIssues[key].Resolved ? 'resolved-class' : ''} flex-row`}>
+          <span className="col-xs-10">{regIssues[key].Issue}</span>
           <span className="col-xs-2">
             <input
               type="checkbox"
-              checked={issue.Resolved}
-              onChange={e => props.toggleResolved(props.id, issue.IssueId)}
+              checked={regIssues[key].Resolved}
+              onChange={e => { 
+                toggleResolved(issues, key);
+                saved();
+              }}
             />
           </span>
         </div>

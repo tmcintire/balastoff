@@ -9,9 +9,11 @@ interface LevelCheckInfoProps {
 }
 
 export const LevelCheckInfo: FunctionComponent<LevelCheckInfoProps> = (props) => {
+  const badgeUpdatedCheckbox = useRef(null);
+
   const handleUpdate = (id) => {
     api.updateRegistration(id, {
-      BadgeUpdated: !props.registration.BadgeUpdated,
+      BadgeUpdated: badgeUpdatedCheckbox.current.checked,
     });
   }
 

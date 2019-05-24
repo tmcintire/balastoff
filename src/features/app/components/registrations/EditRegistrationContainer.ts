@@ -8,6 +8,7 @@ const mapStateToProps = state => ({
   totalCollected: state.data.totalCollected.totalCollected,
   allComps: state.data.comps.comps,
   tracks: state.data.tracks.tracks,
+  issues: state.data.issues.issues,
 });
 
 export const EditRegistrationContainer = connect(mapStateToProps)(EditRegistration);

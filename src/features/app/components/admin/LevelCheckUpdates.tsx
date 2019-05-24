@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { FunctionComponent, useState, useEffect } from 'react';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import { LevelCheckInfo } from './LevelCheckInfo';
 import { IRegistration } from '../../../data/interfaces';
@@ -7,67 +9,27 @@ const Loading = require('react-loading-animation');
 
 interface LevelCheckUpdatesProps {
   registrations: IRegistration[],
+  loading: boolean
 }
 
-interface LevelCheckUpdatesState {
-  updatedRegistrations: IRegistration[],
-  pendingRegistrations: IRegistration[],
-  loading: boolean,
-  filter: string[],
-  title: string,
-}
+export const LevelCheckUpdates: FunctionComponent<LevelCheckUpdatesProps> = (props: LevelCheckUpdatesProps) => {
+  const { registrations, loading } = props;
+  const [filter, setFilter] = useState<string[]>(['Gemini']);
+  const [title, setTitle] = useState<string>('Complete Gemini Level Checks');
+  const [updatedRegistrations, setUpdatedRegistrations] = useState<IRegistration[]>([]);
+  const [pendingRegistrations, setPendingRegistrations] = useState<IRegistration[]>([]);
 
-export class LevelCheckUpdates extends React.Component<LevelCheckUpdatesProps, LevelCheckUpdatesState> {
-  static getDerivedStateFromProps(nextProps: LevelCheckUpdatesProps, prevState: LevelCheckUpdatesState) {
-    if (nextProps.registrations) {
-      const updatedRegistrations = nextProps.registrations.filter(r =>
-        r.LevelChecked === true &&
-        r.BadgeUpdated === true &&
-        r.MissedLevelCheck === false &&
-        (r.OriginalLevel === prevState.filter[0] || r.OriginalLevel === prevState.filter[1]));
-      const pendingRegistrations = nextProps.registrations.filter(r =>
-        r.LevelChecked === true &&
-        r.BadgeUpdated === false &&
-        r.MissedLevelCheck === false &&
-        (r.OriginalLevel === prevState.filter[0] || r.OriginalLevel === prevState.filter[1]));
+  useEffect(() => {
+    updateBadges();
+  }, [registrations, filter, title]);
 
-      return {
-        updatedRegistrations,
-        pendingRegistrations,
-        loading: false,
-      };
-    }
-    return null;
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      updatedRegistrations: [],
-      pendingRegistrations: [],
-      loading: true,
-      filter: ['Gemini'],
-      title: 'Complete Gemini Level Checks',
-    };
-  }
-
-  changeFilter = (filter) => {
+  const changeFilter = (filter) => {
     let newFilter = [];
     if (filter === 'Gemini') {
       newFilter = ['Gemini'];
     } else {
       newFilter = ['Apollo', 'Skylab'];
     }
-    const updatedRegistrations = this.props.registrations.filter(r =>
-      (r.OriginalLevel === newFilter[0] || r.OriginalLevel === newFilter[1]) && r.HasLevelCheck && r.LevelChecked && r.BadgeUpdated && !r.MissedLevelCheck
-    );
-
-    const pendingRegistrations = this.props.registrations.filter(r => {
-      return (
-        (r.OriginalLevel === newFilter[0] || r.OriginalLevel === newFilter[1]) && r.HasLevelCheck && r.LevelChecked && !r.BadgeUpdated && !r.MissedLevelCheck
-      );
-    });
 
     let title = '';
     if (filter === 'Gemini') {
@@ -76,64 +38,69 @@ export class LevelCheckUpdates extends React.Component<LevelCheckUpdatesProps, L
       title = 'Complete Apollo/Skylab Level Checks';
     }
 
-    this.setState({
-      updatedRegistrations,
-      pendingRegistrations,
-      filter: newFilter,
-      title,
-    });
+    setFilter(newFilter);
+    setTitle(title);
   }
 
-  render() {
-    const renderUpdatedRegistrations = () =>
-      this.state.updatedRegistrations.map((registration, index) => {
-        if (registration) {
-          return (
-            <LevelCheckInfo updated key={index} registration={registration} />
-          );
+  const updateBadges = () => {
+    let updatedPendingBadges = [];
+    let updatedCompletedBadges = [];
+
+    _.forEach(registrations, r => {
+      if (r && _.includes(filter, r.OriginalLevel) && r.HasLevelCheck && r.LevelChecked && !r.MissedLevelCheck) {
+        // First make sure they pass the initial check to be qualified to be in this list
+        if (r.BadgeUpdated) {
+          updatedCompletedBadges.push(r);
+        } else {
+          updatedPendingBadges.push(r);
         }
-      });
-
-    const renderPendingRegistrations = () =>
-      this.state.pendingRegistrations.map((registration, index) => {
-        if (registration) {
-          return (
-            <LevelCheckInfo updated={false} key={index} registration={registration} />
-          );
-        }
-      });
-
-    const renderRegistrations = () => {
-      if (this.state.loading === false) {
-        return (
-          <div>
-            <h3 className="text-center">Pending Badge Updates</h3>
-            <hr />
-            {renderPendingRegistrations()}
-
-            <h3 className="text-center">Updated Badges</h3>
-            <hr />
-            {renderUpdatedRegistrations()}
-          </div>
-        );
       }
-      return (
-        <Loading />
-      );
-    };
+    });
 
+    setUpdatedRegistrations(updatedCompletedBadges);
+    setPendingRegistrations(updatedPendingBadges);
+  }
+
+  const renderUpdatedRegistrations = () => updatedRegistrations.map((registration, index) =>
+    <LevelCheckInfo updated key={index} registration={registration} />
+  );
+    
+
+  const renderPendingRegistrations = () => pendingRegistrations.map((registration, index) => 
+    <LevelCheckInfo updated={false} key={index} registration={registration} />
+  );
+   
+
+  const renderRegistrations = () => {
+    if (loading === false) {
+      return (
+        <div>
+          <h3 className="text-center">Pending Badge Updates</h3>
+          <hr />
+          {renderPendingRegistrations()}
+
+          <h3 className="text-center">Updated Badges</h3>
+          <hr />
+          {renderUpdatedRegistrations()}
+        </div>
+      );
+    }
     return (
-      <div className="container form-container">
-        <h1 className="text-center">{this.state.title}</h1>
+      <Loading />
+    );
+  };
+
+  return (
+    <div className="container form-container">
+        <h1 className="text-center">{title}</h1>
         <div className="header-links">
           <Link to="admin/levelcheck"><button className="btn btn-primary">Back to Level Checks</button></Link>
         </div>
         <div className="level-check-filters">
-          <span onClick={() => this.changeFilter('Gemini')}>Gemini</span>
-          <span onClick={() => this.changeFilter('Apollo')}>Apollo/Skylab</span>
+          <span onClick={() => changeFilter('Gemini')}>Gemini</span>
+          <span onClick={() => changeFilter('Apollo')}>Apollo/Skylab</span>
         </div>
         {renderRegistrations()}
       </div>
-    );
-  }
+  );
 }
