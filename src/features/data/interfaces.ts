@@ -43,11 +43,18 @@ export interface IMoneyLogEntryItem {
 export interface IMoneyLogEntry {
   bookingId: number,
   amount: number,
+  type?: MoneyLogEntryType,
   date?: Date,
   details: IMoneyLogEntryItem[],
   void?: boolean,
   initials?: string,
   reason?: string,
+}
+
+export enum MoneyLogEntryType {
+  Cash,
+  Check,
+  Paypal
 }
 
 export interface IMissionGearIssue {

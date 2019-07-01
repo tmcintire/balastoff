@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as _ from 'lodash';
 import { Link } from "react-router";
 import { Column, Table, AutoSizer } from "react-virtualized";
 import * as moment from 'moment';
@@ -7,7 +8,7 @@ import * as api from "../../../data/api";
 
 import { VoidTransaction } from './VoidTransaction';
 import { AddMoneyLog } from './AddMoneyLog';
-import { IMoneyLogEntry, IConfig, IRegistration } from "../../../data/interfaces";
+import { IMoneyLogEntry, IConfig, IRegistration, MoneyLogEntryType } from "../../../data/interfaces";
 
 interface MoneyLogProps {
   log: IMoneyLogEntry[],
@@ -106,6 +107,10 @@ export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
     return <i className="col-xs-1 fa fa-times-circle" onClick={() => this.toggleVoid(transactionId)} />;
   }
 
+  renderType = ({ rowData }) => {
+    return <span>{MoneyLogEntryType[rowData.type]}</span>;
+  }
+
   renderBookingId = ({ rowData }) => {
     return <Link to={`editregistration/${rowData.bookingId}`}>{rowData.bookingId}</Link>;
   }
@@ -116,6 +121,21 @@ export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
       return <span>{date}</span>;
     }
     return null;
+  }
+
+  renderSummaryTable = () => {
+    const {log} = this.props;
+      const paypalTotal = _.sumBy(_.filter(log, (l: IMoneyLogEntry) => l.type === MoneyLogEntryType.Paypal && !l.void), log => log.amount);
+      const cashTotal = _.sumBy(_.filter(log, (l: IMoneyLogEntry) => l.type === MoneyLogEntryType.Cash && !l.void), log => log.amount);
+      const checkTotal = _.sumBy(_.filter(log, (l: IMoneyLogEntry) => l.type === MoneyLogEntryType.Check && !l.void), log => log.amount);
+
+      return (
+        <div>
+          <p>Paypal: ${paypalTotal}</p>
+          <p>Cash: ${cashTotal}</p>
+          <p>Check: ${checkTotal}</p>
+        </div>
+      );
   }
 
   render() {
@@ -161,7 +181,7 @@ export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
                 <Column
                   label="Details"
                   dataKey="details"
-                  width={300}
+                  width={350}
                   cellRenderer={this.renderDetails}
                 />
                 <Column
@@ -171,9 +191,15 @@ export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
                   cellRenderer={this.renderAmount}
                 />
                 <Column
+                  label="Type"
+                  dataKey="type"
+                  width={100}
+                  cellRenderer={this.renderType}
+                />
+                <Column
                   label="Status"
                   dataKey="void"
-                  width={150}
+                  width={100}
                   cellRenderer={this.renderStatus}
                 />
                 <Column
@@ -194,8 +220,11 @@ export class MoneyLog extends React.Component<MoneyLogProps, MoneyLogState> {
       <div className="container">
         <span className="show-money-log" onClick={() => this.showMoneyLog()}>Log Money</span>
         <h1 className="text-center">Money Log</h1>
-        <div style={{ height: '600px' }}>
+        <div style={{ height: '475px' }}>
           {renderLogTable()}
+        </div>
+        <div>
+          {this.renderSummaryTable()}
         </div>
         <h2>Total Collected: ${this.props.totalCollected}</h2>
         {this.state.showMoneyLog && <AddMoneyLog showMoneyLog={this.showMoneyLog} registrations={this.props.registrations} />}

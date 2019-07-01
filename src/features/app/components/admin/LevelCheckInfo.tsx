@@ -32,6 +32,7 @@ export const LevelCheckInfo: FunctionComponent<LevelCheckInfoProps> = (props) =>
       <span>{registration.Level}</span>
       <input
         type="checkbox"
+        ref={badgeUpdatedCheckbox}
         checked={registration.BadgeUpdated}
         onChange={() => handleUpdate(registration.BookingID)}
       />

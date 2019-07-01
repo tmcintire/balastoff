@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FunctionComponent, useState, useEffect } from 'react';
 import * as _ from 'lodash';
 import { Link, RouteInfo } from 'react-router';
 import * as api from '../../../data/api';
@@ -10,7 +11,7 @@ import { Comments } from './Comments';
 import { Payment } from './Payment';
 import { EditMissionGearIssues } from './EditMissionGearIssues';
 import { CompsPurchase } from './CompsPurchase';
-import { IRegistration, ILevels, IAdminMissionPasses, IMoneyLogEntry, IComps, IMissionGearIssue } from '../../../data/interfaces';
+import { IRegistration, ILevels, IAdminMissionPasses, IMoneyLogEntry, IComps, IMissionGearIssue, IStore, MoneyLogEntryType } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
@@ -25,96 +26,81 @@ interface EditRegistrationProps {
 
 interface EditRegistrationState {
   pendingMoneyLog: IMoneyLogEntry,
-  moneyLogInitialized: boolean,
   registrationComps: IComps[],
   registration: IRegistration,
-  loading: boolean,
   showSaved: boolean,
   showAddComps: boolean,
   purchaseAmount: number,
   error: string,
   partner: string,
   comps: IComps[],
+  moneyLogEntryType: MoneyLogEntryType
 }
 
-export class EditRegistration extends React.Component<EditRegistrationProps, EditRegistrationState> {
-  static getDerivedStateFromProps(nextProps: EditRegistrationProps, prevState: EditRegistrationState) {
-    if (nextProps.registrations && nextProps.tracks) {
-      const registration = nextProps.registrations.filter(reg =>
-        reg.BookingID === parseInt(nextProps.params.id, 10))[0];
+export const EditRegistration: FunctionComponent<EditRegistrationProps> = (props: EditRegistrationProps) => { 
+  const { registrations, tracks, passes, params, allComps, issues } = props;
 
-      let pendingMoneyLog = _.cloneDeep(prevState.pendingMoneyLog);
-      if (registration.AmountOwed !== 0 && !prevState.moneyLogInitialized) {
-        pendingMoneyLog = {
-          bookingId: registration.BookingID,
-          amount: registration.AmountOwed,
-          details: [
-            {
-              item: 'Original Amount Owed',
-              price: registration.AmountOwed,
-              quantity: 1,
-            },
-          ],
-        };
-      }
+  const [pendingMoneyLog, setPendingMoneyLog] = useState<IMoneyLogEntry>(null);
+  const [registration, setRegistration] = useState<IRegistration>(null);
+  const [initialized, setInitialized] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [showAddComps, setShowAddComps] = useState<boolean>(false);
+  const [showSaved, setShowSaved] = useState<boolean>(false);
+  const [moneyLogEntryType, setMoneyLogEntryType] = useState<MoneyLogEntryType>(MoneyLogEntryType.Cash);
 
-      return {
-        registration,
-        registrationComps: registration.Comps ? registration.Comps : [],
-        loading: false,
-        pendingMoneyLog,
-        moneyLogInitialized: true,
-      };
+  // Effect to setup api handling
+  useEffect(() => {
+    const handleRegistrationUpdate = (registration: IRegistration) => {
+      setRegistration(registration);
     }
 
-    return null;
-  }
+    api.subscribeToRegistration(params.id, handleRegistrationUpdate);
+  }, []);
 
-  constructor(props) {
-    super(props);
-    
-    this.state = {
-      registrationComps: [],
-      registration: null,
-      loading: true,
-      showSaved: false,
-      showAddComps: false,
-      purchaseAmount: 0,
-      pendingMoneyLog: {
-        bookingId: null,
+  // Effect for initializing the first time the registration comes back, needed to setup the initial money log if there
+  // is money owed
+  useEffect(() => {
+    if (registration && !initialized) {
+      let updatedMoneyLog: IMoneyLogEntry = {
+        bookingId: registration.BookingID,
         amount: 0,
         details: [],
-      },
-      moneyLogInitialized: false,
-      error: '',
-      partner: '',
-      comps: []
-    };
-  }
+      }
+      
+      // if the registrant owes money, then we need to add details
+      if (registration.AmountOwed !== 0) {
+        updatedMoneyLog.amount = registration.AmountOwed;
+        updatedMoneyLog.details.push({
+          item: 'Original Amount Owed',
+          price: registration.AmountOwed,
+          quantity: 1,
+        });
+      }
 
-  toggleCheckedIn = (e) => {
-    if (this.state.registration.AmountOwed !== 0) {
-      this.setState({ error: 'Registration must be paid before checking in' });
+      setPendingMoneyLog(updatedMoneyLog);
+      setInitialized(true);
+    }
+  }, [registration]);
+
+  const toggleCheckedIn = (e) => {
+    if (registration.AmountOwed !== 0) {
+      setError('Registration must be paid before checking in' );
       return;
     }
 
-    const object = {
-      CheckedIn: e.target.checked,
-    };
-
-    this.saved();
-    api.updateRegistration(this.props.params.id, object);
+    saved();
+    api.updateRegistration(params.id, { CheckedIn: e.target.checked });
 
     window.location.href = '/#';
   }
 
-  changePaidCheckBox = (e) => {
-    const tempOwed = this.state.registration.AmountOwed;
+  const changePaidCheckBox = (e) => {
+    const tempOwed = registration.AmountOwed;
     let confirm;
     if (tempOwed > 0) {
-      confirm = window.confirm(`Confirm payment of $${tempOwed} for ${this.state.registration.FirstName} ${this.state.registration.LastName}`);
+      confirm = window.confirm(`Confirm payment of $${tempOwed} for ${registration.FirstName} ${registration.LastName}`);
     } else {
-      confirm = window.confirm(`Confirm refund of $${tempOwed} to ${this.state.registration.FirstName} ${this.state.registration.LastName}`);
+      confirm = window.confirm(`Confirm refund of $${tempOwed} to ${registration.FirstName} ${registration.LastName}`);
     }
 
     if (confirm === true) {
@@ -126,123 +112,116 @@ export class EditRegistration extends React.Component<EditRegistrationProps, Edi
         AmountOwed: owed,
       };
 
-      this.saved();
-      api.updateRegistration(this.props.params.id, object);
-      api.updateMoneyLog(this.state.pendingMoneyLog);
-      this.setState({
-        pendingMoneyLog: {
-          amount: 0,
-          details: [],
-          bookingId: null
-        },
+      saved();
+      api.updateRegistration(params.id, object);
+      api.updateMoneyLog({...pendingMoneyLog, type: moneyLogEntryType});
+      setPendingMoneyLog({
+        amount: 0,
+        details: [],
+        bookingId: null,
+        type: moneyLogEntryType
       });
+      setMoneyLogEntryType(MoneyLogEntryType.Cash);
     }
   }
 
-  backToRegistrations = () => {
+  const backToRegistrations = () => {
     window.location.href = '/';
   }
 
-  updatePendingMoneyLog = (details, amount) => {
-    this.setState({
-      pendingMoneyLog: {
-        bookingId: this.state.registration.BookingID,
-        amount,
-        details,
-      },
+  const updatePendingMoneyLog = (details, amount) => {
+    setPendingMoneyLog({
+      bookingId: registration.BookingID,
+      amount,
+      details
     });
   }
 
-  saved = () => {
-    this.setState({
-      showSaved: true,
-    });
+  const saved = () => {
+    setShowSaved(true);
     setTimeout(() => {
-      this.setState({
-        showSaved: false,
-      });
+      setShowSaved(false);
     }, 2000);
   }
 
-  toggleAddComps = () => this.setState({ showAddComps: !this.state.showAddComps });
+  const renderSaved = () => (showSaved ? <h4 className="saved-message">Saved</h4> : null);
+  const renderError = error !== '' ? error : '';
 
-  render() {
-    const { registration, partner, comps } = this.state;
-    const renderSaved = () => (this.state.showSaved ? <h4 className="saved-message">Saved</h4> : null);
-    const renderError = this.state.error !== '' ? this.state.error : '';
-
-    const renderRegistration = () => {
-      if (this.state.loading) {
-        return (
-          <Loading />
-        );
-      }
+  const renderRegistration = () => {
+    if (!registration) {
       return (
-        <div>
-          {renderSaved()}
-          <Link className="back" to={'/'}><i className="fa fa-arrow-left" aria-hidden="true" />Back to Registrations</Link>
-          <h1 className="text-center">{registration.BookingID} - {registration.FirstName} {registration.LastName}</h1>
-          <div className="flex-row option flex-justify-content-center">
-            <span>Check In!</span>
-            <input className="no-outline" type="checkbox" checked={registration.CheckedIn} onChange={e => this.toggleCheckedIn(e)} />
-          </div>
-
-          <p className="error-text">{renderError}</p>
-
-          <hr />
-          <div className="flex-row flex-wrap flex-justify-space-between">
-            <Level
-              level={registration.Level}
-              hasLevelCheck={registration.HasLevelCheck}
-            />
-            <Comps
-              comps={registration['Comps']}
-              toggleAddComps={this.toggleAddComps}
-            />
-            <Payment
-              amountOwed={registration.AmountOwed}
-              fullyPaid={registration.HasPaid}
-              togglePaid={this.changePaidCheckBox}
-            />
-          </div>
-
-          <hr />
-          <div className="flex-row flex-wrap flex-justify-space-between">
-            <MissionGear
-              issues={this.props.issues}
-              saved={this.saved}
-              id={this.props.params.id}
-              registration={registration}
-            />
-            <EditMissionGearIssues
-              id={this.props.params.id}
-              issues={this.props.issues}
-              saved={this.saved}
-            />
-            <Comments
-              saved={this.saved}
-              id={this.props.params.id}
-              registration={registration}
-            />
-          </div>
-          {
-          this.state.showAddComps &&
-            <CompsPurchase
-              toggleAddComps={this.toggleAddComps}
-              allComps={this.props.allComps}
-              id={this.props.params.id}        
-              registrationComps={this.state.registrationComps}
-              pendingMoneyLog={this.state.pendingMoneyLog}
-              updatePendingMoneyLog={this.updatePendingMoneyLog}
-            />
-          }
-        </div>
+        <Loading />
       );
-    };
+    }
     return (
-      <div className="container">
-        {renderRegistration()}
+      <div>
+        {renderSaved()}
+        <Link className="back" to={'/'}><i className="fa fa-arrow-left" aria-hidden="true" />Back to Registrations</Link>
+        <h1 className="text-center">{registration.BookingID} - {registration.FirstName} {registration.LastName}</h1>
+        <div className="flex-row option flex-justify-content-center">
+          <span>Check In!</span>
+          <input className="no-outline" type="checkbox" checked={registration.CheckedIn} onChange={e => toggleCheckedIn(e)} />
+        </div>
+
+        <p className="error-text">{renderError}</p>
+
+        <hr />
+        <div className="flex-row flex-wrap flex-justify-space-between">
+          <Level
+            level={registration.Level}
+            hasLevelCheck={registration.HasLevelCheck}
+          />
+          <Comps
+            comps={registration.Comps}
+            toggleAddComps={() => setShowAddComps(!showAddComps)}
+          />
+          <Payment
+            amountOwed={registration.AmountOwed}
+            fullyPaid={registration.HasPaid}
+            togglePaid={changePaidCheckBox}
+            setType={(type: MoneyLogEntryType) => setMoneyLogEntryType(type)}
+            type={moneyLogEntryType}
+          />
+        </div>
+
+        <hr />
+        <div className="flex-row flex-wrap flex-justify-space-between">
+          <MissionGear
+            issues={issues}
+            saved={saved}
+            id={params.id}
+            registration={registration}
+          />
+          <EditMissionGearIssues
+            id={params.id}
+            issues={issues}
+            saved={saved}
+          />
+          <Comments
+            saved={saved}
+            id={params.id}
+            registration={registration}
+          />
+        </div>
+        {
+        showAddComps &&
+          <CompsPurchase
+            toggleAddComps={() => setShowAddComps(!showAddComps)}
+            allComps={allComps}
+            id={params.id}        
+            registrationComps={registration.Comps || []}
+            pendingMoneyLog={pendingMoneyLog}
+            updatePendingMoneyLog={updatePendingMoneyLog}
+          />
+        }
       </div>
     );
-  }
+  };
+
+
+  return (
+    <div className="container">
+      {renderRegistration()}
+    </div>
+  );
 }

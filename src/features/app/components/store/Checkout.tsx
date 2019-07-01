@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { FunctionComponent } from 'react';
-import { IStore } from '../../../data/interfaces';
+import { FunctionComponent, useRef } from 'react';
+import { IStore, MoneyLogEntryType } from '../../../data/interfaces';
 
 interface CheckoutProps {
   pendingItems: IStore[],
@@ -8,22 +8,26 @@ interface CheckoutProps {
   removeItem: (item: IStore) => void,
   toggleCheckout: () => void,
   confirmPurchase: () => void,
+  setType: (type: MoneyLogEntryType) => void;
   cartTotal: number
 }
 
 export const Checkout: FunctionComponent<CheckoutProps> = (props) => {
+  const { addItem, removeItem, pendingItems, toggleCheckout, confirmPurchase, setType, cartTotal } = props;
+  const typeRef = useRef(null);
+
   const Cart = () => {
-    if (props.pendingItems.length > 0) {
-      return props.pendingItems.map(item => {
+    if (pendingItems.length > 0) {
+      return pendingItems.map(item => {
         return (
           <div className="row">
             <span className="col-xs-4">{item.name}</span>
             <span className="col-xs-2">${item.price.toFixed(2)}</span>
             <span className="col-xs-2">{item.quantity}</span>
-            <div onClick={() => props.addItem(item)} className="col-xs-2 flex-row flex-align-center flex-justify-content-center">
+            <div onClick={() => addItem(item)} className="col-xs-2 flex-row flex-align-center flex-justify-content-center">
               <i className="fa fa-2x fa-plus" />
             </div>
-            <div onClick={() => props.removeItem(item)} className="col-xs-2 flex-row flex-align-center flex-justify-content-center">
+            <div onClick={() => removeItem(item)} className="col-xs-2 flex-row flex-align-center flex-justify-content-center">
               <i className="fa fa-2x fa-minus" />
             </div>
           </div>
@@ -41,7 +45,7 @@ export const Checkout: FunctionComponent<CheckoutProps> = (props) => {
   return (
     <div className="confirmation-container">
       <div className="confirmation-inner checkout flex-col flex-align-center">
-        <div className="close-popup" onClick={() => props.toggleCheckout()}>
+        <div className="close-popup" onClick={() => toggleCheckout()}>
           x
         </div>
         <h1>Checkout</h1>
@@ -56,10 +60,23 @@ export const Checkout: FunctionComponent<CheckoutProps> = (props) => {
           {Cart()}
         </div>
         <div className="cart-total">
-        <h2>${props.cartTotal.toFixed(2)}</h2>
+        <h2>${cartTotal.toFixed(2)}</h2>
         </div>
 
-        <button className="confirm-btn btn btn-success" disabled={props.pendingItems.length === 0} onClick={() => props.confirmPurchase()}>Confirm Purchase</button>
+        <select ref={typeRef} onChange={(e) => setType(parseInt(e.target.value))}> 
+          <option value={MoneyLogEntryType.Cash}>{MoneyLogEntryType[MoneyLogEntryType.Cash]}</option>
+          <option value={MoneyLogEntryType.Check}>{MoneyLogEntryType[MoneyLogEntryType.Check]}</option>
+          <option value={MoneyLogEntryType.Paypal}>{MoneyLogEntryType[MoneyLogEntryType.Paypal]}</option>
+        </select>
+
+        {
+          (typeRef.current && parseInt(typeRef.current.value) === MoneyLogEntryType.Paypal) &&
+          <>
+            <img src="./src/images/kadiepaypal.jpg"/>
+            <p>kadiepangburn@gmail.com</p>
+          </>
+        }
+        <button className="confirm-btn btn btn-success" disabled={pendingItems.length === 0} onClick={() => confirmPurchase()}>Confirm Purchase</button>
       </div>
     </div>
   );

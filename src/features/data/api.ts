@@ -55,7 +55,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
                 break;
             }
 
-            registration.CheckedIn = false;
+            registration.CheckedIn = true;
             registration.HasComments = false;
             registration.Shirt1 = false;
             registration.Shirt2 = false;
@@ -201,6 +201,12 @@ export function fetchRegistrations() {
     });
     // const sortedRegistrations = helpers.sortRegistrations(registrations);
     store.dispatch(actions.registrationsReceived(registrations));
+  });
+}
+
+export function subscribeToRegistration(id: string, callback: (registration: IRegistration) => void) {
+  regRef.child(id).on('value', snapshot => {
+    callback(snapshot.val());
   });
 }
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { Checkout } from './Checkout';
 import * as api from '../../../data/api';
-import { IStore } from '../../../data/interfaces';
+import { IStore, MoneyLogEntryType, IMoneyLogEntry } from '../../../data/interfaces';
 
 const Loading = require('react-loading-animation');
 
@@ -16,6 +16,7 @@ interface StoreState {
   cartTotal: number,
   showCheckout: boolean,
   showToastMessage: boolean
+  moneyLogEntryType: MoneyLogEntryType,
 }
 
 export class Store extends React.Component<StoreProps, StoreState> {
@@ -23,6 +24,7 @@ export class Store extends React.Component<StoreProps, StoreState> {
     super(props);
 
     this.state = {
+      moneyLogEntryType: MoneyLogEntryType.Cash,
       loading: true,
       cartTotal: 0,
       showCheckout: false,
@@ -67,10 +69,11 @@ export class Store extends React.Component<StoreProps, StoreState> {
         price: item.price,
       };
     });
-    const moneyLog = {
+    const moneyLog: IMoneyLogEntry = {
       bookingId: null,
       amount: this.state.cartTotal,
       details,
+      type: this.state.moneyLogEntryType
     };
     api.updateMoneyLog(moneyLog);
     const newStoreCounts = this.updateStoreItemCounts();
@@ -147,7 +150,7 @@ export class Store extends React.Component<StoreProps, StoreState> {
     return cartTotal;
   }
 
-  clearCart = () => this.setState({ pendingItems: [], cartTotal: 0 });
+  clearCart = () => this.setState({ pendingItems: [], cartTotal: 0, moneyLogEntryType: MoneyLogEntryType.Cash });
   toggleCheckout = () => this.setState({ showCheckout: !this.state.showCheckout });
 
   purchaseToast = () => {
@@ -159,6 +162,12 @@ export class Store extends React.Component<StoreProps, StoreState> {
         showToastMessage: false,
       });
     }, 2000);
+  }
+
+  setType = (type: MoneyLogEntryType) => {
+    this.setState({
+      moneyLogEntryType: type
+    });
   }
 
   CartItems = () => {
@@ -227,6 +236,7 @@ export class Store extends React.Component<StoreProps, StoreState> {
             <Checkout
               pendingItems={pendingItems}
               cartTotal={cartTotal}
+              setType={this.setType}
               toggleCheckout={this.toggleCheckout}
               addItem={this.addItem}
               removeItem={this.removeItem}
