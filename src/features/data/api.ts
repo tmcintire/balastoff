@@ -55,7 +55,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
                 break;
             }
 
-            registration.CheckedIn = true;
+            registration.CheckedIn = false;
             registration.HasComments = false;
             registration.Shirt1 = false;
             registration.Shirt2 = false;
