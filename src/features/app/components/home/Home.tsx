@@ -19,9 +19,6 @@ export const Home: FunctionComponent<HomeProps> = (props: HomeProps) => {
   const [filter, setFilter] = useState<string>('LastName');
   const [filterText, setFilterText] = useState<string>('');
   const [initialized, setInitialized] = useState<boolean>(false);
-  const [unpaidFilter, setUnpaidFilter] = useState<boolean>(false);
-  const [gearFilter, setGearFilter] = useState<boolean>(false);
-  const [checkedInFilter, setCheckedInFilter] = useState<boolean>(false);
 
   useEffect(() => {
     window.scrollTo(0, 1);
@@ -34,16 +31,6 @@ export const Home: FunctionComponent<HomeProps> = (props: HomeProps) => {
       setInitialized(true);
     }
   }, [registrations]);
-
-  // Handle the changes of filters
-  useEffect(() => {
-    console.log('filter changed');
-    const filteredReg = registrations.filter((reg => {
-      if (unpaidFilter && reg.AmountOwed > 0) {
-        
-      }
-    }));
-  }, [unpaidFilter, gearFilter, checkedInFilter]);
 
   const filterRegistrations = (e, filter) => {
     if (filter !== filter) {
@@ -73,30 +60,9 @@ export const Home: FunctionComponent<HomeProps> = (props: HomeProps) => {
     setFilterText(target);
   }
 
-  const toggleFilter = (e, type: string) => {
-    const checked = e.target.checked;
-
-    let filteredReg = [];
-
-    switch (type) {
-      case 'Unpaid':
-        filteredReg = filteredRegistrations.filter(reg => checked ? reg.AmountOwed > 0 : reg.AmountOwed === 0);
-        break;
-      case 'CheckedIn':
-        filteredReg = filteredRegistrations.filter(reg => checked ? !reg.CheckedIn : reg.CheckedIn);
-        break;
-      case 'Gear':
-        filteredReg = filteredRegistrations.filter(reg => checked ? reg.HasGear : !reg.HasGear);
-        break;
-    }
-
-    setFilteredRegistrations(filteredReg);
-  }
-
-
   const toggleUnpaid = (e) => {
     const checked = e.target.checked;
-
+    const { registrations } = props;
     let filteredRegistrations = [];
 
     if (checked) {
@@ -158,15 +124,15 @@ export const Home: FunctionComponent<HomeProps> = (props: HomeProps) => {
       <div className="flex-row options-container">
         <div className="flex-row option">
           <span>Show only unpaid</span>
-          <input className="no-outline" type="checkbox" onChange={(e) => setUnpaidFilter(e.target.checked)} />
+          <input className="no-outline" type="checkbox" onChange={e => toggleUnpaid(e)} />
         </div>
         <div className="flex-row option">
           <span>Show not checked in</span>
-          <input className="no-outline" type="checkbox" onChange={e => setCheckedInFilter(e.target.checked)} />
+          <input className="no-outline" type="checkbox" onChange={e => toggleNotChecked(e)} />
         </div>
         <div className="flex-row option">
           <span>Show only gear</span>
-          <input className="no-outline" type="checkbox" onChange={e => setGearFilter(e.target.checked)} />
+          <input className="no-outline" type="checkbox" onChange={e => toggleGear(e)} />
         </div>
       </div>
       <div className="flex-row flex-justify-space-between">
