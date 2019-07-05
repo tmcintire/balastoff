@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FunctionComponent, useState, useEffect } from 'react';
 import * as _ from 'lodash';
 import { RegistrationBox } from './RegistrationBox';
 import * as helpers from '../../../data/helpers';
@@ -11,52 +12,51 @@ interface HomeProps {
   tracks: []
 }
 
-interface HomeState {
-  filteredRegistrations: IRegistration[],
-  filter: string,
-  filterText: string,
-}
+export const Home: FunctionComponent<HomeProps> = (props: HomeProps) => {
+  const { registrations, loading, totalCollected, tracks } = props;
 
+  const [filteredRegistrations, setFilteredRegistrations] = useState<IRegistration[]>([]);
+  const [filter, setFilter] = useState<string>('LastName');
+  const [filterText, setFilterText] = useState<string>('');
+  const [initialized, setInitialized] = useState<boolean>(false);
+  const [unpaidFilter, setUnpaidFilter] = useState<boolean>(false);
+  const [gearFilter, setGearFilter] = useState<boolean>(false);
+  const [checkedInFilter, setCheckedInFilter] = useState<boolean>(false);
 
-export class Home extends React.Component<HomeProps, HomeState> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      filteredRegistrations: props.registrations,
-      filter: 'LastName',
-      filterText: '',
-    };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     window.scrollTo(0, 1);
-  }
+  }, []);
 
-  componentWillReceiveProps(nextProps) {
-    const registrations = this.state.filterText !== '' ? this.state.filteredRegistrations : nextProps.registrations;
-    if (registrations) {
-      const sortedRegistrations = helpers.sortRegistrations(registrations, this.state.filter);
-      this.setState({
-        filteredRegistrations: sortedRegistrations,
-      });
+  useEffect(() => {
+    if (registrations && !initialized) {
+      const sortedRegistrations = helpers.sortRegistrations(registrations, filter);
+      setFilteredRegistrations(sortedRegistrations);
+      setInitialized(true);
+    }
+  }, [registrations]);
+
+  // Handle the changes of filters
+  useEffect(() => {
+    console.log('filter changed');
+    const filteredReg = registrations.filter((reg => {
+      if (unpaidFilter && reg.AmountOwed > 0) {
+        
+      }
+    }));
+  }, [unpaidFilter, gearFilter, checkedInFilter]);
+
+  const filterRegistrations = (e, filter) => {
+    if (filter !== filter) {
+      const sortedRegistrations = helpers.sortRegistrations(filteredRegistrations, filter);
+      setFilteredRegistrations(sortedRegistrations);
+      setFilter(filter);
     }
   }
 
-  filterRegistrations = (e, filter) => {
-    if (filter !== this.state.filter) {
-      const sortedRegistrations = helpers.sortRegistrations(this.state.filteredRegistrations, filter);
-      this.setState({
-        filteredRegistrations: sortedRegistrations,
-        filter,
-      });
-    }
-  }
-
-  handleValueChange = (e) => {
+  const handleValueChange = (e) => {
     e.preventDefault();
     const target = e.target.value;
-    const { registrations } = this.props;
+    const { registrations } = props;
 
     const filteredRegistrations = registrations.filter(reg => {
       if (reg) {
@@ -69,15 +69,34 @@ export class Home extends React.Component<HomeProps, HomeState> {
       }
     });
 
-    this.setState({
-      filteredRegistrations,
-      filterText: target,
-    });
+    setFilteredRegistrations(filteredRegistrations);
+    setFilterText(target);
   }
 
-  toggleUnpaid(e) {
+  const toggleFilter = (e, type: string) => {
     const checked = e.target.checked;
-    const { registrations } = this.props;
+
+    let filteredReg = [];
+
+    switch (type) {
+      case 'Unpaid':
+        filteredReg = filteredRegistrations.filter(reg => checked ? reg.AmountOwed > 0 : reg.AmountOwed === 0);
+        break;
+      case 'CheckedIn':
+        filteredReg = filteredRegistrations.filter(reg => checked ? !reg.CheckedIn : reg.CheckedIn);
+        break;
+      case 'Gear':
+        filteredReg = filteredRegistrations.filter(reg => checked ? reg.HasGear : !reg.HasGear);
+        break;
+    }
+
+    setFilteredRegistrations(filteredReg);
+  }
+
+
+  const toggleUnpaid = (e) => {
+    const checked = e.target.checked;
+
     let filteredRegistrations = [];
 
     if (checked) {
@@ -85,14 +104,13 @@ export class Home extends React.Component<HomeProps, HomeState> {
     } else {
       filteredRegistrations = registrations;
     }
-    this.setState({
-      filteredRegistrations,
-    });
+
+    setFilteredRegistrations(filteredRegistrations);
   }
 
-  toggleNotChecked(e) {
+  const toggleNotChecked = (e) => {
     const checked = e.target.checked;
-    const { registrations } = this.props;
+    const { registrations } = props;
     let filteredRegistrations = [];
 
     if (checked) {
@@ -100,14 +118,13 @@ export class Home extends React.Component<HomeProps, HomeState> {
     } else {
       filteredRegistrations = registrations;
     }
-    this.setState({
-      filteredRegistrations,
-    });
+
+    setFilteredRegistrations(filteredRegistrations);
   }
 
-  toggleGear(e) {
+  const toggleGear = (e) => {
     const checked = e.target.checked;
-    const { registrations } = this.props;
+    const { registrations } = props;
     let filteredRegistrations = [];
 
     if (checked) {
@@ -115,75 +132,73 @@ export class Home extends React.Component<HomeProps, HomeState> {
     } else {
       filteredRegistrations = registrations;
     }
-    this.setState({
-      filteredRegistrations,
-    });
+
+    setFilteredRegistrations(filteredRegistrations);
   }
 
-  render() {
-    const { loading } = this.props;
-    const renderRegistrations = () => {
-      if (loading === false && this.state.filteredRegistrations !== undefined) {
-        return this.state.filteredRegistrations.map((registration, index) => {
-          if (registration) {
-            return (
-              <RegistrationBox
-                key={index}
-                registration={registration}
-                hasLevelCheck={registration.HasLevelCheck}
-              />
-            );
-          }
-        });
-      }
-      return true;
-    };
-    return (
-      <div className="container">
-        <div className="flex-row options-container">
-          <div className="flex-row option">
-            <span>Show only unpaid</span>
-            <input className="no-outline" type="checkbox" onChange={e => this.toggleUnpaid(e)} />
-          </div>
-          <div className="flex-row option">
-            <span>Show not checked in</span>
-            <input className="no-outline" type="checkbox" onChange={e => this.toggleNotChecked(e)} />
-          </div>
-          <div className="flex-row option">
-            <span>Show only gear</span>
-            <input className="no-outline" type="checkbox" onChange={e => this.toggleGear(e)} />
-          </div>
+  const renderRegistrations = () => {
+    if (loading === false && filteredRegistrations !== undefined) {
+      return filteredRegistrations.map((registration, index) => {
+        if (registration) {
+          return (
+            <RegistrationBox
+              key={index}
+              registration={registration}
+              hasLevelCheck={registration.HasLevelCheck}
+            />
+          );
+        }
+      });
+    }
+    return true;
+  };
+
+  return (
+    <div className="container">
+      <div className="flex-row options-container">
+        <div className="flex-row option">
+          <span>Show only unpaid</span>
+          <input className="no-outline" type="checkbox" onChange={(e) => setUnpaidFilter(e.target.checked)} />
         </div>
-        <div className="flex-row flex-justify-space-between">
-          <div>
-            <label htmlFor="search">Search Registrations</label>
-            <input className="search search-input" id="search" type="text" onChange={this.handleValueChange} />
-          </div>
-          {
-            this.props.totalCollected !== undefined &&
-              <div className="flex-row">
-                Total Collected:
-                <span className="collected-text">${this.props.totalCollected.toFixed(2)}</span>
-              </div>
-          }
+        <div className="flex-row option">
+          <span>Show not checked in</span>
+          <input className="no-outline" type="checkbox" onChange={e => setCheckedInFilter(e.target.checked)} />
         </div>
-        <div className="registrations-wrapper flex-col">
-          <div className="registrations-header">
-            <span className="col-xs-1" onClick={e => this.filterRegistrations(e, 'BookingID')}>ID</span>
-            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'LastName')}>Last Name</span>
-            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'FirstName')}>First Name</span>
-            <span className="col-xs-2" onClick={e => this.filterRegistrations(e, 'Level')}>Track</span>
-            <span className="col-xs-1" onClick={e => this.filterRegistrations(e, 'HasLevelCheck')}>Level Check</span>
-            <span className="col-xs-1">Amount Owed</span>
-            <span className="col-xs-1">Gear</span>
-            <span className="col-xs-1">Fully Paid</span>
-            <span className="col-xs-1">Checked In</span>
-          </div>
-          <div className="registrations-body flex-col">
-            {renderRegistrations()}
-          </div>
+        <div className="flex-row option">
+          <span>Show only gear</span>
+          <input className="no-outline" type="checkbox" onChange={e => setGearFilter(e.target.checked)} />
         </div>
       </div>
-    );
-  }
+      <div className="flex-row flex-justify-space-between">
+        <div>
+          <label htmlFor="search">Search Registrations</label>
+          <input className="search search-input" id="search" type="text" onChange={handleValueChange} />
+        </div>
+        {
+          totalCollected !== undefined &&
+            <div className="flex-row">
+              Total Collected:
+              <span className="collected-text">${totalCollected.toFixed(2)}</span>
+            </div>
+        }
+      </div>
+      <div className="registrations-wrapper flex-col">
+        <div className="registrations-header">
+          <span className="col-xs-1" onClick={e => filterRegistrations(e, 'BookingID')}>ID</span>
+          <span className="col-xs-2" onClick={e => filterRegistrations(e, 'LastName')}>Last Name</span>
+          <span className="col-xs-2" onClick={e => filterRegistrations(e, 'FirstName')}>First Name</span>
+          <span className="col-xs-2" onClick={e => filterRegistrations(e, 'Level')}>Track</span>
+          <span className="col-xs-1" onClick={e => filterRegistrations(e, 'HasLevelCheck')}>Level Check</span>
+          <span className="col-xs-1">Amount Owed</span>
+          <span className="col-xs-1">Gear</span>
+          <span className="col-xs-1">Fully Paid</span>
+          <span className="col-xs-1">Checked In</span>
+        </div>
+        <div className="registrations-body flex-col">
+          {renderRegistrations()}
+        </div>
+      </div>
+    </div>
+  );
+
 }

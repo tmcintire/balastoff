@@ -113,7 +113,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
             registration.HasLevelCheck = foundTrack ? foundTrack.levelCheck : false;
     
             // check for gear
-            registration.HasGear = data[46] || data[49];
+            registration.HasGear = (data[46] || data[49]);
 
             // Handle all yes/no values
             if (data[headerIndex] === 'Yes' || data[headerIndex] === 'No') {

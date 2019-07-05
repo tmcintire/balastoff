@@ -60,8 +60,8 @@ export const LevelCheck: FunctionComponent<LevelCheckProps> = (props) => {
     }
   }, [registrations, currentFilter]);
 
-  const changeFilter = () => {
-    const filter = _.includes(currentFilter, 'Gemini') ? apolloSkylabFilter : geminiFilter;
+  const changeFilter = (level: string) => {
+    const filter = _.includes(level, 'Gemini') ? geminiFilter : apolloSkylabFilter;
 
     const filteredLeads = registrations.filter(r => {
       return (
@@ -167,9 +167,13 @@ export const LevelCheck: FunctionComponent<LevelCheckProps> = (props) => {
         <Link to="/admin/levelcheckupdates"><button className="btn btn-primary">Completed Level Checks</button></Link>
       </div>
       <div className="level-check-filters">
-        <span onClick={() => changeFilter()}>Level</span>
+        <span className={_.includes(currentFilter, 'Gemini') && 'selected'} onClick={() => changeFilter('Gemini')}>Gemini</span>
+        <span className={_.includes(currentFilter, 'Apollo') && 'selected'} onClick={() => changeFilter('Apollo/Skylab')}>Apollo/Skylab</span>
+        
         <span>|</span>
-        <span onClick={() => setShowLeads(!showLeads)}>Lead/Follow</span>
+
+        <span className={showLeads && 'selected'} onClick={() => setShowLeads(true)}>Leads</span>
+        <span className={!showLeads && 'selected'} onClick={() => setShowLeads(false)}>Follows</span>
       </div>
       <div className="level-check-title text-center">{title} <span className="capitalize">{leadFollow}</span></div>
       <hr />
