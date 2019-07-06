@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const webpack = require('webpack');
 const path = require('path');
@@ -167,6 +168,12 @@ module.exports = {
         STORAGE_BUCKET: JSON.stringify(process.env.STORAGE_BUCKET),
       },
     }),
+    new CopyWebpackPlugin([
+      {
+        from: 'src/images',
+        to: 'images',
+      },
+    ]),
   ],
   // postcss() {
   //   return [autoprefixer];

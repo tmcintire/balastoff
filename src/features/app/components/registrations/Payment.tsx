@@ -32,7 +32,7 @@ export const Payment: FunctionComponent<PaymentProps> = (props) => {
           {
             (type === MoneyLogEntryType.Paypal) &&
             <>
-              <img src="./src/images/kadiepaypal.jpg"/>
+              <img src="images/kadiepaypal.jpg"/>
               <p>kadiepangburn@gmail.com</p>
             </>
           }
