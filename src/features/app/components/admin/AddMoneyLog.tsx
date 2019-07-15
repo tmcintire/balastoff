@@ -43,8 +43,13 @@ export const AddMoneyLog: FunctionComponent<AddMoneyLogProps> = (props) => {
 
   const submitForm = (e) => {
     e.preventDefault();
+    let bookingId = null;
+    if (bookingIdRef.current && typeof bookingIdRef.current.value === 'number') {
+      bookingId = bookingIdRef.current.value;
+    } 
+
     const object: IMoneyLogEntry = {
-      bookingId: bookingIdRef.current ? parseInt(bookingIdRef.current.value) : null,
+      bookingId,
       amount: amount,
       details: _.compact(entries),
       type: typeRef.current.value ? parseInt(typeRef.current.value) : null
