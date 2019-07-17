@@ -68,8 +68,8 @@ export const Store: FunctionComponent<IStoreProps> = (props) => {
       type: moneyLogEntryType
     };
     api.updateMoneyLog(moneyLog);
-    const newStorequantitys = updateStoreItemCount();
-    api.updateStoreItemCount(newStorequantitys);
+    const newStoreCounts = updateStoreItemCount();
+    api.updateStoreItemCount(newStoreCounts);
     setShowCheckout(!showCheckout);
     purchaseToast();
     clearCart();

@@ -175,7 +175,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
     firebaseRef.child('Store').once('value').then((snapshot) => {
       const storeItem = snapshot.val();
       _.forEach(storeItem, (item, key) => {
-        firebaseRef.child('Store').child(key).update({ count: 0 });
+        firebaseRef.child('Store').child(key).update({ quantity: 0 });
       });
     });
   }
