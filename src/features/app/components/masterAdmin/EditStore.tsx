@@ -64,7 +64,7 @@ export class EditStore extends React.Component<EditStoreProps, EditStoreState> {
 
     if (target === 'price') {
       value = parseInt(value, 10);
-    } else if (target === 'count') {
+    } else if (target === 'quantity') {
       value = parseInt(value, 10);
     }
 
@@ -123,7 +123,7 @@ export class EditStore extends React.Component<EditStoreProps, EditStoreState> {
           <tr key={key} onClick={() => this.addEdit(key, true)}>
             <td>{item.name}</td>
             <td>${item.price.toFixed(2)}</td>
-            <td>{item.count}</td>
+            <td>{item.quantity}</td>
           </tr>
         );
       });
@@ -144,7 +144,7 @@ export class EditStore extends React.Component<EditStoreProps, EditStoreState> {
                 <label htmlFor="type">Price</label>
                 <input className="form-control" name="price" defaultValue={this.state.isEditing ? this.state.editedObject.price.toString() : ''} onChange={this.handleChange} type="text" />
                 <label htmlFor="type">Amount Sold</label>
-                <input className="form-control" name="count" defaultValue={this.state.isEditing ? this.state.editedObject.quantity.toString() : ''} onChange={this.handleChange} type="text" />
+                <input className="form-control" name="quantity" defaultValue={this.state.isEditing ? this.state.editedObject.quantity.toString() : ''} onChange={this.handleChange} type="text" />
                 <br />
 
                 <div className="form-submit-buttons flex-row flex-justify-space-between">
