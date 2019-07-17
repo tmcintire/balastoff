@@ -32,11 +32,11 @@ export const Home: FunctionComponent<HomeProps> = (props: HomeProps) => {
     }
   }, [registrations]);
 
-  const filterRegistrations = (e, filter) => {
-    if (filter !== filter) {
-      const sortedRegistrations = helpers.sortRegistrations(filteredRegistrations, filter);
+  const filterRegistrations = (e, f) => {
+    if (filter !== f) {
+      const sortedRegistrations = helpers.sortRegistrations(filteredRegistrations, f);
       setFilteredRegistrations(sortedRegistrations);
-      setFilter(filter);
+      setFilter(f);
     }
   }
 

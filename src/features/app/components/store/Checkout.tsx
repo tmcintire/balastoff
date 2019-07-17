@@ -72,7 +72,7 @@ export const Checkout: FunctionComponent<CheckoutProps> = (props) => {
         {
           (typeRef.current && parseInt(typeRef.current.value) === MoneyLogEntryType.Paypal) &&
           <>
-            <img src="./src/images/kadiepaypal.jpg"/>
+            <img src="./images/kadiepaypal.jpg"/>
             <p>kadiepangburn@gmail.com</p>
           </>
         }
