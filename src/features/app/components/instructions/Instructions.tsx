@@ -19,8 +19,8 @@ export const Instructions = () => (
         <p className="indent"><strong>b. </strong>{'Gemini, Apollo, and Skylab all have a "level check" (LC) color. \
           LC is at 10:00am Saturday morning at UAH. They will be issued a separate colored sticker upon completion of \
           the level check. They MUST be present for the LC in order to be placed in these missions.'}</p>
-        <p className="indent"><strong>c. </strong>SpaceX has a dark blue color, and their first session is at 1:00pm.</p>
-        <p className="indent"><strong>d. </strong>Dance passes are orange in color.</p>
+        <p className="indent"><strong>c. </strong>SpaceX is yellow, and their first session is at 1:00pm.</p>
+        <p className="indent"><strong>d. </strong>Dance passes are red in color.</p>
       </li>
       <li>COMPETITIONS: Check to see if the dancer is registered for any competitions.
         <p className="indent"><strong>a. </strong>YES: verify with dancer and confirm the name of their partner.
@@ -39,7 +39,12 @@ export const Instructions = () => (
       </li>
       <li>{'BALANCES: Check to see if the dancer has an outstanding balance on their registration that they owe to the event.  \
         All dancers must be paid in full before they may receive their access card and enter the event.'}
-        <p className="indent"><strong>a. </strong>{'Select "Fully Paid" to notate participant has paid in full before entering event.'}</p>
+        <p className="indent">
+          <strong>a. </strong>{'Select "Fully Paid" to notate participant has paid in full before entering event.'}
+        </p>
+        <p className="indent">
+          <strong>b. </strong>{'They can pay by cash, check, or Paypal. Select the appropriate payment method. If paying by Paypal, they can either scan the QR Code that pops up with their app or type in the following on their app to pay: kadiepangburn@gmail.com. '}
+        </p>
       </li>
       <li>{'Select "View" by clicking on the registration ID number. '}</li>
       <li>
@@ -61,7 +66,9 @@ export const Instructions = () => (
       <li>Ask for the dancers name.</li>
       <li>Add the dancer to the registration list, filling in all their details. Full weekend passes and dance
         passes must be cleared by Kirsten Wilson before purchase. Check pricing pages for class passes and dance passes.</li>
-      <li>Collect payment from the dancer for their selected items and record it on the money in/out sheet.</li>
+      <li>Collect payment from the dancer for their selected items and record it on the money in/out sheet. They can pay by cash, 
+        check, or Paypal. Select the appropriate payment method. If paying by Paypal, they can either scan the 
+        QR Code that pops up with their app or type in the following on their app to pay: kadiepangburn@gmail.com.</li>
       <li>Give the dancer their access badge (lanyard for full weekend, wristband for classes only).
         NOTE: if a dancer registered for a class level above Beginner or Mercury and did not participate in
         the level check, they will need approval from an instructor, Joe Pangburn, or Kadie Pangburn to take it. </li>
