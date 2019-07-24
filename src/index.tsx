@@ -35,6 +35,7 @@ const {
   EditAdminFields,
   StoreContainer,
   CompsTablesContainer,
+  ShuffleShopsContainer,
   DashboardContainer,
   RegCommentsContainer,
   RegistrationDashboardContainer} = app.components;
@@ -55,6 +56,7 @@ const adminUserRoutes = () => (
     <Route path="/admin/comments" component={RegCommentsContainer} />
     <Route path="/editregistration/:id" component={EditRegistrationContainer} />
     <Route path="/comps" component={CompRegistrationsContainer} />
+    <Route path="/shuffleshops" component={ShuffleShopsContainer} />
     <Route path="/admin/missiongearissues" component={MissionGearIssuesContainer} />
     <Route path="/instructions" component={Instructions} />
     <Route path="/dashboard" component={DashboardContainer} />

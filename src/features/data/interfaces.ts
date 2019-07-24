@@ -117,6 +117,7 @@ export class Registration implements IRegistration {
   Shirt1?:  boolean;
   Shirt2?:  boolean;
   ShuffleShops?: string[];
+  SSNickPartner?: string;
   TShirts?:  string;
   TotalCost?:  number;
   WalkIn?:  boolean;
@@ -179,6 +180,7 @@ export interface IRegistration {
   Shirt1?:  boolean,
   Shirt2?:  boolean,
   ShuffleShops?: string[],
+  SSNickPartner?: string;  
   TShirts?:  string,
   TotalCost?:  number,
   WalkIn?:  boolean,

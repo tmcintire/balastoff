@@ -28,3 +28,5 @@ export { StoreContainer } from './store/StoreContainer';
 export { DashboardContainer } from './dashboard/DashboardContainer';
 export { RegistrationDashboardContainer } from './dashboard/RegistrationDashboardContainer';
 export { RegCommentsContainer } from './admin/RegCommentsContainer';
+export { ShuffleShopsContainer } from './shuffleshops/ShuffleShopsContainer';
+

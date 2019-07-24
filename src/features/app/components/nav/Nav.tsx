@@ -81,6 +81,11 @@ export class Nav extends React.Component<NavProps, NavState> {
             </ul>
             <ul className="nav navbar-nav navbar-right">
               <li>
+                <Link onClick={this.closeMenu} to="/shuffleshops" className="link" activeClassName="active" activeStyle={activeStyles}>Shuffle Shops</Link>
+              </li>
+            </ul>
+            <ul className="nav navbar-nav navbar-right">
+              <li>
                 <Link onClick={this.closeMenu} to="/comps" className="link" activeClassName="active" activeStyle={activeStyles}>Comps</Link>
               </li>
             </ul>
