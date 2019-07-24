@@ -32,6 +32,7 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
         _.forEach(rawData, (data) => {
           let registration = new Registration();
           registration.Comps = [];
+          registration.ShuffleShops = [];
           _.forEach(headers, (header, headerIndex) => {
             switch (header) {
               case 'BookingID':
@@ -99,6 +100,16 @@ firebaseRef.child('config').child('development').once('value').then((res) => {
                 role: data[40],
                 partner: null,
               });
+            } else if (header === 'SSDavid' && data[27] === 'Yes') {
+              registration.ShuffleShops.push('Balboa Pedagogy & Teacher Training w/ David Rehm');
+            } else if (header === 'SSKate' && data[28] === 'Yes') {
+              registration.ShuffleShops.push('Hello Natalie Esparza w/ Kate Hedin');
+            } else if (header === 'SSShani' && data[29] === 'Yes') {
+              registration.ShuffleShops.push('Lets Make a Connection w/ Shani Brown');
+            } else if (header === 'SSJeremy' && data[30] === 'Yes') {
+              registration.ShuffleShops.push(`Livin' La Vida Jitterbug w/ Jeremy Otth`);
+            } else if (header === 'SSNick' && data[31] === 'Yes') {
+              registration.ShuffleShops.push('Crafting a Partnership w/ Nick Williams');
             }
     
             // Handle Paid entries -- Need to remove this and handle it just by checking the amount

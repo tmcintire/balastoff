@@ -169,6 +169,7 @@ export const EditRegistration: FunctionComponent<EditRegistrationProps> = (props
         <div className="flex-row flex-wrap flex-justify-space-between">
           <Level
             level={registration.Level}
+            shuffleShops={registration.ShuffleShops}
             hasLevelCheck={registration.HasLevelCheck}
           />
           <Comps
