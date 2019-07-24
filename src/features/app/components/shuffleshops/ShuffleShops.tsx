@@ -47,7 +47,7 @@ export const ShuffleShops: FunctionComponent<IShuffleShopsProps> = (props) => {
 
       return (
         <>
-          <div className="flex-col">
+          <div className="flex-col shuffle-shop-list">
             <h2>{key}</h2>
             {
               shuffleShop.map(name => (
