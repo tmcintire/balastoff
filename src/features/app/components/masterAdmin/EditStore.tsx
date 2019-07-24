@@ -49,11 +49,18 @@ export class EditStore extends React.Component<EditStoreProps, EditStoreState> {
   }
 
   addEdit = (index, addEdit) => {
+
+    let obj: IStore = {
+      name: '',
+      quantity: 0,
+      price: 0
+    };
+
     this.setState({
       showForm: true,
       isEditing: addEdit,
       editedIndex: index,
-      editedObject: addEdit ? this.props.store[index] : null,
+      editedObject: addEdit ? this.props.store[index] : obj,
     });
   }
 
